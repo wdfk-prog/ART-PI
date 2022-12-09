@@ -16,15 +16,12 @@
 #define RT_USING_IDLE_HOOK
 #define RT_IDLE_HOOK_LIST_SIZE 4
 #define IDLE_THREAD_STACK_SIZE 256
-#define RT_USING_TIMER_SOFT
-#define RT_TIMER_THREAD_PRIO 4
-#define RT_TIMER_THREAD_STACK_SIZE 512
 
 /* kservice optimization */
 
-#define RT_KSERVICE_USING_STDLIB
 /* end of kservice optimization */
 #define RT_DEBUG
+#define RT_DEBUG_COLOR
 
 /* Inter-Thread communication */
 
@@ -42,12 +39,15 @@
 #define RT_MEMHEAP_FAST_MODE
 #define RT_USING_MEMHEAP_AS_HEAP
 #define RT_USING_MEMHEAP_AUTO_BINDING
+#define RT_USING_MEMTRACE
+#define RT_USING_HEAP_ISR
 #define RT_USING_HEAP
 /* end of Memory Management */
 
 /* Kernel Device Object */
 
 #define RT_USING_DEVICE
+#define RT_USING_DEVICE_OPS
 #define RT_USING_CONSOLE
 #define RT_CONSOLEBUF_SIZE 128
 #define RT_CONSOLE_DEVICE_NAME "uart4"
@@ -78,13 +78,6 @@
 #define MSH_USING_BUILT_IN_COMMANDS
 #define FINSH_USING_DESCRIPTION
 #define FINSH_ARG_MAX 10
-#define RT_USING_DFS
-#define DFS_USING_POSIX
-#define DFS_USING_WORKDIR
-#define DFS_FILESYSTEMS_MAX 6
-#define DFS_FILESYSTEM_TYPES_MAX 6
-#define DFS_FD_MAX 32
-#define RT_USING_DFS_DEVFS
 
 /* Device Drivers */
 
@@ -94,7 +87,6 @@
 #define RT_SERIAL_USING_DMA
 #define RT_SERIAL_RB_BUFSZ 64
 #define RT_USING_PIN
-#define RT_USING_SPI
 
 /* Using USB */
 
@@ -123,6 +115,22 @@
 
 /* Utilities */
 
+#define RT_USING_ULOG
+#define ULOG_OUTPUT_LVL_D
+#define ULOG_OUTPUT_LVL 7
+#define ULOG_USING_ISR_LOG
+#define ULOG_ASSERT_ENABLE
+#define ULOG_LINE_BUF_SIZE 128
+
+/* log format */
+
+#define ULOG_OUTPUT_FLOAT
+#define ULOG_USING_COLOR
+#define ULOG_OUTPUT_TIME
+#define ULOG_OUTPUT_LEVEL
+#define ULOG_OUTPUT_TAG
+/* end of log format */
+#define ULOG_BACKEND_USING_CONSOLE
 /* end of Utilities */
 /* end of RT-Thread Components */
 
@@ -185,6 +193,8 @@
 
 /* enhanced kernel services */
 
+#define PKG_USING_RT_VSNPRINTF_FULL
+#define PKG_USING_RT_VSNPRINTF_FULL_LATEST_VERSION
 /* end of enhanced kernel services */
 
 /* acceleration: Assembly language or algorithmic acceleration packages */
