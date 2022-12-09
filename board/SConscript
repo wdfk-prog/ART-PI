@@ -8,14 +8,13 @@ src = Glob('*.c')
 src += Glob('port/*.c')
 
 # add cubemx drivers
-src += Split('''
-CubeMX_Config/Core/Src/stm32h7xx_hal_msp.c
-''')
+src += Glob('CubeMX_Config/Core/Src/*.c')
+src += Glob('board.c')
 
 path = [cwd]
 path += [cwd + '/port']
 path += [cwd + '/CubeMX_Config/Core/Inc']
 
-group = DefineGroup('Drivers', src, depend = [''], CPPPATH = path)
+group = DefineGroup('CUBE/Drivers', src, depend = [''], CPPPATH = path)
 
 Return('group')

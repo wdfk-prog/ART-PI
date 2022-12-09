@@ -338,9 +338,9 @@
             <v6Rtti>0</v6Rtti>
             <VariousControls>
               <MiscControls>-Wno-pointer-bool-conversion -Wno-tautological-pointer-compare -Wno-invalid-source-encoding -Wno-logical-not-parentheses</MiscControls>
-              <Define>__STDC_LIMIT_MACROS, RT_USING_ARMLIBC, STM32H750xx, RT_USING_LIBC, __CLK_TCK=RT_TICK_PER_SECOND, __RTTHREAD__, USE_HAL_DRIVER</Define>
+              <Define>__STDC_LIMIT_MACROS, RT_USING_ARMLIBC, USE_HAL_DRIVER, RT_USING_LIBC, __CLK_TCK=RT_TICK_PER_SECOND, __RTTHREAD__</Define>
               <Undefine></Undefine>
-              <IncludePath>rt-thread\components\drivers\include;applications;rt-thread\components\libc\posix\io\poll;rt-thread\libcpu\arm\common;rt-thread\components\libc\compilers\common\extension\fcntl\octal;libraries\drivers\include\config;rt-thread\components\libc\compilers\common\extension;rt-thread\components\drivers\include;rt-thread\components\drivers\spi;libraries\STM32H7xx_HAL\CMSIS\Include;board\CubeMX_Config\Core\Inc;rt-thread\components\finsh;rt-thread\components\dfs\include;libraries\STM32H7xx_HAL\CMSIS\Device\ST\STM32H7xx\Include;rt-thread\components\libc\posix\ipc;libraries\drivers\include;libraries\samples;board\port;libraries\drivers;rt-thread\components\libc\compilers\common\include;board;rt-thread\components\dfs\filesystems\devfs;rt-thread\include;.;rt-thread\components\libc\posix\io\stdio;rt-thread\libcpu\arm\cortex-m4;libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Inc;rt-thread\components\drivers\include;rt-thread\components\drivers\include</IncludePath>
+              <IncludePath>rt-thread\components\drivers\include;applications;rt-thread\components\libc\posix\io\poll;rt-thread\libcpu\arm\common;libraries\HAL_Drivers\config;rt-thread\components\libc\compilers\common\extension;rt-thread\components\drivers\include;rt-thread\components\drivers\spi;libraries\STM32H7xx_HAL\CMSIS\Include;libraries\HAL_Drivers\CMSIS\Include;board\CubeMX_Config\Core\Inc;rt-thread\components\finsh;rt-thread\components\dfs\include;rt-thread\components\libc\compilers\common\extension\fcntl\octal;libraries\STM32H7xx_HAL\CMSIS\Device\ST\STM32H7xx\Include;rt-thread\components\libc\posix\ipc;libraries\samples;board\port;rt-thread\components\libc\posix\io\stdio;rt-thread\components\libc\compilers\common\include;board;rt-thread\components\dfs\filesystems\devfs;rt-thread\include;.;libraries\HAL_Drivers;rt-thread\libcpu\arm\cortex-m4;libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Inc;rt-thread\components\drivers\include;rt-thread\components\drivers\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -385,9 +385,9 @@
           <GroupName>Applications</GroupName>
           <Files>
             <File>
-              <FileName>main.c</FileName>
+              <FileName>user.c</FileName>
               <FileType>1</FileType>
-              <FilePath>applications\main.c</FilePath>
+              <FilePath>applications\user.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -467,6 +467,56 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>CUBE/Drivers</GroupName>
+          <Files>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_mpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\drv_mpu.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>system_stm32h7xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\system_stm32h7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>filesystem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\port\filesystem.c</FilePath>
+            </File>
+            <File>
+              <FileName>board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\board.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_msp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_hal_msp.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>DeviceDrivers</GroupName>
           <Files>
             <File>
@@ -530,64 +580,24 @@
           <GroupName>Drivers</GroupName>
           <Files>
             <File>
-              <FileName>stm32h7xx_hal_msp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_hal_msp.c</FilePath>
-            </File>
-            <File>
-              <FileName>board.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\board.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_mpu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\drv_mpu.c</FilePath>
-            </File>
-            <File>
-              <FileName>filesystem.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\port\filesystem.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_common.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\drivers\drv_common.c</FilePath>
-            </File>
-            <File>
               <FileName>drv_gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>libraries\drivers\drv_gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_lcd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\drivers\drv_lcd.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_sdio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\drivers\drv_sdio.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_sdram.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\drivers\drv_sdram.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\drivers\drv_spi.c</FilePath>
+              <FilePath>libraries\HAL_Drivers\drv_gpio.c</FilePath>
             </File>
             <File>
               <FileName>drv_usart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>libraries\drivers\drv_usart.c</FilePath>
+              <FilePath>libraries\HAL_Drivers\drv_usart.c</FilePath>
             </File>
             <File>
-              <FileName>drv_wlan.c</FileName>
+              <FileName>drv_common.c</FileName>
               <FileType>1</FileType>
-              <FilePath>libraries\drivers\drv_wlan.c</FilePath>
+              <FilePath>libraries\HAL_Drivers\drv_common.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\HAL_Drivers\drv_spi.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -843,11 +853,6 @@
               <FileName>stm32h7xx_hal_pwr_ex.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_pwr_ex.c</FilePath>
-            </File>
-            <File>
-              <FileName>system_stm32h7xx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>libraries\STM32H7xx_HAL\CMSIS\Device\ST\STM32H7xx\Source\Templates\system_stm32h7xx.c</FilePath>
             </File>
           </Files>
         </Group>
