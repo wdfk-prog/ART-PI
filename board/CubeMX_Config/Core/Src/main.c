@@ -15,8 +15,10 @@
   *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
+  加入__attribute__((optnone))取消优化
   */
 /* USER CODE END Header */
+#ifdef CUBE_ERROR
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "usart.h"
@@ -24,6 +26,13 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#endif /*CUBE_ERROR*/
+#include "main.h"
+#include <rtconfig.h>
+/*ulog include*/
+#define LOG_TAG              "main" 
+#define LOG_LVL              DBG_INFO
+#include <ulog.h>
 #include "drv_gpio.h"
 /* USER CODE END Includes */
 
@@ -163,15 +172,15 @@ void Error_Handler(void)
   */
 static int Version(void)
 {
- /* 获取编译版本*/
-// LOG_I(" \\ | /");
-// LOG_W("- HLY -    Version FULL V%s",VERSION);
-// LOG_E(" / | \\     build %s %s",__DATE__,__TIME__);
-//  LOG_D("System Clock information");
-//  LOG_D("SYSCLK_Frequency = %d", HAL_RCC_GetSysClockFreq());
-//  LOG_D("HCLK_Frequency   = %d", HAL_RCC_GetHCLKFreq());
-//  LOG_D("PCLK1_Frequency  = %d", HAL_RCC_GetPCLK1Freq());
-//  LOG_D("PCLK2_Frequency  = %d", HAL_RCC_GetPCLK2Freq());
+  /* 获取编译版本*/
+  LOG_I(" \\ | /");
+  LOG_W("- HLY -    Version FULL V%s",VERSION);
+  LOG_E(" / | \\     build %s %s",__DATE__,__TIME__);
+  LOG_I("System Clock information");
+  LOG_I("SYSCLK_Frequency = %d", HAL_RCC_GetSysClockFreq());
+  LOG_I("HCLK_Frequency   = %d", HAL_RCC_GetHCLKFreq());
+  LOG_I("PCLK1_Frequency  = %d", HAL_RCC_GetPCLK1Freq());
+  LOG_I("PCLK2_Frequency  = %d", HAL_RCC_GetPCLK2Freq());
   return RT_EOK;
   /* USER CODE END Error_Handler_Debug */
 }
