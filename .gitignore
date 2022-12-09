@@ -5,12 +5,15 @@
 *.bin
 *.hex
 *.axf
+*.exe
 *.pdb
 *.idb
 *.ilk
 !*.old
 build
 Debug
+documentation/html
+
 *~
 *.o
 *.obj
@@ -24,6 +27,7 @@ Debug
 .config 3
 .config 4
 .config 5
+Midea-X1
 *.uimg
 GPATH
 GRTAGS
@@ -35,3 +39,10 @@ DebugConfig/
 RTE/
 settings/
 *.uvguix*
+!cconfig.h
+project.uvoptx
+
+*.exob
+*.emtp.bak1
+*.emtp.bak2
+*.emtp.bak3
