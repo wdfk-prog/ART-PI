@@ -56,7 +56,7 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-
+extern DMA_HandleTypeDef hdma_uart4_rx;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */

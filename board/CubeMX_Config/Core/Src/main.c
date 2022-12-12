@@ -17,10 +17,11 @@
   ******************************************************************************
   加入__attribute__((optnone))取消优化
   */
-/* USER CODE END Header */
 #ifdef CUBE_ERROR
+/* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "usart.h"
 #include "gpio.h"
 

@@ -470,24 +470,9 @@
           <GroupName>CUBE/Drivers</GroupName>
           <Files>
             <File>
-              <FileName>stm32h7xx_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_hal_msp.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_mpu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\drv_mpu.c</FilePath>
-            </File>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\main.c</FilePath>
             </File>
             <File>
               <FileName>system_stm32h7xx.c</FileName>
@@ -495,9 +480,14 @@
               <FilePath>board\CubeMX_Config\Core\Src\system_stm32h7xx.c</FilePath>
             </File>
             <File>
-              <FileName>board.c</FileName>
+              <FileName>gpio.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\board.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\main.c</FilePath>
             </File>
             <File>
               <FileName>usart.c</FileName>
@@ -510,9 +500,24 @@
               <FilePath>board\port\filesystem.c</FilePath>
             </File>
             <File>
-              <FileName>gpio.c</FileName>
+              <FileName>dma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\gpio.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\board.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_mpu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\drv_mpu.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -560,9 +565,9 @@
               <FilePath>rt-thread\components\drivers\misc\pin.c</FilePath>
             </File>
             <File>
-              <FileName>serial.c</FileName>
+              <FileName>serial_v2.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\serial\serial.c</FilePath>
+              <FilePath>rt-thread\components\drivers\serial\serial_v2.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -575,9 +580,9 @@
               <FilePath>libraries\HAL_Drivers\drv_gpio.c</FilePath>
             </File>
             <File>
-              <FileName>drv_usart.c</FileName>
+              <FileName>drv_usart_v2.c</FileName>
               <FileType>1</FileType>
-              <FilePath>libraries\HAL_Drivers\drv_usart.c</FilePath>
+              <FilePath>libraries\HAL_Drivers\drv_usart_v2.c</FilePath>
             </File>
             <File>
               <FileName>drv_common.c</FileName>
