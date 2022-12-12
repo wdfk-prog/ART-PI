@@ -5,7 +5,7 @@
 
 /* RT-Thread Kernel */
 
-#define RT_NAME_MAX 8
+#define RT_NAME_MAX 16
 #define RT_ALIGN_SIZE 4
 #define RT_THREAD_PRIORITY_32
 #define RT_THREAD_PRIORITY_MAX 32
@@ -78,6 +78,20 @@
 #define MSH_USING_BUILT_IN_COMMANDS
 #define FINSH_USING_DESCRIPTION
 #define FINSH_ARG_MAX 10
+#define RT_USING_DFS
+#define DFS_USING_POSIX
+#define DFS_USING_WORKDIR
+#define DFS_FILESYSTEMS_MAX 5
+#define DFS_FILESYSTEM_TYPES_MAX 5
+#define DFS_FD_MAX 64
+#define RT_USING_DFS_DEVFS
+#define RT_USING_DFS_ROMFS
+#define RT_USING_FAL
+#define FAL_DEBUG_CONFIG
+#define FAL_DEBUG 1
+#define FAL_PART_HAS_TABLE_CFG
+#define FAL_USING_SFUD_PORT
+#define FAL_USING_NOR_FLASH_DEV_NAME "norflash0"
 
 /* Device Drivers */
 
@@ -86,6 +100,13 @@
 #define RT_USING_SERIAL_V2
 #define RT_SERIAL_USING_DMA
 #define RT_USING_PIN
+#define RT_USING_MTD_NOR
+#define RT_USING_SPI
+#define RT_USING_SFUD
+#define RT_SFUD_USING_SFDP
+#define RT_SFUD_USING_FLASH_INFO_TABLE
+#define RT_SFUD_SPI_MAX_HZ 50000000
+#define RT_DEBUG_SFUD
 
 /* Using USB */
 
@@ -186,6 +207,12 @@
 
 /* tools packages */
 
+#define PKG_USING_CMBACKTRACE
+#define PKG_CMBACKTRACE_PLATFORM_M7
+#define PKG_CMBACKTRACE_DUMP_STACK
+#define PKG_CMBACKTRACE_PRINT_CHINESE_UTF8
+#define PKG_USING_CMBACKTRACE_LATEST_VERSION
+#define PKG_CMBACKTRACE_VER_NUM 0x99999
 /* end of tools packages */
 
 /* system packages */
@@ -207,6 +234,15 @@
 /* Micrium: Micrium software products porting for RT-Thread */
 
 /* end of Micrium: Micrium software products porting for RT-Thread */
+#define PKG_USING_LITTLEFS
+#define PKG_USING_LITTLEFS_LATEST_VERSION
+#define LFS_READ_SIZE 256
+#define LFS_PROG_SIZE 256
+#define LFS_BLOCK_SIZE 4096
+#define LFS_CACHE_SIZE 256
+#define LFS_BLOCK_CYCLES 1000
+#define LFS_THREADSAFE
+#define LFS_LOOKAHEAD_MAX 128
 /* end of system packages */
 
 /* peripheral libraries and drivers */
@@ -303,6 +339,9 @@
 /* Onboard Peripheral */
 
 #define BSP_USING_USB_TO_USART
+#define BSP_USING_SPI_FLASH
+#define BSP_USING_FS
+#define BSP_USING_SPI_FLASH_FS
 /* end of Onboard Peripheral */
 
 /* On-chip Peripheral */
@@ -312,6 +351,8 @@
 #define BSP_USING_UART4
 #define BSP_UART4_RX_BUFSIZE 256
 #define BSP_UART4_TX_BUFSIZE 0
+#define BSP_USING_SPI
+#define BSP_USING_SPI1
 /* end of On-chip Peripheral */
 /* end of Hardware Drivers Config */
 
