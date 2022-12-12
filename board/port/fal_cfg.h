@@ -40,6 +40,7 @@ extern struct fal_flash_dev nor_flash0;
 }
 /* ====================== Partition Configuration ========================== */
 #ifdef FAL_PART_HAS_TABLE_CFG
+/* partition table */
 #define FAL_PART_TABLE                                                                     \
 {                                                                                          \
     {FAL_PART_MAGIC_WORD, "wifi_image", NOR_FLASH_DEV_NAME,           0,     512*1024, 0}, \
