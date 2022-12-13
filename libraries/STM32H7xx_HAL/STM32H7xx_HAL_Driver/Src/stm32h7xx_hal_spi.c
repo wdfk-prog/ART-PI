@@ -1232,7 +1232,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
   /* Check Direction parameter */
   assert_param(IS_SPI_DIRECTION_2LINES(hspi->Init.Direction));
 
-  /* Process Locked */
+  /* Lock the process */
   __HAL_LOCK(hspi);
 
   /* Init tickstart for timeout management*/
@@ -1244,7 +1244,9 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
   tmp_mode            = hspi->Init.Mode;
 
   if (!((tmp_state == HAL_SPI_STATE_READY) || \
-        ((tmp_mode == SPI_MODE_MASTER) && (hspi->Init.Direction == SPI_DIRECTION_2LINES) && (tmp_state == HAL_SPI_STATE_BUSY_RX))))
+        ((tmp_mode == SPI_MODE_MASTER) && \
+         (hspi->Init.Direction == SPI_DIRECTION_2LINES) && \
+         (tmp_state == HAL_SPI_STATE_BUSY_RX))))
   {
     errorcode = HAL_BUSY;
     __HAL_UNLOCK(hspi);
@@ -1317,12 +1319,12 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
         /* Call standard close procedure with error check */
         SPI_CloseTransfer(hspi);
 
-        /* Process Unlocked */
+        /* Unlock the process */
         __HAL_UNLOCK(hspi);
 
         SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_TIMEOUT);
         hspi->State = HAL_SPI_STATE_READY;
-        return HAL_ERROR;
+        return HAL_TIMEOUT;
       }
     }
   }
@@ -1331,50 +1333,30 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
   {
     while ((initial_TxXferCount > 0UL) || (initial_RxXferCount > 0UL))
     {
-      /* Check TXP flag */
+      /* Check the TXP flag */
       if (__HAL_SPI_GET_FLAG(hspi, SPI_FLAG_TXP) && (initial_TxXferCount > 0UL))
       {
-        if ((initial_TxXferCount > 1UL) && (hspi->Init.FifoThreshold > SPI_FIFO_THRESHOLD_01DATA))
-        {
-          *((__IO uint32_t *)&hspi->Instance->TXDR) = *((uint32_t *)hspi->pTxBuffPtr);
-          hspi->pTxBuffPtr += sizeof(uint32_t);
-          hspi->TxXferCount -= (uint16_t)2UL;
-          initial_TxXferCount = hspi->TxXferCount;
-        }
-        else
-        {
 #if defined (__GNUC__)
-          *ptxdr_16bits = *((uint16_t *)hspi->pTxBuffPtr);
+        *ptxdr_16bits = *((uint16_t *)hspi->pTxBuffPtr);
 #else
-          *((__IO uint16_t *)&hspi->Instance->TXDR) = *((uint16_t *)hspi->pTxBuffPtr);
+        *((__IO uint16_t *)&hspi->Instance->TXDR) = *((uint16_t *)hspi->pTxBuffPtr);
 #endif /* __GNUC__ */
-          hspi->pTxBuffPtr += sizeof(uint16_t);
-          hspi->TxXferCount--;
-          initial_TxXferCount = hspi->TxXferCount;
-        }
+        hspi->pTxBuffPtr += sizeof(uint16_t);
+        hspi->TxXferCount--;
+        initial_TxXferCount = hspi->TxXferCount;
       }
 
-      /* Check RXWNE/FRLVL flag */
-      if (((hspi->Instance->SR & (SPI_FLAG_RXWNE | SPI_FLAG_FRLVL)) != 0UL) && (initial_RxXferCount > 0UL))
+      /* Check the RXP flag */
+      if ((__HAL_SPI_GET_FLAG(hspi, SPI_FLAG_RXP)) && (initial_RxXferCount > 0UL))
       {
-        if ((hspi->Instance->SR & SPI_FLAG_RXWNE) != 0UL)
-        {
-          *((uint32_t *)hspi->pRxBuffPtr) = *((__IO uint32_t *)&hspi->Instance->RXDR);
-          hspi->pRxBuffPtr += sizeof(uint32_t);
-          hspi->RxXferCount -= (uint16_t)2UL;
-          initial_RxXferCount = hspi->RxXferCount;
-        }
-        else
-        {
 #if defined (__GNUC__)
-          *((uint16_t *)hspi->pRxBuffPtr) = *prxdr_16bits;
+        *((uint16_t *)hspi->pRxBuffPtr) = *prxdr_16bits;
 #else
-          *((uint16_t *)hspi->pRxBuffPtr) = *((__IO uint16_t *)&hspi->Instance->RXDR);
+        *((uint16_t *)hspi->pRxBuffPtr) = *((__IO uint16_t *)&hspi->Instance->RXDR);
 #endif /* __GNUC__ */
-          hspi->pRxBuffPtr += sizeof(uint16_t);
-          hspi->RxXferCount--;
-          initial_RxXferCount = hspi->RxXferCount;
-        }
+        hspi->pRxBuffPtr += sizeof(uint16_t);
+        hspi->RxXferCount--;
+        initial_RxXferCount = hspi->RxXferCount;
       }
 
       /* Timeout management */
@@ -1383,12 +1365,12 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
         /* Call standard close procedure with error check */
         SPI_CloseTransfer(hspi);
 
-        /* Process Unlocked */
+        /* Unlock the process */
         __HAL_UNLOCK(hspi);
 
         SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_TIMEOUT);
         hspi->State = HAL_SPI_STATE_READY;
-        return HAL_ERROR;
+        return HAL_TIMEOUT;
       }
     }
   }
@@ -1482,7 +1464,7 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
   /* Call standard close procedure with error check */
   SPI_CloseTransfer(hspi);
 
-  /* Process Unlocked */
+  /* Unlock the process */
   __HAL_UNLOCK(hspi);
 
   hspi->State = HAL_SPI_STATE_READY;
