@@ -1388,34 +1388,13 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
         initial_TxXferCount = hspi->TxXferCount;
       }
 
-      /* Wait until RXWNE/FRLVL flag is reset */
+      /* Check the RXP flag */
       if (((hspi->Instance->SR & (SPI_FLAG_RXWNE | SPI_FLAG_FRLVL)) != 0UL) && (initial_RxXferCount > 0UL))
       {
-        if ((hspi->Instance->SR & SPI_FLAG_RXWNE) != 0UL)
-        {
-          *((uint32_t *)hspi->pRxBuffPtr) = *((__IO uint32_t *)&hspi->Instance->RXDR);
-          hspi->pRxBuffPtr += sizeof(uint32_t);
-          hspi->RxXferCount -= (uint16_t)4UL;
-          initial_RxXferCount = hspi->RxXferCount;
-        }
-        else if ((hspi->Instance->SR & SPI_FLAG_FRLVL) > SPI_RX_FIFO_1PACKET)
-        {
-#if defined (__GNUC__)
-          *((uint16_t *)hspi->pRxBuffPtr) = *prxdr_16bits;
-#else
-          *((uint16_t *)hspi->pRxBuffPtr) = *((__IO uint16_t *)&hspi->Instance->RXDR);
-#endif /* __GNUC__ */
-          hspi->pRxBuffPtr += sizeof(uint16_t);
-          hspi->RxXferCount -= (uint16_t)2UL;
-          initial_RxXferCount = hspi->RxXferCount;
-        }
-        else
-        {
-          *((uint8_t *)hspi->pRxBuffPtr) = *((__IO uint8_t *)&hspi->Instance->RXDR);
-          hspi->pRxBuffPtr += sizeof(uint8_t);
-          hspi->RxXferCount--;
-          initial_RxXferCount = hspi->RxXferCount;
-        }
+        *((uint8_t *)hspi->pRxBuffPtr) = *((__IO uint8_t *)&hspi->Instance->RXDR);
+        hspi->pRxBuffPtr += sizeof(uint8_t);
+        hspi->RxXferCount--;
+        initial_RxXferCount = hspi->RxXferCount;
       }
 
       /* Timeout management */
