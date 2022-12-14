@@ -352,6 +352,8 @@
 #define BSP_UART4_TX_BUFSIZE 0
 #define BSP_USING_SPI
 #define BSP_USING_SPI1
+#define BSP_SPI1_TX_USING_DMA
+#define BSP_SPI1_RX_USING_DMA
 /* end of On-chip Peripheral */
 /* end of Hardware Drivers Config */
 
