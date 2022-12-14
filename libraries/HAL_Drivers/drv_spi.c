@@ -326,27 +326,25 @@ static rt_uint32_t spixfer(struct rt_spi_device *device, struct rt_spi_message *
         send_buf = (rt_uint8_t *)message->send_buf + already_send_length;
         recv_buf = (rt_uint8_t *)message->recv_buf + already_send_length;
 
-#if defined(SOC_SERIES_STM32H7)
-        rt_uint32_t dma_buf_size = ((send_length + 31) / 32 + 1) * 32;
-        rt_uint8_t* dma_buf = RT_NULL;
-        rt_uint8_t* dma_32_buf = RT_NULL;
+#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
+        rt_uint32_t* dma_buf = RT_NULL;
         if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG))
         {
-            dma_buf = (rt_uint8_t *)rt_malloc(dma_buf_size);
-            dma_32_buf = (rt_uint8_t *)((((rt_uint32_t)dma_buf >> 5) + 1) << 5);
+            dma_buf = (rt_uint32_t *)rt_malloc_align(send_length,32);
             if(send_buf)
             {
-                rt_memcpy(dma_32_buf, send_buf, send_length);
+                rt_memcpy(dma_buf, send_buf, send_length);
             }
             else
             {
-                rt_memset(dma_32_buf, 0xFF, send_length);
+                rt_memset(dma_buf, 0xFF, send_length);
             }
-            SCB_CleanDCache_by_Addr((rt_uint32_t*)dma_32_buf, send_length);
-            state = HAL_SPI_TransmitReceive_DMA(spi_handle, (uint8_t *)dma_32_buf, (uint8_t *)dma_32_buf, send_length);
+            SCB_CleanDCache_by_Addr(dma_buf, send_length);
+            state = HAL_SPI_TransmitReceive_DMA(spi_handle, (uint8_t *)dma_buf, (uint8_t *)dma_buf, send_length);
         }
         else
-#endif
+#endif /*SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7*/
+        
         /* start once data exchange in DMA mode */
         if (message->send_buf && message->recv_buf)
         {
@@ -414,17 +412,17 @@ static rt_uint32_t spixfer(struct rt_spi_device *device, struct rt_spi_message *
         {
             while (HAL_SPI_GetState(spi_handle) != HAL_SPI_STATE_READY);
         }
-#if defined(SOC_SERIES_STM32H7)
+#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
         if(dma_buf)
         {
             if(recv_buf)
             {
-                SCB_InvalidateDCache_by_Addr((rt_uint32_t *)dma_32_buf, send_length);
-                rt_memcpy(recv_buf, dma_32_buf,send_length);
+                SCB_InvalidateDCache_by_Addr(dma_buf, send_length);
+                rt_memcpy(recv_buf, dma_buf,send_length);
             }
-            rt_free(dma_buf);
+            rt_free_align(dma_buf);
         }
-#endif
+#endif /*SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7*/
     }
 
     if (message->cs_release && !(device->config.mode & RT_SPI_NO_CS))
