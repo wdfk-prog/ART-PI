@@ -791,7 +791,7 @@ HAL_StatusTypeDef HAL_SPI_UnRegisterCallback(SPI_HandleTypeDef *hspi, HAL_SPI_Ca
   * @param  Timeout: Timeout duration
   * @retval HAL status
   */
-HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout) __attribute__((optnone))
+HAL_StatusTypeDef HAL_SPI_Transmit(SPI_HandleTypeDef *hspi, uint8_t *pData, uint16_t Size, uint32_t Timeout) 
 {
 #if defined (__GNUC__)
   __IO uint16_t *ptxdr_16bits = (__IO uint16_t *)(&(hspi->Instance->TXDR));
@@ -1388,13 +1388,10 @@ HAL_StatusTypeDef HAL_SPI_TransmitReceive(SPI_HandleTypeDef *hspi, uint8_t *pTxD
         initial_TxXferCount = hspi->TxXferCount;
       }
 
-      /* Wait until RXWNE/FRLVL flag is reset */
-      if (((hspi->Instance->SR & (SPI_FLAG_RXWNE | SPI_FLAG_FRLVL)) != 0UL) && (initial_RxXferCount > 0UL))
+      /* Check the RXP flag */
+      if ((__HAL_SPI_GET_FLAG(hspi, SPI_FLAG_RXP)) && (initial_RxXferCount > 0UL))
       {
         *((uint8_t *)hspi->pRxBuffPtr) = *((__IO uint8_t *)&hspi->Instance->RXDR);
-//      /* Check the RXP flag */
-//      if ((__HAL_SPI_GET_FLAG(hspi, SPI_FLAG_RXP)) && (initial_RxXferCount > 0UL))
-//      {
         hspi->pRxBuffPtr += sizeof(uint8_t);
         hspi->RxXferCount--;
         initial_RxXferCount = hspi->RxXferCount;
