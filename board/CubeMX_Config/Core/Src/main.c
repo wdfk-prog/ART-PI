@@ -187,6 +187,8 @@ static int Version(void)
   LOG_I("HCLK_Frequency   = %d", HAL_RCC_GetHCLKFreq());
   LOG_I("PCLK1_Frequency  = %d", HAL_RCC_GetPCLK1Freq());
   LOG_I("PCLK2_Frequency  = %d", HAL_RCC_GetPCLK2Freq());
+  LOG_I("SPI1_Frequency  = %d", HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI123));
+
   return RT_EOK;
   /* USER CODE END Error_Handler_Debug */
 }
