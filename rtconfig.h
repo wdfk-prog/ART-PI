@@ -17,6 +17,7 @@
 #define RT_IDLE_HOOK_LIST_SIZE 4
 #define IDLE_THREAD_STACK_SIZE 256
 
+#define RT_USING_CACHE
 /* kservice optimization */
 
 /* end of kservice optimization */

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2022, RT-Thread Development Team
+ * Copyright (c) 2006-2021, RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -297,12 +297,6 @@ static rt_err_t rt_hwtimer_control(struct rt_device *dev, int cmd, void *args)
     }
     break;
     default:
-    /* control device */
-    if (timer->ops->control != RT_NULL)
-    {
-        result = timer->ops->control(timer, cmd, args);
-    }
-    else
     {
         result = -RT_ENOSYS;
     }
