@@ -73,7 +73,7 @@
         <LExpSel>0</LExpSel>
       </OPTXL>
       <OPTFL>
-        <tvExp>1</tvExp>
+        <tvExp>0</tvExp>
         <tvExpOptDlg>0</tvExpOptDlg>
         <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
@@ -125,7 +125,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGTARM</Key>
-          <Name>(1010=-1,-1,-1,-1,0)(6017=906,141,1085,467,0)(1008=-1,-1,-1,-1,0)(6016=-1,-1,-1,-1,0)(1012=-1,-1,-1,-1,0)</Name>
+          <Name>(1010=-1,-1,-1,-1,0)(6017=-1,-1,-1,-1,0)(1008=-1,-1,-1,-1,0)(6016=-1,-1,-1,-1,0)(1012=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -157,37 +157,21 @@
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>943</LineNumber>
+          <LineNumber>190</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-1878999796</Address>
+          <Address>0</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_spi.c</Filename>
+          <BreakIfRCount>0</BreakIfRCount>
+          <Filename>board\CubeMX_Config\Core\Src\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\rt_thread\libraries/STM32H7xx_HAL/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_spi.c\943</Expression>
+          <Expression></Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>190</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-1878982694</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>board\CubeMX_Config\Core\Src\main.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\rt_thread\board/CubeMX_Config/Core/Src/main.c\190</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
           <Type>0</Type>
           <LineNumber>948</LineNumber>
           <EnabledFlag>1</EnabledFlag>
@@ -203,7 +187,7 @@
           <Expression></Expression>
         </Bp>
         <Bp>
-          <Number>3</Number>
+          <Number>2</Number>
           <Type>0</Type>
           <LineNumber>951</LineNumber>
           <EnabledFlag>1</EnabledFlag>
@@ -219,13 +203,6 @@
           <Expression></Expression>
         </Bp>
       </Breakpoint>
-      <WatchWindow1>
-        <Ww>
-          <count>0</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>spi_drv</ItemText>
-        </Ww>
-      </WatchWindow1>
       <Tracepoint>
         <THDelay>0</THDelay>
       </Tracepoint>
@@ -268,12 +245,6 @@
       <pszMrulep></pszMrulep>
       <pSingCmdsp></pSingCmdsp>
       <pMultCmdsp></pMultCmdsp>
-      <SystemViewers>
-        <Entry>
-          <Name>System Viewer\RCC</Name>
-          <WinId>35905</WinId>
-        </Entry>
-      </SystemViewers>
       <DebugDescription>
         <Enable>1</Enable>
         <EnableFlashSeq>0</EnableFlashSeq>
@@ -317,8 +288,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\port\drv_eth.c</PathWithFileName>
-      <FilenameWithoutPath>drv_eth.c</FilenameWithoutPath>
+      <PathWithFileName>board\board.c</PathWithFileName>
+      <FilenameWithoutPath>board.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -329,8 +300,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\CubeMX_Config\Core\Src\dma.c</PathWithFileName>
-      <FilenameWithoutPath>dma.c</FilenameWithoutPath>
+      <PathWithFileName>board\port\drv_qspi_flash.c</PathWithFileName>
+      <FilenameWithoutPath>drv_qspi_flash.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -341,8 +312,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\port\drv_wlan.c</PathWithFileName>
-      <FilenameWithoutPath>drv_wlan.c</FilenameWithoutPath>
+      <PathWithFileName>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</PathWithFileName>
+      <FilenameWithoutPath>stm32h7xx_it.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -353,8 +324,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\CubeMX_Config\Core\Src\main.c</PathWithFileName>
-      <FilenameWithoutPath>main.c</FilenameWithoutPath>
+      <PathWithFileName>board\CubeMX_Config\Core\Src\system_stm32h7xx.c</PathWithFileName>
+      <FilenameWithoutPath>system_stm32h7xx.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -365,8 +336,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\port\drv_qspi_flash.c</PathWithFileName>
-      <FilenameWithoutPath>drv_qspi_flash.c</FilenameWithoutPath>
+      <PathWithFileName>board\port\wifi_config.c</PathWithFileName>
+      <FilenameWithoutPath>wifi_config.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -389,8 +360,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\CubeMX_Config\Core\Src\usart.c</PathWithFileName>
-      <FilenameWithoutPath>usart.c</FilenameWithoutPath>
+      <PathWithFileName>board\port\drv_spi_ili9488.c</PathWithFileName>
+      <FilenameWithoutPath>drv_spi_ili9488.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -401,8 +372,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\port\wifi_config.c</PathWithFileName>
-      <FilenameWithoutPath>wifi_config.c</FilenameWithoutPath>
+      <PathWithFileName>board\CubeMX_Config\Core\Src\main.c</PathWithFileName>
+      <FilenameWithoutPath>main.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -413,8 +384,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</PathWithFileName>
-      <FilenameWithoutPath>stm32h7xx_it.c</FilenameWithoutPath>
+      <PathWithFileName>board\port\drv_wlan.c</PathWithFileName>
+      <FilenameWithoutPath>drv_wlan.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -425,8 +396,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\port\drv_spi_ili9488.c</PathWithFileName>
-      <FilenameWithoutPath>drv_spi_ili9488.c</FilenameWithoutPath>
+      <PathWithFileName>board\port\spi_flash_init.c</PathWithFileName>
+      <FilenameWithoutPath>spi_flash_init.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -437,8 +408,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\port\drv_sdio.c</PathWithFileName>
-      <FilenameWithoutPath>drv_sdio.c</FilenameWithoutPath>
+      <PathWithFileName>board\CubeMX_Config\Core\Src\usart.c</PathWithFileName>
+      <FilenameWithoutPath>usart.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -449,8 +420,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\CubeMX_Config\Core\Src\gpio.c</PathWithFileName>
-      <FilenameWithoutPath>gpio.c</FilenameWithoutPath>
+      <PathWithFileName>board\port\drv_sdio.c</PathWithFileName>
+      <FilenameWithoutPath>drv_sdio.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -473,38 +444,14 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>board\port\spi_flash_init.c</PathWithFileName>
-      <FilenameWithoutPath>spi_flash_init.c</FilenameWithoutPath>
+      <PathWithFileName>board\CubeMX_Config\Core\Src\dma.c</PathWithFileName>
+      <FilenameWithoutPath>dma.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
     <File>
       <GroupNumber>2</GroupNumber>
       <FileNumber>16</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>board\CubeMX_Config\Core\Src\system_stm32h7xx.c</PathWithFileName>
-      <FilenameWithoutPath>system_stm32h7xx.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>2</GroupNumber>
-      <FileNumber>17</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <bDave2>0</bDave2>
-      <PathWithFileName>board\board.c</PathWithFileName>
-      <FilenameWithoutPath>board.c</FilenameWithoutPath>
-      <RteFlg>0</RteFlg>
-      <bShared>0</bShared>
-    </File>
-    <File>
-      <GroupNumber>2</GroupNumber>
-      <FileNumber>18</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -516,13 +463,37 @@
     </File>
     <File>
       <GroupNumber>2</GroupNumber>
-      <FileNumber>19</FileNumber>
+      <FileNumber>17</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>board\port\drv_eth.c</PathWithFileName>
+      <FilenameWithoutPath>drv_eth.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>2</GroupNumber>
+      <FileNumber>18</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
       <PathWithFileName>board\port\filesystem.c</PathWithFileName>
       <FilenameWithoutPath>filesystem.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>2</GroupNumber>
+      <FileNumber>19</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>board\CubeMX_Config\Core\Src\gpio.c</PathWithFileName>
+      <FilenameWithoutPath>gpio.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -553,8 +524,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>packages\CmBacktrace-latest\cmb_flash_log.c</PathWithFileName>
-      <FilenameWithoutPath>cmb_flash_log.c</FilenameWithoutPath>
+      <PathWithFileName>packages\CmBacktrace-latest\cmb_port.c</PathWithFileName>
+      <FilenameWithoutPath>cmb_port.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -565,8 +536,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>packages\CmBacktrace-latest\cmb_port.c</PathWithFileName>
-      <FilenameWithoutPath>cmb_port.c</FilenameWithoutPath>
+      <PathWithFileName>packages\CmBacktrace-latest\cmb_flash_log.c</PathWithFileName>
+      <FilenameWithoutPath>cmb_flash_log.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -946,7 +917,7 @@
 
   <Group>
     <GroupName>Drivers</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -1013,8 +984,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>rt-thread\components\fal\src\fal_rtt.c</PathWithFileName>
-      <FilenameWithoutPath>fal_rtt.c</FilenameWithoutPath>
+      <PathWithFileName>rt-thread\components\fal\src\fal_flash.c</PathWithFileName>
+      <FilenameWithoutPath>fal_flash.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1025,8 +996,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>rt-thread\components\fal\src\fal_flash.c</PathWithFileName>
-      <FilenameWithoutPath>fal_flash.c</FilenameWithoutPath>
+      <PathWithFileName>rt-thread\components\fal\src\fal.c</PathWithFileName>
+      <FilenameWithoutPath>fal.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1061,8 +1032,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>rt-thread\components\fal\src\fal.c</PathWithFileName>
-      <FilenameWithoutPath>fal.c</FilenameWithoutPath>
+      <PathWithFileName>rt-thread\components\fal\src\fal_rtt.c</PathWithFileName>
+      <FilenameWithoutPath>fal_rtt.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1405,8 +1376,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>packages\littlefs-latest\lfs_crc.c</PathWithFileName>
-      <FilenameWithoutPath>lfs_crc.c</FilenameWithoutPath>
+      <PathWithFileName>packages\littlefs-latest\lfs.c</PathWithFileName>
+      <FilenameWithoutPath>lfs.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1417,8 +1388,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>packages\littlefs-latest\lfs.c</PathWithFileName>
-      <FilenameWithoutPath>lfs.c</FilenameWithoutPath>
+      <PathWithFileName>packages\littlefs-latest\lfs_crc.c</PathWithFileName>
+      <FilenameWithoutPath>lfs_crc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1429,8 +1400,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>packages\littlefs-latest\lfs_util.c</PathWithFileName>
-      <FilenameWithoutPath>lfs_util.c</FilenameWithoutPath>
+      <PathWithFileName>packages\littlefs-latest\dfs_lfs.c</PathWithFileName>
+      <FilenameWithoutPath>dfs_lfs.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1441,8 +1412,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>packages\littlefs-latest\dfs_lfs.c</PathWithFileName>
-      <FilenameWithoutPath>dfs_lfs.c</FilenameWithoutPath>
+      <PathWithFileName>packages\littlefs-latest\lfs_util.c</PathWithFileName>
+      <FilenameWithoutPath>lfs_util.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
