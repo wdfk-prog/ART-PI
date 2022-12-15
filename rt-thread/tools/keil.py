@@ -433,7 +433,10 @@ def ARMCC_Version():
     if os.path.exists(path):
         cmd = path
     else:
-        print('Error: get armcc version failed. Please update the KEIL MDK installation path in rtconfig.py!')
+        if(rtconfig.PLATFORM == 'armcc'):
+            print('Error: get armcc version failed. Please update the KEIL MDK installation path in rtconfig.py!')
+        elif(rtconfig.PLATFORM == 'armclang'):
+            print('Error: get armclang version failed. Please update the KEIL MDK installation path in rtconfig.py!')
         return "0.0"
 
     child = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
