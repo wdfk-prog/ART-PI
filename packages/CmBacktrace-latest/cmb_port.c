@@ -251,7 +251,7 @@ void rt_cm_backtrace_assert_hook(const char* ex, const char* func, rt_size_t lin
     cmb_println("Current system tick: %ld", rt_tick_get());
 }
 
-RT_WEAK rt_err_t exception_hook(void *context) {
+rt_weak rt_err_t exception_hook(void *context) {
     volatile uint8_t _continue = 1;
 
     rt_cm_backtrace_exception_hook(context);
@@ -261,7 +261,7 @@ RT_WEAK rt_err_t exception_hook(void *context) {
     return RT_EOK;
 }
 
-RT_WEAK void assert_hook(const char* ex, const char* func, rt_size_t line) {
+rt_weak void assert_hook(const char* ex, const char* func, rt_size_t line) {
     volatile uint8_t _continue = 1;
 
     rt_cm_backtrace_assert_hook(ex, func, line);
