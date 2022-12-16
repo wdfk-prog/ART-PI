@@ -333,6 +333,8 @@
 #define SOC_STM32H750XB
 #define SOC_SERIES_STM32H7
 #define BOARD_STM32H750_ARTPI
+#define BSP_SCB_ENABLE_I_CACHE
+#define BSP_SCB_ENABLE_D_CACHE
 
 /* Board extended module */
 
