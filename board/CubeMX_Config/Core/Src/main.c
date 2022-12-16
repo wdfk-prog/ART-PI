@@ -183,12 +183,15 @@ static int Version(void)
   LOG_W("- HLY -    Version FULL V%s",VERSION);
   LOG_E(" / | \\     build %s %s",__DATE__,__TIME__);
   LOG_I("System Clock information");
-  LOG_I("SYSCLK_Frequency = %d", HAL_RCC_GetSysClockFreq());
-  LOG_I("HCLK_Frequency   = %d", HAL_RCC_GetHCLKFreq());
-  LOG_I("PCLK1_Frequency  = %d", HAL_RCC_GetPCLK1Freq());
-  LOG_I("PCLK2_Frequency  = %d", HAL_RCC_GetPCLK2Freq());
-  LOG_I("SPI1_Frequency  = %d", HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI123));
-
+  LOG_W("SYSCLK_Frequency = %d HCLK_Frequency   = %d", 
+                                 HAL_RCC_GetSysClockFreq(),
+                                 HAL_RCC_GetHCLKFreq());
+  LOG_W("PCLK1_Frequency  = %d PCLK2_Frequency  = %d",
+                                 HAL_RCC_GetPCLK1Freq(),
+                                 HAL_RCC_GetPCLK2Freq());
+  LOG_W("SPI1_Frequency   = %d", HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI123));
+  LOG_W("HAL version      = V%d.%d.%d", HAL_GetHalVersion() >> 24, HAL_GetHalVersion() >> 16 & 0XFF, HAL_GetHalVersion() >> 8 & 0XFF);
+  LOG_W("ARMcompiler version = %d", __ARMCOMPILER_VERSION);
   return RT_EOK;
   /* USER CODE END Error_Handler_Debug */
 }
