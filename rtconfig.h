@@ -332,6 +332,7 @@
 
 #define SOC_STM32H750XB
 #define SOC_SERIES_STM32H7
+#define BOARD_STM32H750_ARTPI
 
 /* Board extended module */
 
