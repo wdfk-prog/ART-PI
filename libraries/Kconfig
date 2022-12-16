@@ -15,7 +15,12 @@ menu "Hardware Drivers Config"
     config BOARD_STM32H750_ARTPI
         bool
         default y
-        
+    config BSP_SCB_ENABLE_I_CACHE
+        bool
+        default y
+    config BSP_SCB_ENABLE_D_CACHE  
+        bool
+        default y 
     menu "Board extended module"
     
         menuconfig ART_PI_USING_MEDIA_IO
