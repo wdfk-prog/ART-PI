@@ -334,4 +334,4 @@ long cmb_test(int argc, char **argv) {
     }
     return 0;
 }
-MSH_CMD_EXPORT(cmb_test, cm_backtrace_test: cmb_test <DIVBYZERO|UNALIGNED|ASSERT> );
+//MSH_CMD_EXPORT(cmb_test, cm_backtrace_test: cmb_test <DIVBYZERO|UNALIGNED|ASSERT> );
