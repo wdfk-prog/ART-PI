@@ -17,7 +17,6 @@
 #define RT_IDLE_HOOK_LIST_SIZE 4
 #define IDLE_THREAD_STACK_SIZE 256
 
-#define RT_USING_CACHE
 /* kservice optimization */
 
 /* end of kservice optimization */
@@ -55,8 +54,9 @@
 /* end of Kernel Device Object */
 #define RT_VER_NUM 0x50000
 /* end of RT-Thread Kernel */
-#define ARCH_ARM
+#define RT_USING_CACHE
 #define RT_USING_CPU_FFS
+#define ARCH_ARM
 #define ARCH_ARM_CORTEX_M
 #define ARCH_ARM_CORTEX_M7
 
@@ -97,6 +97,7 @@
 /* Device Drivers */
 
 #define RT_USING_DEVICE_IPC
+#define RT_UNAMED_PIPE_NUMBER 64
 #define RT_USING_SERIAL
 #define RT_USING_SERIAL_V2
 #define RT_SERIAL_USING_DMA
