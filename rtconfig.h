@@ -102,6 +102,7 @@
 #define RT_USING_SERIAL_V2
 #define RT_SERIAL_USING_DMA
 #define RT_USING_PIN
+#define RT_USING_ADC
 #define RT_USING_MTD_NOR
 #define RT_USING_SPI
 #define RT_USING_SFUD
@@ -360,6 +361,8 @@
 #define BSP_USING_SPI1
 #define BSP_SPI1_TX_USING_DMA
 #define BSP_SPI1_RX_USING_DMA
+//#define BSP_USING_ADC
+//#define BSP_USING_ADC3
 /* end of On-chip Peripheral */
 /* end of Hardware Drivers Config */
 
