@@ -218,3 +218,24 @@ rt_weak void rt_hw_board_init(void)
 //__HAL_DBGMCU_UNFREEZE_IWDG();	  //调试模式下，使能看门狗计数器时钟
 }
 
+/**
+  * @brief  None.
+  * @param  None.
+  * @retval None.
+  * @note   None.
+*/
+void get_NVIC_IRQ()
+{
+  rt_kprintf("ldx E P A Priotity\n");
+  for (rt_uint8_t i = 0; i < 255; i++)
+  {
+      if(NVIC_GetEnableIRQ(i))
+      {
+          rt_kprintf("%3d 1",i);
+          NVIC_GetPendingIRQ(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
+          NVIC_GetActive(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
+          rt_kprintf("%2d\n",NVIC_GetPriority(i));
+      }
+  }
+}
+MSH_CMD_EXPORT(get_NVIC_IRQ, get all enable NVIC IRQ);
