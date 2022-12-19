@@ -534,6 +534,26 @@ menu "Hardware Drivers Config"
             bool "Enable Onchip RTC"
             select RT_USING_RTC
             default n
+
+        menuconfig BSP_USING_ADC
+            bool "Enable ADC"
+            default n
+            select RT_USING_ADC
+            if BSP_USING_ADC
+                config BSP_USING_ADC1
+                    bool "Enable ADC1"
+                    default n
+            endif
+            if BSP_USING_ADC
+                config BSP_USING_ADC2
+                    bool "Enable ADC2"
+                    default n
+            endif
+            if BSP_USING_ADC
+                config BSP_USING_ADC3
+                    bool "Enable ADC3"
+                    default n
+            endif                    
     endmenu
     
     endmenu

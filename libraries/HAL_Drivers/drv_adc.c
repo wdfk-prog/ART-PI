@@ -82,14 +82,22 @@ static rt_uint8_t stm32_adc_get_resolution(struct rt_adc_device *device)
 
     switch(stm32_adc_handler->Init.Resolution)
     {
+#ifdef SOC_SERIES_STM32H7
+        case ADC_RESOLUTION_16B:
+            return 16;
+        case ADC_RESOLUTION_14B:
+            return 14;
+#endif /* SOC_SERIES_STM32H7 */
         case ADC_RESOLUTION_12B:
             return 12;
         case ADC_RESOLUTION_10B:
             return 10;
         case ADC_RESOLUTION_8B:
             return 8;
+#ifndef SOC_SERIES_STM32H7
         case ADC_RESOLUTION_6B:
             return 6;
+#endif /* SOC_SERIES_STM32H7 */
         default:
             return 0;
     }
@@ -242,7 +250,7 @@ static rt_err_t stm32_adc_get_value(struct rt_adc_device *device, rt_uint32_t ch
 #elif defined(SOC_SERIES_STM32MP1)
     ADC_ChanConf.SamplingTime = ADC_SAMPLETIME_810CYCLES_5;
 #elif defined(SOC_SERIES_STM32H7)
-    ADC_ChanConf.SamplingTime = ADC_SAMPLETIME_64CYCLES_5;
+    ADC_ChanConf.SamplingTime = ADC_SAMPLETIME_810CYCLES_5;
     #elif defined (SOC_SERIES_STM32WB)
     ADC_ChanConf.SamplingTime = ADC_SAMPLETIME_2CYCLES_5;
 #endif
