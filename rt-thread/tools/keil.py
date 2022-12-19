@@ -433,10 +433,6 @@ def ARMCC_Version():
     if os.path.exists(path):
         cmd = path
     else:
-        if(rtconfig.PLATFORM == 'armcc'):
-            print('Error: get armcc version failed. Please update the KEIL MDK installation path in rtconfig.py!')
-        elif(rtconfig.PLATFORM == 'armclang'):
-            print('Error: get armclang version failed. Please update the KEIL MDK installation path in rtconfig.py!')
         return "0.0"
 
     child = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -450,7 +446,8 @@ def ARMCC_Version():
 
     return version: MDK Plus 5.24/ARM Compiler 5.06 update 5 (build 528)/armcc [4d3621]
     '''
-
+    if not isinstance(stdout, str):
+        stdout = str(stdout, 'utf8') # Patch for Python 3
     version_Product = re.search(r'Product: (.+)', stdout).group(1)
     version_Product = version_Product[:-1]
     version_Component = re.search(r'Component: (.*)', stdout).group(1)
