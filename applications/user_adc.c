@@ -36,17 +36,15 @@ static int adc_vol_sample(void)
     /* 关闭通道 */
     ret = rt_adc_disable(adc_dev, ADC_TEMP_CHANNEL);
   
-    rt_kprintf("VRef  is %u.\n", vref_value);
+    rt_kprintf("Vref  is %u.\n", vref_value);
     rt_kprintf("Temp is %u.\n" , temp_value);
     
-    // Calculating VRef voltage
+    // Calculating Vref voltage
     vref_mv = __HAL_ADC_CALC_VREFANALOG_VOLTAGE(vref_value, ADC_RESOLUTION_16B);
-    rt_kprintf("VRef voltage is %u mV.\n", vref_mv);
-    // Calculate battery voltage
-    rt_kprintf("%ld, and %d are Temperature in Degree C calculated using two different formulas.\n",
-    __HAL_ADC_CALC_TEMPERATURE(vref_mv, temp_value, ADC_RESOLUTION_16B), 
-    __HAL_ADC_CALC_TEMPERATURE_TYP_PARAMS(2000, 620, 30, vref_mv, temp_value, ADC_RESOLUTION_16B));
-
+    rt_kprintf("Vref voltage is %u mV.\n", vref_mv);
+    // Calculate Temperature
+    rt_kprintf("%d are Temperature in Degree C.\n",
+    __HAL_ADC_CALC_TEMPERATURE(vref_mv, temp_value, ADC_RESOLUTION_16B));
     return RT_EOK;
 }
 /* 导出到 msh 命令列表中 */
