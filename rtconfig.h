@@ -361,8 +361,8 @@
 #define BSP_USING_SPI1
 #define BSP_SPI1_TX_USING_DMA
 #define BSP_SPI1_RX_USING_DMA
-//#define BSP_USING_ADC
-//#define BSP_USING_ADC3
+#define BSP_USING_ADC
+#define BSP_USING_ADC3
 /* end of On-chip Peripheral */
 /* end of Hardware Drivers Config */
 
