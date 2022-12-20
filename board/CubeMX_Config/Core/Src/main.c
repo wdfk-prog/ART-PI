@@ -73,6 +73,8 @@ static int Version(void);
 
 int main(void)
 {
+    extern void adc_init(void);
+    adc_init();
     Version();
     rt_pin_mode(LED_PIN, PIN_MODE_OUTPUT);
 
@@ -242,6 +244,14 @@ void MPU_Config(void)
   MPU_InitStruct.Number = MPU_REGION_NUMBER4;
   MPU_InitStruct.BaseAddress = 0x90000000;
   MPU_InitStruct.Size = MPU_REGION_SIZE_8MB;
+
+  HAL_MPU_ConfigRegion(&MPU_InitStruct);
+
+  /** Initializes and configures the Region and the memory to be protected
+  */
+  MPU_InitStruct.Number = MPU_REGION_NUMBER5;
+  MPU_InitStruct.BaseAddress = 0x38000000;
+  MPU_InitStruct.Size = MPU_REGION_SIZE_64KB;
 
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
   /* Enables the MPU */

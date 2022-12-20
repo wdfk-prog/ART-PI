@@ -95,7 +95,7 @@ int mpu_init(void)
     MPU_InitStruct.IsShareable       = MPU_ACCESS_NOT_SHAREABLE;
     MPU_InitStruct.IsCacheable       = MPU_ACCESS_CACHEABLE;
     MPU_InitStruct.IsBufferable      = MPU_ACCESS_NOT_BUFFERABLE;
-
+    
     HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
     /* Enable the MPU */
