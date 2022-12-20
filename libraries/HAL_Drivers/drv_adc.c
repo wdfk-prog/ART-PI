@@ -149,7 +149,6 @@ static rt_err_t stm32_adc_enabled(struct rt_adc_device *device, rt_uint32_t chan
         }
 #endif
 #if defined(SOC_SERIES_STM32L4) || defined(SOC_SERIES_STM32G0) || defined (SOC_SERIES_STM32MP1) || defined(SOC_SERIES_STM32H7) || defined (SOC_SERIES_STM32WB)
-        /* start ADC */
         HAL_ADC_Start(stm32_adc_handler);
 #else
         __HAL_ADC_ENABLE(stm32_adc_handler);
