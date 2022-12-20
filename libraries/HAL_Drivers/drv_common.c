@@ -234,7 +234,7 @@ void get_NVIC_IRQ()
           rt_kprintf("%3d 1",i);
           NVIC_GetPendingIRQ(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
           NVIC_GetActive(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
-          rt_kprintf("%2d\n",NVIC_GetPriority(i));
+          rt_kprintf(" %02d\n",NVIC_GetPriority(i));
       }
   }
 }
