@@ -73,8 +73,6 @@ static int Version(void);
 
 int main(void)
 {
-    extern void adc_init(void);
-    adc_init();
     Version();
     rt_pin_mode(LED_PIN, PIN_MODE_OUTPUT);
 
