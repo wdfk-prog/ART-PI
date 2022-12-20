@@ -73,8 +73,6 @@ static int Version(void);
 
 int main(void)
 {
-  extern void MX_ADC3_Init(void);
-    MX_ADC3_Init();
     Version();
     rt_pin_mode(LED_PIN, PIN_MODE_OUTPUT);
 
