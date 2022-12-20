@@ -34,7 +34,8 @@ typedef enum
 
 /* Private variables ---------------------------------------------------------*/
 extern ADC_HandleTypeDef hadc3;
-uint16_t adc3_data[ADC3_BUFFER_LEN];
+//uint16_t adc3_data[ADC3_BUFFER_LEN];
+rt_uint16_t* adc3_data = RT_NULL;
 /* Private function prototypes -----------------------------------------------*/
 extern void MX_ADC3_Init(void);
 /**
@@ -55,6 +56,9 @@ void adc_init(void)
     { 
       Error_Handler();
     }
+    
+    adc3_data = (rt_uint16_t *)rt_malloc_align(ADC3_BUFFER_LEN,16);
+    
     if (HAL_ADC_Start_DMA(&hadc3, (uint32_t *)adc3_data, ADC3_BUFFER_LEN) != HAL_OK)
     {
         Error_Handler();
@@ -77,6 +81,7 @@ static int adc_vol_sample(void)
       sum += adc3_data[i];
     }
     vref_value = sum / ADC3_BUFFER_SIZE;
+    
     sum = 0;
     for(int i = TEMP_CHANNEL; i < ADC3_BUFFER_LEN; i += ADC3_CHANNEL_NUM)
     {
@@ -86,9 +91,11 @@ static int adc_vol_sample(void)
     
     rt_kprintf("Vref  is %u.\n", vref_value);
     rt_kprintf("Temp is %u.\n" , temp_value);
+    
     // Calculating Vref voltage
     vref_mv = __HAL_ADC_CALC_VREFANALOG_VOLTAGE(vref_value, ADC_RESOLUTION_16B);
     rt_kprintf("Vref voltage is %u mV.\n", vref_mv);
+    
     // Calculate Temperature
     rt_kprintf("%d are Temperature in Degree C.\n",
     __HAL_ADC_CALC_TEMPERATURE(vref_mv, temp_value, ADC_RESOLUTION_16B));
@@ -102,15 +109,14 @@ MSH_CMD_EXPORT(adc_vol_sample, adc voltage convert sample);
   * @retval None
   * @note   ADC转换半满中断中把数据存到数组的前半部分
             ping-pong存储
-            FIFO
 */
 void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc)
 {
-  /* Invalidate Data Cache to get the updated content of the SRAM on the first half of the ADC converted data buffer */
-  if(hadc->Instance == ADC3) 
-  {
-      SCB_InvalidateDCache_by_Addr((uint32_t *) &adc3_data[0], ADC3_BUFFER_LEN);
-  }
+    /* Invalidate Data Cache to get the updated content of the SRAM on the first half of the ADC converted data buffer */
+    if(hadc->Instance == ADC3) 
+    {
+        rt_hw_cpu_dcache_ops(RT_HW_CACHE_INVALIDATE, (uint32_t *) &adc3_data[0], ADC3_BUFFER_LEN);
+    }
 }
 /**
   * @brief  ADC_DMA 转换完成回调函数
@@ -120,9 +126,9 @@ void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc)
 */
 void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
-   /* Invalidate Data Cache to get the updated content of the SRAM on the second half of the ADC converted data buffer */
-   if(hadc->Instance == ADC3) 
-   {
-       SCB_InvalidateDCache_by_Addr((uint32_t *) &adc3_data[ADC3_BUFFER_LEN/2], ADC3_BUFFER_LEN);
-   }
+    /* Invalidate Data Cache to get the updated content of the SRAM on the second half of the ADC converted data buffer */
+    if(hadc->Instance == ADC3) 
+    {
+        rt_hw_cpu_dcache_ops(RT_HW_CACHE_INVALIDATE, (uint32_t *) &adc3_data[ADC3_BUFFER_LEN/2], ADC3_BUFFER_LEN);
+    }
 }
