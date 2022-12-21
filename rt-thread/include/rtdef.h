@@ -46,6 +46,7 @@
  * 2022-06-29     Meco Man     add RT_USING_LIBC and standard libc headers
  * 2022-08-16     Meco Man     change version number to v5.0.0
  * 2022-09-12     Meco Man     define rt_ssize_t
+ * 2022-12-20     Meco Man     add const name for rt_object
  */
 
 #ifndef __RT_DEF_H__
@@ -412,21 +413,25 @@ typedef struct rt_slist_node rt_slist_t;                /**< Type for single lis
  */
 struct rt_object
 {
-    char       name[RT_NAME_MAX];                       /**< name of kernel object */
-    rt_uint8_t type;                                    /**< type of kernel object */
-    rt_uint8_t flag;                                    /**< flag of kernel object */
+#if RT_NAME_MAX > 0
+    char        name[RT_NAME_MAX];                       /**< dynamic name of kernel object */
+#else
+    const char *name;                                    /**< static name of kernel object */
+#endif /* RT_NAME_MAX > 0 */
+    rt_uint8_t  type;                                    /**< type of kernel object */
+    rt_uint8_t  flag;                                    /**< flag of kernel object */
 
 #ifdef RT_USING_MODULE
-    void      *module_id;                               /**< id of application module */
+    void      * module_id;                               /**< id of application module */
 #endif /* RT_USING_MODULE */
 
-#ifdef RT_USING_LWP
-    int       lwp_ref_count;                            /**< ref count for lwp */
-#endif /* RT_USING_LWP */
+#ifdef RT_USING_SMART
+    int         lwp_ref_count;                           /**< ref count for lwp */
+#endif /* RT_USING_SMART */
 
-    rt_list_t  list;                                    /**< list node of kernel object */
+    rt_list_t   list;                                    /**< list node of kernel object */
 };
-typedef struct rt_object *rt_object_t;                  /**< Type for kernel objects. */
+typedef struct rt_object *rt_object_t;                   /**< Type for kernel objects. */
 
 /**
  *  The object type can be one of the follows with specific
@@ -573,7 +578,7 @@ typedef void (*rt_sighandler_t)(int signo);
 
 #else
 
-#ifdef RT_USING_LWP
+#ifdef RT_USING_SMART
 #include <sys/signal.h>
 #endif
 
@@ -676,7 +681,7 @@ struct rt_cpu
 
 struct rt_thread;
 
-#ifdef RT_USING_LWP
+#ifdef RT_USING_SMART
 typedef rt_err_t (*rt_wakeup_func_t)(void *object, struct rt_thread *thread);
 
 struct rt_wakeup
@@ -725,7 +730,11 @@ struct rt_user_context
 struct rt_thread
 {
     /* rt object */
-    char        name[RT_NAME_MAX];                      /**< the name of thread */
+#if RT_NAME_MAX > 0
+    char        name[RT_NAME_MAX];                      /**< dynamic name of kernel object */
+#else
+    const char *name;                                   /**< static name of kernel object */
+#endif /* RT_NAME_MAX > 0 */
     rt_uint8_t  type;                                   /**< type of object */
     rt_uint8_t  flags;                                  /**< thread's flags */
 
@@ -733,9 +742,9 @@ struct rt_thread
     void       *module_id;                              /**< id of application module */
 #endif /* RT_USING_MODULE */
 
-#ifdef RT_USING_LWP
+#ifdef RT_USING_SMART
     int       lwp_ref_count;                            /**< ref count for lwp */
-#endif /* RT_USING_LWP */
+#endif /* RT_USING_SMART */
 
     rt_list_t   list;                                   /**< the object list */
     rt_list_t   tlist;                                  /**< the thread list */
@@ -793,7 +802,7 @@ struct rt_thread
     void            *si_list;                           /**< the signal infor list */
 #endif /* RT_USING_SIGNALS */
 
-#if defined(RT_USING_LWP)
+#ifdef RT_USING_SMART
     void            *msg_ret;                           /**< the return msg */
 #endif
 
@@ -813,7 +822,7 @@ struct rt_thread
     void (*cleanup)(struct rt_thread *tid);             /**< cleanup function when thread exit */
 
     /* light weight process if present */
-#ifdef RT_USING_LWP
+#ifdef RT_USING_SMART
     void        *lwp;
     /* for user create */
     void        *user_entry;
@@ -833,7 +842,7 @@ struct rt_thread
 
     struct rt_wakeup wakeup;                            /**< wakeup data */
     int exit_request;
-#ifdef RT_USING_USERSPACE
+#if defined(ARCH_MM_MMU)
     int step_exec;
     int debug_attach_req;
     int debug_ret_user;
@@ -1226,10 +1235,10 @@ typedef struct rt_wqueue rt_wqueue_t;
 struct rt_device
 {
     struct rt_object          parent;                   /**< inherit from rt_object */
-#ifdef RT_USING_DM    
+#ifdef RT_USING_DM
     struct rt_driver *drv;
-    void *dtb_node; 
-#endif    
+    void *dtb_node;
+#endif
     enum rt_device_class_type type;                     /**< device type */
     rt_uint16_t               flag;                     /**< device flag */
     rt_uint16_t               open_flag;                /**< device open flag */
@@ -1262,7 +1271,7 @@ struct rt_device
 };
 
 #define RT_DRIVER_MATCH_DTS (1<<0)
-struct rt_device_id 
+struct rt_device_id
 {
     const char *compatible;
     void *data;
@@ -1270,7 +1279,7 @@ struct rt_device_id
 
 struct rt_driver
 {
-#ifdef RT_USING_DEVICE_OPS    
+#ifdef RT_USING_DEVICE_OPS
     const struct rt_device_ops *dev_ops;
 #else
     /* common device interface */
@@ -1279,7 +1288,7 @@ struct rt_driver
     rt_err_t  (*close)  (rt_device_t dev);
     rt_size_t (*read)   (rt_device_t dev, rt_off_t pos, void *buffer, rt_size_t size);
     rt_size_t (*write)  (rt_device_t dev, rt_off_t pos, const void *buffer, rt_size_t size);
-    rt_err_t  (*control)(rt_device_t dev, int cmd, void *args);    
+    rt_err_t  (*control)(rt_device_t dev, int cmd, void *args);
 #endif
     const struct filesystem_ops *fops;
     const char *name;
@@ -1304,7 +1313,7 @@ struct rt_device_notify
     struct rt_device *dev;
 };
 
-#ifdef RT_USING_LWP
+#ifdef RT_USING_SMART
 struct rt_channel
 {
     struct rt_ipc_object parent;                        /**< inherit from object */
