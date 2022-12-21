@@ -173,7 +173,7 @@ static rt_err_t rt_rtc_config(void)
     RTC_Handler.Instance = RTC;
     if (HAL_RTCEx_BKUPRead(&RTC_Handler, RTC_BKP_DR1) != BKUP_REG_DATA)
     {
-        LOG_I("RTC hasn't been configured, please use <date> command to config.");
+        LOG_D("RTC hasn't been configured, please use <date> command to config.");
 
 #if defined(SOC_SERIES_STM32F1)
         RTC_Handler.Init.OutPut = RTC_OUTPUTSOURCE_NONE;
