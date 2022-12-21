@@ -104,6 +104,7 @@
 #define RT_SERIAL_USING_DMA
 #define RT_USING_PIN
 #define RT_USING_MTD_NOR
+#define RT_USING_RTC
 #define RT_USING_SPI
 #define RT_USING_SFUD
 #define RT_SFUD_USING_SFDP
@@ -143,16 +144,24 @@
 #define ULOG_USING_ISR_LOG
 #define ULOG_ASSERT_ENABLE
 #define ULOG_LINE_BUF_SIZE 128
+#define ULOG_USING_ASYNC_OUTPUT
+#define ULOG_ASYNC_OUTPUT_BUF_SIZE 2048
+#define ULOG_ASYNC_OUTPUT_BY_THREAD
+#define ULOG_ASYNC_OUTPUT_THREAD_STACK 1024
+#define ULOG_ASYNC_OUTPUT_THREAD_PRIORITY 30
 
 /* log format */
 
 #define ULOG_OUTPUT_FLOAT
 #define ULOG_USING_COLOR
 #define ULOG_OUTPUT_TIME
+#define ULOG_TIME_USING_TIMESTAMP
 #define ULOG_OUTPUT_LEVEL
 #define ULOG_OUTPUT_TAG
 /* end of log format */
 #define ULOG_BACKEND_USING_CONSOLE
+#define ULOG_BACKEND_USING_FILE
+#define ULOG_USING_FILTER
 /* end of Utilities */
 /* end of RT-Thread Components */
 
@@ -370,6 +379,7 @@
 #define BSP_USING_SPI1
 #define BSP_SPI1_TX_USING_DMA
 #define BSP_SPI1_RX_USING_DMA
+#define BSP_USING_ONCHIP_RTC
 /* end of On-chip Peripheral */
 /* end of Hardware Drivers Config */
 
