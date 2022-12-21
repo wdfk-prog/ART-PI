@@ -30,13 +30,13 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #endif /*CUBE_ERROR*/
-#include "main.h"
 #include <rtconfig.h>
+#include "main.h"
+#include "drv_gpio.h"
 /*ulog include*/
 #define LOG_TAG              "main" 
 #define LOG_LVL              DBG_INFO
 #include <ulog.h>
-#include "drv_gpio.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -65,6 +65,7 @@ void PeriphCommonClock_Config(void);
 static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 static int Version(void);
+extern int get_vref_temp(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -74,8 +75,8 @@ static int Version(void);
 int main(void)
 {
     Version();
+    get_vref_temp();
     rt_pin_mode(LED_PIN, PIN_MODE_OUTPUT);
-
     while(1)
     {
         rt_thread_mdelay(500);
