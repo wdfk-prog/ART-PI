@@ -40,7 +40,6 @@ RTE/
 settings/
 *.uvguix*
 !cconfig.h
-project.uvoptx
 
 *.exob
 *.emtp.bak1
