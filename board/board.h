@@ -21,6 +21,7 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 
 /* Exported constants --------------------------------------------------------*/
+
 /*-------------------------- CHIP CONFIG BEGIN --------------------------*/
 #define CHIP_FAMILY_STM32
 #define CHIP_SERIES_STM32H7

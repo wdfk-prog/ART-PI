@@ -33,6 +33,8 @@
 #define RTC_NAME       "rtc"
 /*串口中断优先级设置*/
 #define FINSH_IRQ_PRIORITY 3
+
+#define PVD_ENABLE 0
 /* Private macro -------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
@@ -189,7 +191,6 @@ static void pvd_thread_entry(void* parameter)
 static int pvd_init(void)
 {
     /*##-1- Enable Power Clock #################################################*/
-    __HAL_RCC_PWR_CLK_ENABLE();           /* 使能PVD */
  
     /*##-2- Configure the NVIC for PVD #########################################*/
     HAL_NVIC_SetPriority(PVD_IRQn, 0, 0); /* 配置PVD中断优先级 */

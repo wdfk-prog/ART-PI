@@ -190,6 +190,7 @@ NVIC.ForceEnableDMAVector=true
 NVIC.HardFault_IRQn=true\:0\:0\:false\:false\:false\:false\:false\:false
 NVIC.MemoryManagement_IRQn=true\:0\:0\:false\:false\:false\:false\:false\:false
 NVIC.NonMaskableInt_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false
+NVIC.PVD_AVD_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
 NVIC.PendSV_IRQn=true\:15\:0\:true\:false\:false\:false\:false\:false
 NVIC.PriorityGroup=NVIC_PRIORITYGROUP_4
 NVIC.SPI1_IRQn=true\:2\:0\:true\:false\:false\:false\:true\:true
