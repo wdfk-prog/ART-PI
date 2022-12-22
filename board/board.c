@@ -148,18 +148,7 @@ int rtc_update_init(void)
     }
     
     build = rtc_get_build();//读取编译时间
-//    now = rtc_time_read();  //读取flash掉电时间
-
-    if(build < now)
-    {
-      set_timestamp(now);
-      LOG_I("Set the timestamp to the time in the flash");
-    }
-    else
-    {
-      set_timestamp(build);
-      LOG_I("Set the timestamp to compile time");
-    }
+    set_timestamp(build);
 
     return RT_EOK;
 }
