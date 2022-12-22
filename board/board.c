@@ -34,7 +34,7 @@
 /*串口中断优先级设置*/
 #define FINSH_IRQ_PRIORITY 3
 
-#define PVD_ENABLE 0
+#define PVD_ENABLE 1
 /* Private macro -------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
@@ -200,7 +200,7 @@ static int pvd_init(void)
     rt_completion_init(&pvd_completion);
     rt_thread_t tid;
     tid = rt_thread_create("PVD", pvd_thread_entry, RT_NULL,
-                          512, 0, 20);
+                          512, 1, 20);
     if(tid == RT_NULL)
     {
       LOG_E("PVD thread start failed!");
