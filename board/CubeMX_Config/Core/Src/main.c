@@ -77,7 +77,6 @@ extern int get_vref_temp(void);
 int main(void)
 {
     Version();
-    rt_thread_mdelay(500);//初始化后延时等待ADC稳定
     get_vref_temp();
     rt_pin_mode(LED_PIN, PIN_MODE_OUTPUT);
     while(1)
