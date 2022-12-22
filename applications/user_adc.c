@@ -71,7 +71,6 @@ static int adc_init(void)
         Error_Handler();
     }
     
-    rt_thread_mdelay(500);//初始化后延时等待ADC稳定
     return RT_EOK;
 }
 INIT_DEVICE_EXPORT(adc_init);
