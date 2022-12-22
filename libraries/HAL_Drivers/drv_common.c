@@ -131,7 +131,7 @@ void _Error_Handler(char *s, int num)
  *
  * @param us the delay time of us
  */
-void rt_hw_us_delay(rt_uint32_t us) __attribute__((optnone))
+void rt_hw_us_delay(rt_uint32_t us)
 {
     rt_uint64_t ticks;
     rt_uint32_t told, tnow, tcnt = 0;

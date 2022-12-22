@@ -70,7 +70,7 @@ static int adc_init(void)
     {
         Error_Handler();
     }
-    
+
     return RT_EOK;
 }
 INIT_DEVICE_EXPORT(adc_init);
