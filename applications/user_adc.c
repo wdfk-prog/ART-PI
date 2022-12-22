@@ -63,7 +63,7 @@ static int adc_init(void)
     { 
       Error_Handler();
     }
-    
+
     adc3_data = (rt_uint16_t *)rt_malloc_align(ADC3_BUFFER_LEN,16);
     
     if (HAL_ADC_Start_DMA(&hadc3, (uint32_t *)adc3_data, ADC3_BUFFER_LEN) != HAL_OK)
@@ -71,6 +71,8 @@ static int adc_init(void)
         Error_Handler();
     }
 
+    rt_hw_us_delay(500000);
+    
     return RT_EOK;
 }
 INIT_DEVICE_EXPORT(adc_init);
