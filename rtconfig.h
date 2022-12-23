@@ -145,6 +145,11 @@
 #define ULOG_USING_ISR_LOG
 #define ULOG_ASSERT_ENABLE
 #define ULOG_LINE_BUF_SIZE 128
+#define ULOG_USING_ASYNC_OUTPUT
+#define ULOG_ASYNC_OUTPUT_BUF_SIZE 2048
+#define ULOG_ASYNC_OUTPUT_BY_THREAD
+#define ULOG_ASYNC_OUTPUT_THREAD_STACK 2048
+#define ULOG_ASYNC_OUTPUT_THREAD_PRIORITY 30
 
 /* log format */
 
@@ -156,6 +161,8 @@
 #define ULOG_OUTPUT_TAG
 /* end of log format */
 #define ULOG_BACKEND_USING_CONSOLE
+#define ULOG_BACKEND_USING_FILE
+#define ULOG_USING_FILTER
 /* end of Utilities */
 /* end of RT-Thread Components */
 
