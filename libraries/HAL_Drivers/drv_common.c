@@ -190,9 +190,6 @@ rt_weak void rt_hw_board_init(void)
     /* Pin driver initialization is open by default */
 #ifdef RT_USING_PIN
     rt_hw_pin_init();
-#else
-    extern void MX_GPIO_Init(void);
-    MX_GPIO_Init();
 #endif
 
     /* USART driver initialization is open by default */
