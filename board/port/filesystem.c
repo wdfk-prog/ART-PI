@@ -26,10 +26,12 @@
 #ifdef BSP_USING_SDCARD_FS
     #include <board.h>
     #include "drv_sdio.h"
-#endif
+#endif /* BSP_USING_SDCARD_FS */
 #ifdef BSP_USING_SPI_FLASH_FS
     #include "fal.h"
-#endif
+#endif /* BSP_USING_SPI_FLASH_FS */
+
+#include "ulog_file_be.h"
 
 #define DBG_TAG "app.filesystem"
 #define DBG_LVL DBG_INFO
@@ -185,6 +187,14 @@ int mount_init(void)
     }
 
 #endif /* BSP_USING_SDCARD_FS */
+#if(OUT_FILE_ENABLE == 1)
+  sys_log_file_backend_init();
+//  motion_log_file_backend_init();
+#endif /*(OUT_FILE_ENABLE == 1)*/
+#if (FLASHDB_FILE_ENABLE == 1)
+  /*数据库初始化*/
+  flash_kvdb_init();
+#endif /*(FLASHDB_FILE_ENABLE == 1)*/
     return RT_EOK;
 }
 INIT_APP_EXPORT(mount_init);
