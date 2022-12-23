@@ -18,7 +18,7 @@
 #include <main.h>
 #include <dma.h>
 /*ulog include*/
-#define LOG_TAG              "int measure" 
+#define LOG_TAG              "measure" 
 #define LOG_LVL              DBG_INFO
 #include <ulog.h>
 /* Private typedef -----------------------------------------------------------*/
@@ -71,7 +71,7 @@ static int adc_init(void)
         Error_Handler();
     }
 
-    rt_hw_us_delay(500000);
+    rt_hw_us_delay(500000);//初始化后延时等待ADC稳定
     
     return RT_EOK;
 }
@@ -82,7 +82,7 @@ INIT_DEVICE_EXPORT(adc_init);
   * @retval int 
   * @note   None
 */
-int get_vref_temp(void)
+int vref_temp_get(void)
 {
     rt_uint16_t vref_mv,temp_mv; 
     rt_uint32_t vref_value,temp_value;
@@ -116,7 +116,7 @@ int get_vref_temp(void)
     return RT_EOK;
 }
 /* 导出到 msh 命令列表中 */
-MSH_CMD_EXPORT(get_vref_temp, get MCU vref and temp);
+MSH_CMD_EXPORT(vref_temp_get, get MCU vref and temp);
 #if (REAL_TIME_REFRESH == 0)
 /**
   * @brief  ADC_DMA 半满回调函数
