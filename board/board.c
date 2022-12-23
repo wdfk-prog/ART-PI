@@ -30,16 +30,48 @@
 /* Private typedef -----------------------------------------------------------*/
 
 /* Private define ------------------------------------------------------------*/
+/* RTC设备名称 */
 #define RTC_NAME       "rtc"
-/*串口中断优先级设置*/
+/* 串口中断优先级设置 */
 #define FINSH_IRQ_PRIORITY 3
-
+/* PVD功能配置 */
 #define PVD_ENABLE 1
 /* Private macro -------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
-
+static const char * const nvic_name[] = {
+  [PVD_AVD_IRQn]      = "PVD_AVD_IRQn",
+  [DMA1_Stream0_IRQn] = "DMA1_Stream0_IRQn",
+  [DMA1_Stream3_IRQn] = "DMA1_Stream3_IRQn",
+  [SPI1_IRQn]         = "SPI1_IRQn",
+  [UART4_IRQn]        = "UART4_IRQn",
+  [DMA2_Stream0_IRQn] = "DMA2_Stream0_IRQn",
+  [DMA2_Stream5_IRQn] = "DMA2_Stream5_IRQn",
+};
 /* Private function prototypes -----------------------------------------------*/
+/**
+  * @brief  获取NVIC优先级.
+  * @param  None.
+  * @retval None.
+  * @note   None.
+*/
+void nvic_irq_get(void)
+{
+  rt_kprintf("ldx name                 ");
+  rt_kprintf("E P A Priotity\n");
+  for (rt_uint8_t i = 0; i < 255; i++)
+  {
+      if(NVIC_GetEnableIRQ(i))
+      {
+          rt_kprintf("%3d ",i);
+          rt_kprintf("%-20.20s",nvic_name[i]);
+          NVIC_GetPendingIRQ(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
+          NVIC_GetActive(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
+          rt_kprintf(" %02d\n",NVIC_GetPriority(i));
+      }
+  }
+}
+MSH_CMD_EXPORT(nvic_irq_get, get all enable NVIC_IRQ);
 #ifdef FINSH_IRQ_PRIORITY
 /**
   * @brief  设置FINSH串口中断优先级
@@ -80,27 +112,7 @@ static int vtor_config(void)
     return 0;
 }
 INIT_BOARD_EXPORT(vtor_config);
-/**
-  * @brief  获取嵌套向量中断控制器中断请求.
-  * @param  None.
-  * @retval None.
-  * @note   None.
-*/
-void get_nvic_irq(void)
-{
-  rt_kprintf("ldx E P A Priotity\n");
-  for (rt_uint8_t i = 0; i < 255; i++)
-  {
-      if(NVIC_GetEnableIRQ(i))
-      {
-          rt_kprintf("%3d 1",i);
-          NVIC_GetPendingIRQ(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
-          NVIC_GetActive(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
-          rt_kprintf(" %02d\n",NVIC_GetPriority(i));
-      }
-  }
-}
-MSH_CMD_EXPORT(get_nvic_irq, get all enable NVIC_IRQ);
+
 /**
  * @brief  获取编译时间戳
  * @param  None.
