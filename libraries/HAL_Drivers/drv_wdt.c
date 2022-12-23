@@ -23,7 +23,6 @@ struct stm32_wdt_obj
     rt_uint16_t is_start;
 };
 static struct stm32_wdt_obj stm32_wdt;
-static struct rt_watchdog_ops ops;
 
 static rt_err_t wdt_init(rt_watchdog_t *wdt)
 {
@@ -114,9 +113,9 @@ int rt_wdt_init(void)
 #endif
     stm32_wdt.is_start = 0;
 
-    ops.init = &wdt_init;
-    ops.control = &wdt_control;
-    stm32_wdt.watchdog.ops = &ops;
+    stm32_wdt.watchdog.ops->init = &wdt_init;
+    stm32_wdt.watchdog.ops->control = &wdt_control;
+
     /* register watchdog device */
     if (rt_hw_watchdog_register(&stm32_wdt.watchdog, "wdt", RT_DEVICE_FLAG_DEACTIVATE, RT_NULL) != RT_EOK)
     {

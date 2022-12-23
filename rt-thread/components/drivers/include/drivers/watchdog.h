@@ -24,7 +24,7 @@ struct rt_watchdog_ops;
 struct rt_watchdog_device
 {
     struct rt_device parent;
-    const struct rt_watchdog_ops *ops;
+    struct rt_watchdog_ops *ops;
 };
 typedef struct rt_watchdog_device rt_watchdog_t;
 
