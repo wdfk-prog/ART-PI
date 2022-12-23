@@ -1,16 +1,18 @@
-/*
- * Copyright (c) 2006-2022, RT-Thread Development Team
- *
- * SPDX-License-Identifier: Apache-2.0
- *
- * Change Logs:
- * Date           Author        Notes
- * 2018-12-13     balanceTWK    add sdcard port file
- * 2019-06-11     WillianChan   Add SD card hot plug detection
+/**
+ * @file filesystem.c
+ * @brief 
+ * @author HLY (1425075683@qq.com)
+ * @version 1.0
+ * @date 2022-12-22
+ * @copyright Copyright (c) 2022
+ * @attention 
+ * @par –ﬁ∏ƒ»’÷æ:
+ * Date       Version Author  Description
+ * 2022-12-22 1.0     HLY     first version
  */
-
+/* Includes ------------------------------------------------------------------*/
 #include <rtthread.h>
-
+/* Private includes ----------------------------------------------------------*/
 #ifdef BSP_USING_FS
 #if DFS_FILESYSTEMS_MAX < 4
     #error "Please define DFS_FILESYSTEMS_MAX more than 4"
@@ -28,15 +30,20 @@
 #ifdef BSP_USING_SPI_FLASH_FS
     #include "fal.h"
 #endif
+
 #define DBG_TAG "app.filesystem"
 #define DBG_LVL DBG_INFO
 #include <rtdbg.h>
+/* Private typedef -----------------------------------------------------------*/
 
+/* Private define ------------------------------------------------------------*/
+
+/* Private macro -------------------------------------------------------------*/
+
+/* Private variables ---------------------------------------------------------*/
 static const rt_uint8_t _romfs_root_readme_txt[] = {
 0x20,0x20,0x5c,0x20,0x7c,0x20,0x2f,0x0d,0x0a,0x20,0x2d,0x20,0x48,0x4c,0x59,0x20,0x2d,0x20,0x20,0x20,0x20,0x56,0x65,0x72,0x73,0x69,0x6f,0x6e,0x20,0x20,0x56,0x30,0x2e,0x30,0x2e,0x31,0x0d,0x0a,0x20,0x20,0x2f,0x20,0x7c,0x20,0x5c,0x20,0x20,0x20,0x20,0x20,0x0d,0x0a
 };
-
-
 
 static const struct romfs_dirent _romfs_root[] = {
     {ROMFS_DIRENT_DIR, "flash", RT_NULL, 0},
@@ -47,7 +54,7 @@ static const struct romfs_dirent _romfs_root[] = {
 const struct romfs_dirent romfs_root = {
     ROMFS_DIRENT_DIR, "/", (rt_uint8_t *)_romfs_root, sizeof(_romfs_root)/sizeof(_romfs_root[0])
 };
-
+/* Private function prototypes -----------------------------------------------*/
 #ifdef BSP_USING_SDCARD_FS
 
 /* SD Card hot plug detection pin */
@@ -126,12 +133,12 @@ int mount_init(void)
         LOG_E("rom mount to '/' failed!");
     }
 
-    #ifdef BSP_USING_SPI_FLASH_FS
+#ifdef BSP_USING_SPI_FLASH_FS
     struct rt_device *flash_dev = RT_NULL;
 
-    #ifndef RT_USING_WIFI
+#ifndef RT_USING_WIFI
     fal_init();
-    #endif
+#endif /* RT_USING_WIFI */
 
     flash_dev = fal_mtd_nor_device_create("filesystem");
 
@@ -158,9 +165,9 @@ int mount_init(void)
         LOG_E("Can't create  block device  filesystem or bt_image partition.");
     }
 
-    #endif
+#endif /* BSP_USING_SPI_FLASH_FS */
 
-    #ifdef BSP_USING_SDCARD_FS
+#ifdef BSP_USING_SDCARD_FS
     rt_thread_t tid;
 
     rt_pin_mode(SD_CHECK_PIN, PIN_MODE_INPUT_PULLUP);
@@ -177,7 +184,7 @@ int mount_init(void)
         LOG_E("create sd_mount thread err!");
     }
 
-    #endif
+#endif /* BSP_USING_SDCARD_FS */
     return RT_EOK;
 }
 INIT_APP_EXPORT(mount_init);

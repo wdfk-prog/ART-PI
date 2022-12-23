@@ -48,6 +48,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define LED_PIN GET_PIN(I, 8)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -67,17 +68,21 @@ void PeriphCommonClock_Config(void);
 static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
 static int Version(void);
-extern int get_vref_temp(void);
+extern int vref_temp_get(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-#define LED_PIN GET_PIN(I, 8)
-
+/**
+ * @brief  Ö÷º¯Êý
+ * @param  None.
+ * @retval int 
+ * @note   None.
+ */
 int main(void)
 {
     Version();
-    get_vref_temp();
+    vref_temp_get();
     rt_pin_mode(LED_PIN, PIN_MODE_OUTPUT);
 
     while(1)
