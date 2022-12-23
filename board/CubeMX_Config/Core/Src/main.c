@@ -84,6 +84,7 @@ extern int vref_temp_get(void);
 int main(void)
 {
     Version();
+    rt_thread_mdelay(500);
     vref_temp_get();
     rt_pin_mode(LED_RED_PIN, PIN_MODE_OUTPUT);
     rt_pin_mode(LED_BULE_PIN, PIN_MODE_OUTPUT);
