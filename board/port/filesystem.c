@@ -189,7 +189,7 @@ int mount_init(void)
 #endif /* BSP_USING_SDCARD_FS */
 #if(OUT_FILE_ENABLE == 1)
   sys_log_file_backend_init();
-//  motion_log_file_backend_init();
+  motion_log_file_backend_init();
 #endif /*(OUT_FILE_ENABLE == 1)*/
 #if (FLASHDB_FILE_ENABLE == 1)
   /*数据库初始化*/
