@@ -34,6 +34,7 @@
 #endif /*CUBE_ERROR*/
 #include <rtconfig.h>
 #include "main.h"
+#include "gpio.h"
 #include "drv_gpio.h"
 /*ulog include*/
 #define LOG_TAG              "main" 
@@ -48,7 +49,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define LED_PIN GET_PIN(I, 8)
+#define LED_BULE_PIN GET_PIN(I, 8)
+#define LED_RED_PIN  GET_PIN(C, 15)
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -83,14 +85,16 @@ int main(void)
 {
     Version();
     vref_temp_get();
-    rt_pin_mode(LED_PIN, PIN_MODE_OUTPUT);
-
+    rt_pin_mode(LED_RED_PIN, PIN_MODE_OUTPUT);
+    rt_pin_mode(LED_BULE_PIN, PIN_MODE_OUTPUT);
     while(1)
     {
         rt_thread_mdelay(500);
-        rt_pin_write(LED_PIN, PIN_HIGH);
+        rt_pin_write(LED_BULE_PIN, PIN_HIGH);
+        rt_pin_write(LED_RED_PIN, PIN_HIGH);
         rt_thread_mdelay(500);
-        rt_pin_write(LED_PIN, PIN_LOW);
+        rt_pin_write(LED_BULE_PIN, PIN_LOW);
+        rt_pin_write(LED_RED_PIN, PIN_LOW);
     }
     return RT_EOK;
 }
