@@ -1,28 +1,43 @@
-/*
- * 程序清单：这是一个串口设备 开启 DMA 模式后使用例程
- * 例程导出了 uart_dma_sample 命令到控制终端
- * 命令调用格式：uart_dma_sample uart1
- * 命令解释：命令第二个参数是要使用的串口设备名称，为空则使用默认的串口设备
- * 程序功能：通过串口输出字符串 "hello RT-Thread!"，并通过串口输出接收到的数据，然后打印接收到的数据。
-*/
-
+/**
+ * @file user_uart1.c
+ * @brief 
+ * @author HLY (1425075683@qq.com)
+ * @version 1.0
+ * @date 2022-12-26
+ * @copyright Copyright (c) 2022
+ * @attention 
+ * @par 修改日志:
+ * Date       Version Author  Description
+ * 2022-12-26 1.0     HLY     first version
+ */
+/* Includes ------------------------------------------------------------------*/
 #include <rtthread.h>
 #include <rtdevice.h>
+/* Private includes ----------------------------------------------------------*/
 
-#define SAMPLE_UART_NAME       "uart1"      /* 串口设备名称 */
-
+/* Private typedef -----------------------------------------------------------*/
 /* 串口接收消息结构 */
 struct rx_msg
 {
     rt_device_t dev;
     rt_size_t size;
 };
+/* Private define ------------------------------------------------------------*/
+#define UART_NAME       "uart1"      /* 串口设备名称 */
+/* Private macro -------------------------------------------------------------*/
+
+/* Private variables ---------------------------------------------------------*/
 /* 串口设备句柄 */
 static rt_device_t serial;
 /* 消息队列控制块 */
 static struct rt_messagequeue rx_mq;
-
-/* 接收数据回调函数 */
+/* Private function prototypes -----------------------------------------------*/
+/**
+ * @brief  串口接收函数
+ * @param  dev              
+ * @param  size             
+ * @retval rt_err_t 
+ */
 static rt_err_t uart_input(rt_device_t dev, rt_size_t size)
 {
     struct rx_msg msg;
@@ -38,7 +53,10 @@ static rt_err_t uart_input(rt_device_t dev, rt_size_t size)
     }
     return result;
 }
-
+/**
+ * @brief 串口接收线程
+ * @param  parameter        
+ */
 static void serial_thread_entry(void *parameter)
 {
     struct rx_msg msg;
@@ -55,6 +73,7 @@ static void serial_thread_entry(void *parameter)
         {
             /* 从串口读取数据 */
             rx_length = rt_device_read(msg.dev, 0, rx_buffer, msg.size);
+            rx_buffer[rx_length] = '\0';
             /* 通过串口设备 serial 输出读取到的消息 */
             rt_device_write(serial, 0, rx_buffer, rx_length);
             /* 打印数据 */
@@ -62,28 +81,21 @@ static void serial_thread_entry(void *parameter)
         }
     }
 }
-
-static int uart_dma_sample(int argc, char *argv[])
+/**
+ * @brief 串口1初始化
+ * @retval int 
+ */
+static int uart1_init(void)
 {
     rt_err_t ret = RT_EOK;
-    char uart_name[RT_NAME_MAX];
     static char msg_pool[256];
     char str[] = "hello RT-Thread!\r\n";
 
-    if (argc == 2)
-    {
-        rt_strncpy(uart_name, argv[1], RT_NAME_MAX);
-    }
-    else
-    {
-        rt_strncpy(uart_name, SAMPLE_UART_NAME, RT_NAME_MAX);
-    }
-
     /* 查找串口设备 */
-    serial = rt_device_find(uart_name);
+    serial = rt_device_find(UART_NAME);
     if (!serial)
     {
-        rt_kprintf("find %s failed!\n", uart_name);
+        rt_kprintf("find %s failed!\n", UART_NAME);
         return RT_ERROR;
     }
 
@@ -95,7 +107,7 @@ static int uart_dma_sample(int argc, char *argv[])
                RT_IPC_FLAG_FIFO);        /* 如果有多个线程等待，按照先来先得到的方法分配消息 */
 
     /* 以 DMA 接收及轮询发送方式打开串口设备 */
-    rt_device_open(serial, RT_DEVICE_FLAG_RX_NON_BLOCKING | RT_DEVICE_FLAG_TX_NON_BLOCKING);
+    rt_device_open(serial, RT_DEVICE_FLAG_RX_NON_BLOCKING | RT_DEVICE_FLAG_TX_BLOCKING);
     /* 设置接收回调函数 */
     rt_device_set_rx_indicate(serial, uart_input);
     /* 发送字符串 */
@@ -115,5 +127,4 @@ static int uart_dma_sample(int argc, char *argv[])
 
     return ret;
 }
-/* 导出到 msh 命令列表中 */
-MSH_CMD_EXPORT(uart_dma_sample, uart device dma sample);
+INIT_APP_EXPORT(uart1_init);
