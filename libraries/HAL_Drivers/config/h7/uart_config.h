@@ -41,6 +41,17 @@ extern "C" {
     }
 #endif /* UART1_DMA_RX_CONFIG */
 #endif /* BSP_UART1_RX_USING_DMA */
+#if defined(BSP_UART1_TX_USING_DMA)
+#ifndef UART1_DMA_TX_CONFIG
+#define UART1_DMA_TX_CONFIG                                         \
+    {                                                               \
+        .Instance = UART1_TX_DMA_INSTANCE,                          \
+        .request = UART1_TX_DMA_REQUEST,                            \
+        .dma_rcc = UART1_TX_DMA_RCC,                                \
+        .dma_irq = UART1_TX_DMA_IRQ,                                \
+    }
+#endif /* UART1_DMA_TX_CONFIG */
+#endif /* BSP_UART1_TX_USING_DMA */
 
 #if defined(BSP_USING_UART2)
 #ifndef UART2_CONFIG
