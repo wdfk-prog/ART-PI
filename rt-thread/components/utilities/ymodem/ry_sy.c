@@ -120,7 +120,7 @@ static enum rym_code _rym_send_begin(
     struct stat file_buf;
     char insert_0 = '\0';
     rt_err_t err;
-    const char *fullpath;
+    const char *path;
 
     cctx->fd = open(cctx->fpath, O_RDONLY);
     if (cctx->fd < 0)
@@ -137,8 +137,8 @@ static enum rym_code _rym_send_begin(
         return RYM_ERR_FILE;
     }
 
-    fullpath = dfs_normalize_path(RT_NULL, _get_path_lastname(cctx->fpath));
-    rt_sprintf((char *)buf, "%s%c%d", fullpath, insert_0, file_buf.st_size);
+    path = _get_path_lastname(cctx->fpath);
+    rt_sprintf((char *)buf, "%s%c%d", path, insert_0, file_buf.st_size);
 
     return RYM_CODE_SOH;
 }
