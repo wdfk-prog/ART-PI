@@ -103,7 +103,6 @@
 #define RT_USING_SERIAL_V2
 #define RT_SERIAL_USING_DMA
 #define RT_USING_PIN
-#define RT_USING_ADC
 #define RT_USING_MTD_NOR
 #define RT_USING_RTC
 #define RT_USING_SPI
@@ -397,8 +396,6 @@
 #define BSP_SPI1_TX_USING_DMA
 #define BSP_SPI1_RX_USING_DMA
 #define BSP_USING_ONCHIP_RTC
-#define BSP_USING_ADC
-#define BSP_USING_ADC3
 #define BSP_USING_WDT
 /* end of On-chip Peripheral */
 /* end of Hardware Drivers Config */
@@ -411,6 +408,7 @@
 
 /* USER ADC Drivers */
 
+#define USER_USING_ADC
 /* end of USER ADC Drivers */
 
 /* CANFESTIVAL MASTER402 */
