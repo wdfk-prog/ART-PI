@@ -11,6 +11,7 @@
  * 2020-06-17     thread-liu   Porting for stm32mp1xx
  * 2020-10-14     Dozingfiretruck   Porting for stm32wbxx
  * 2022-05-22     Stanley Lwin Add stm32_adc_get_vref
+ * 2022-12-26     wdfk-prog    Change the order of configuration channels and calibration functions
  */
 
 #include <board.h>
@@ -294,7 +295,7 @@ static rt_int16_t stm32_adc_get_vref (struct rt_adc_device *device)
       return RT_ERROR;
 
     rt_uint16_t vref_mv;
-
+#ifdef __LL_ADC_CALC_VREFANALOG_VOLTAGE
     rt_err_t ret = RT_EOK;
     rt_uint32_t vref_value;
 
@@ -305,7 +306,9 @@ static rt_int16_t stm32_adc_get_vref (struct rt_adc_device *device)
     ret = rt_adc_disable(device, ADC_CHANNEL_VREFINT - ADC_CHANNEL_0);
 
     vref_mv = __LL_ADC_CALC_VREFANALOG_VOLTAGE(vref_value, stm32_adc_handler->Init.Resolution);
-
+#else
+    vref_mv = 3300;
+#endif /* __LL_ADC_CALC_VREFANALOG_VOLTAGE */
     return vref_mv;
 }
 
