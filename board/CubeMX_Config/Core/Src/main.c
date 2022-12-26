@@ -69,6 +69,7 @@ void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
 static void MPU_Config(void);
 /* USER CODE BEGIN PFP */
+extern int mount_init(void);
 static int Version(void);
 extern int vref_temp_get(void);
 /* USER CODE END PFP */
@@ -83,6 +84,7 @@ extern int vref_temp_get(void);
  */
 int main(void)
 {
+    mount_init();
     Version();
     rt_thread_mdelay(500);
     vref_temp_get();
