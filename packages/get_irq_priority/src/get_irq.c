@@ -20,7 +20,7 @@
 /* Private define ------------------------------------------------------------*/
 
 /* Private macro -------------------------------------------------------------*/
-
+#define NAME_LEN 30
 /* Private variables ---------------------------------------------------------*/
 static const char * const nvic_name[] = {
 #if defined(SOC_SERIES_STM32H7)
@@ -29,8 +29,11 @@ static const char * const nvic_name[] = {
     #error "Unsupported chips"
 #endif
 };
-
 /* Private function prototypes -----------------------------------------------*/
+rt_inline void object_split(int len)
+{
+    while (len--) rt_kprintf(" ");
+}
 /**
   * @brief  获取NVIC优先级.
   * @param  None.
@@ -39,17 +42,18 @@ static const char * const nvic_name[] = {
 */
 void nvic_irq_get(void)
 {
-  rt_kprintf("ldx name                 ");
+  rt_kprintf("ldx name");
+  object_split(NAME_LEN - 3);
   rt_kprintf("E P A Priotity\n");
   for (rt_uint8_t i = 0; i < sizeof(nvic_name) / sizeof(nvic_name[1]); i++)
   {
       if(NVIC_GetEnableIRQ(i))
       {
           rt_kprintf("%3d ",i);
-          rt_kprintf("%-20.20s 1",nvic_name[i]);
+          rt_kprintf("%-*.*s 1",NAME_LEN,NAME_LEN,nvic_name[i]);
           NVIC_GetPendingIRQ(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
-          NVIC_GetActive(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
-          rt_kprintf(" %02d\n",NVIC_GetPriority(i));
+          NVIC_GetActive(i)     ? rt_kprintf(" 1") : rt_kprintf(" 0");
+          rt_kprintf("    %02d\n",NVIC_GetPriority(i));
       }
   }
 }
