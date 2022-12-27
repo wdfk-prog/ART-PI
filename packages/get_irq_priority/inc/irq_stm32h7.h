@@ -1,28 +1,16 @@
-/* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
-  * @file           : 
-  * @brief          : 
-  * @date           :
-  ******************************************************************************
-  * @attention
-  * @author
-  ******************************************************************************
-  */
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __ADC_DMA_H
-#define __ADC_DMA_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-/* Includes ------------------------------------------------------------------*/
-
-/* Exported types ------------------------------------------------------------*/
-
+ * @file irq_stm32h7.h
+ * @brief 
+ * @author HLY (1425075683@qq.com)
+ * @version 1.0
+ * @date 2022-12-27
+ * @copyright Copyright (c) 2022
+ * @attention 
+ * @par 修改日志:
+ * Date       Version Author  Description
+ * 2022-12-27 1.0     HLY     first version
+ */
 /* Exported constants --------------------------------------------------------*/
-
-/* Exported macro ------------------------------------------------------------*/
   [0]   = "WWDG_IRQn",              /*!< Window WatchDog Interrupt ( wwdg1_it, wwdg2_it)                   */
   [1]   = "PVD_AVD_IRQn",           /*!< PVD/AVD through EXTI Line detection Interrupt                     */
   [2]   = "TAMP_STAMP_IRQn",        /*!< Tamper and TimeStamp interrupts through the EXTI line             */
@@ -191,13 +179,3 @@ extern "C" {
   [160] = "FDCAN3_IT1_IRQn",        /*!< FDCAN3 Interrupt line 1                                           */
   [161] = "TIM23_IRQn",             /*!< TIM23 global interrupt                                            */
   [162] = "TIM24_IRQn",             /*!< TIM24 global interrupt                                            */
-
-/* Exported variables ---------------------------------------------------------*/
-
-/* Exported functions prototypes ---------------------------------------------*/
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* __MAIN_H */
