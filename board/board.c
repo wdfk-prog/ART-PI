@@ -39,39 +39,8 @@
 /* Private macro -------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
-static const char * const nvic_name[] = {
-  [PVD_AVD_IRQn]      = "PVD_AVD_IRQn",
-  [DMA1_Stream0_IRQn] = "DMA1_Stream0_IRQn",
-  [DMA1_Stream3_IRQn] = "DMA1_Stream3_IRQn",
-  [SPI1_IRQn]         = "SPI1_IRQn",
-  [UART4_IRQn]        = "UART4_IRQn",
-  [DMA2_Stream0_IRQn] = "DMA2_Stream0_IRQn",
-  [DMA2_Stream5_IRQn] = "DMA2_Stream5_IRQn",
-};
+
 /* Private function prototypes -----------------------------------------------*/
-/**
-  * @brief  获取NVIC优先级.
-  * @param  None.
-  * @retval None.
-  * @note   None.
-*/
-void nvic_irq_get(void)
-{
-  rt_kprintf("ldx name                 ");
-  rt_kprintf("E P A Priotity\n");
-  for (rt_uint8_t i = 0; i < 255; i++)
-  {
-      if(NVIC_GetEnableIRQ(i))
-      {
-          rt_kprintf("%3d ",i);
-          rt_kprintf("%-20.20s",nvic_name[i]);
-          NVIC_GetPendingIRQ(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
-          NVIC_GetActive(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
-          rt_kprintf(" %02d\n",NVIC_GetPriority(i));
-      }
-  }
-}
-MSH_CMD_EXPORT(nvic_irq_get, get all enable NVIC_IRQ);
 #ifdef FINSH_IRQ_PRIORITY
 /**
   * @brief  设置FINSH串口中断优先级
