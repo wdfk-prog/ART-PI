@@ -20,9 +20,8 @@
 /* Private define ------------------------------------------------------------*/
 
 /* Private macro -------------------------------------------------------------*/
-#if (defined(SOC_SERIES_STM32H7))
+
 /* Private variables ---------------------------------------------------------*/
-/******  STM32 specific Interrupt Numbers **********************************************************************/
 static const char * const nvic_name[] = {
 #if defined(SOC_SERIES_STM32H7)
     #include "inc/irq_stm32h7.h"
@@ -42,7 +41,7 @@ void nvic_irq_get(void)
 {
   rt_kprintf("ldx name                 ");
   rt_kprintf("E P A Priotity\n");
-  for (rt_uint8_t i = 0; i < 255; i++)
+  for (rt_uint8_t i = 0; i < sizeof(nvic_name) / sizeof(nvic_name[1]); i++)
   {
       if(NVIC_GetEnableIRQ(i))
       {
@@ -55,4 +54,3 @@ void nvic_irq_get(void)
   }
 }
 MSH_CMD_EXPORT(nvic_irq_get, get all enable NVIC_IRQ);
-#endif /* SOC_SERIES_STM32H7 */
