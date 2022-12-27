@@ -12,8 +12,13 @@
  */
 /* Exported constants --------------------------------------------------------*/
   [0]   = "WWDG_IRQn",              /*!< Window WatchDog Interrupt ( wwdg1_it, wwdg2_it)                   */
+#if defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ)
+  [1]   = "PVD_PVM_IRQn",           /*!< PVD/PVM through EXTI Line detection Interrupt                     */
+  [2]   = "RTC_TAMP_STAMP_CSS_LSE_IRQn"/*!< Tamper, TimeStamp, CSS and LSE interrupts through the EXTI line*/
+#else
   [1]   = "PVD_AVD_IRQn",           /*!< PVD/AVD through EXTI Line detection Interrupt                     */
   [2]   = "TAMP_STAMP_IRQn",        /*!< Tamper and TimeStamp interrupts through the EXTI line             */
+#endif /* defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ) */
   [3]   = "RTC_WKUP_IRQn",          /*!< RTC Wakeup interrupt through the EXTI line                        */
   [4]   = "FLASH_IRQn",             /*!< FLASH global Interrupt                                            */
   [5]   = "RCC_IRQn",               /*!< RCC global Interrupt                                              */
@@ -89,9 +94,13 @@
   [75]  = "OTG_HS_EP1_IN_IRQn",     /*!< USB OTG HS End Point 1 In global interrupt                        */
   [76]  = "OTG_HS_WKUP_IRQn",       /*!< USB OTG HS Wakeup through EXTI interrupt                          */
   [77]  = "OTG_HS_IRQn",            /*!< USB OTG HS global interrupt                                       */
+#if defined (STM32H735xx) || defined (STM32H733xx) || defined (STM32H730xx) || defined (STM32H730xxQ) || defined (STM32H725xx) || defined (STM32H723xx)
   [78]  = "DCMI_PSSI_IRQn",         /*!< DCMI and PSSI global interrupt                                    */
+#else
+  [78] = "DCMI_IRQn",               /*!< DCMI_IRQn global interrupt                                    */
+#endif /* defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ) */
   [79]  = "CRYP_IRQn",              /*!< CRYP crypto global interrupt                                      */
-  [80]  = "HASH_RNG_IRQn",          /*!< HASH and RNG global interrupt                                     */
+  [80]  = "RNG_IRQn",               /*!< RNG global interrupt                                     */
   [81]  = "FPU_IRQn",               /*!< FPU global interrupt                                              */
   [82]  = "UART7_IRQn",             /*!< UART7 global interrupt                                            */
   [83]  = "UART8_IRQn",             /*!< UART8 global interrupt                                            */
@@ -103,7 +112,11 @@
   [89]  = "LTDC_ER_IRQn",           /*!< LTDC Error global Interrupt                                       */
   [90]  = "DMA2D_IRQn",             /*!< DMA2D global Interrupt                                            */
   [91]  = "SAI2_IRQn",              /*!< SAI2 global Interrupt                                             */
+#if defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ)
+  [92]  = "OCTOSPI1_IRQn",           /*!< OCTOSPI1 global interrupt                                         */
+#else
   [92]  = "QUADSPI_IRQn",           /*!< Quad SPI global interrupt                                         */
+#endif /* defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ) */
   [93]  = "LPTIM1_IRQn",            /*!< LP TIM1 interrupt                                                 */
   [94]  = "CEC_IRQn",               /*!< HDMI-CEC global Interrupt                                         */
   [95]  = "I2C4_EV_IRQn",           /*!< I2C4 Event Interrupt                                              */
@@ -138,8 +151,14 @@
   [124] = "SDMMC2_IRQn",            /*!< SDMMC2 global Interrupt                                           */
   [125] = "HSEM1_IRQn",             /*!< HSEM1 global Interrupt                                            */
   [126] = "HSEM2_IRQn",             /*!< HSEM2 global Interrupt                                            */
+#if defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ)
+  [127] = "DAC2_IRQn",              /*!< DAC2 global Interrupt                                             */
+ #else
   [127] = "ADC3_IRQn",              /*!< ADC3 global Interrupt                                             */
+#endif /* defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ) */
   [128] = "DMAMUX2_OVR_IRQn",       /*!<DMAMUX2 Overrun interrupt                                          */
+#if defined (STM32H743xx) || defined (STM32H753xx)  || defined (STM32H750xx) || defined (STM32H742xx) || \
+    defined (STM32H735xx) || defined (STM32H733xx) || defined (STM32H730xx) || defined (STM32H730xxQ) || defined (STM32H725xx) || defined (STM32H723xx)
   [129] = "BDMA_Channel0_IRQn",     /*!< BDMA Channel 0 global Interrupt                                   */
   [130] = "BDMA_Channel1_IRQn",     /*!< BDMA Channel 1 global Interrupt                                   */
   [131] = "BDMA_Channel2_IRQn",     /*!< BDMA Channel 2 global Interrupt                                   */
@@ -148,11 +167,26 @@
   [134] = "BDMA_Channel5_IRQn",     /*!< BDMA Channel 5 global Interrupt                                   */
   [135] = "BDMA_Channel6_IRQn",     /*!< BDMA Channel 6 global Interrupt                                   */
   [136] = "BDMA_Channel7_IRQn",     /*!< BDMA Channel 7 global Interrupt                                   */
+#else
+  [129] = "BDMA2_Channel0_IRQn",     /*!< BDMA2 Channel 0 global Interrupt                                   */
+  [130] = "BDMA2_Channel1_IRQn",     /*!< BDMA2 Channel 1 global Interrupt                                   */
+  [131] = "BDMA2_Channel2_IRQn",     /*!< BDMA2 Channel 2 global Interrupt                                   */
+  [132] = "BDMA2_Channel3_IRQn",     /*!< BDMA2 Channel 3 global Interrupt                                   */
+  [133] = "BDMA2_Channel4_IRQn",     /*!< BDMA2 Channel 4 global Interrupt                                   */
+  [134] = "BDMA2_Channel5_IRQn",     /*!< BDMA2 Channel 5 global Interrupt                                   */
+  [135] = "BDMA2_Channel6_IRQn",     /*!< BDMA2 Channel 6 global Interrupt                                   */
+  [136] = "BDMA2_Channel7_IRQn",     /*!< BDMA2 Channel 7 global Interrupt                                   */
+#endif
   [137] = "COMP_IRQn" ,             /*!< COMP global Interrupt                                             */
   [138] = "LPTIM2_IRQn",            /*!< LP TIM2 global interrupt                                          */
   [139] = "LPTIM3_IRQn",            /*!< LP TIM3 global interrupt                                          */
+#if defined (STM32H735xx) || defined (STM32H733xx) || defined (STM32H730xx) || defined (STM32H730xxQ) || defined (STM32H725xx) || defined (STM32H723xx)
   [140] = "LPTIM4_IRQn",            /*!< LP TIM4 global interrupt                                          */
   [141] = "LPTIM5_IRQn",            /*!< LP TIM5 global interrupt                                          */
+#elif defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ)
+  [140] = "UART9_IRQn",             /*!< UART9 global interrupt                                            */
+  [141] = "USART10_IRQn"            /*!< USART10 global interrupt                                          */
+#endif /* defined (STM32H735xx) || defined (STM32H733xx) || defined (STM32H730xx) || defined (STM32H730xxQ) || defined (STM32H725xx) || defined (STM32H723xx) */
   [142] = "LPUART1_IRQn",           /*!< LP UART1 interrupt                                                */
   [143] = "WWDG_RST_IRQn",          /*!<Window Watchdog reset interrupt (exti_d2_wwdg_it, exti_d1_wwdg_it) */
   [144] = "CRS_IRQn",               /*!< Clock Recovery Global Interrupt                                   */
