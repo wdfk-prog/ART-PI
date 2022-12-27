@@ -1,29 +1,28 @@
+/* USER CODE BEGIN Header */
 /**
- * @file get_irq.c
- * @brief 
- * @author HLY (1425075683@qq.com)
- * @version 1.0
- * @date 2022-12-27
- * @copyright Copyright (c) 2022
- * @attention CMSIS中提供了CMSIS access NVIC functions,方便不同芯片查询
- * @par 修改日志:
- * Date       Version Author  Description
- * 2022-12-27 1.0     HLY     first version
- */
+  ******************************************************************************
+  * @file           : 
+  * @brief          : 
+  * @date           :
+  ******************************************************************************
+  * @attention
+  * @author
+  ******************************************************************************
+  */
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __ADC_DMA_H
+#define __ADC_DMA_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 /* Includes ------------------------------------------------------------------*/
 
-/* Private includes ----------------------------------------------------------*/
-#include <rtthread.h>
-#include "board.h"
-/* Private typedef -----------------------------------------------------------*/
+/* Exported types ------------------------------------------------------------*/
 
-/* Private define ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------*/
 
-/* Private macro -------------------------------------------------------------*/
-
-/* Private variables ---------------------------------------------------------*/
-/******  STM32 specific Interrupt Numbers **********************************************************************/
-static const char * const nvic_name[] = {
+/* Exported macro ------------------------------------------------------------*/
   [0]   = "WWDG_IRQn",              /*!< Window WatchDog Interrupt ( wwdg1_it, wwdg2_it)                   */
   [1]   = "PVD_AVD_IRQn",           /*!< PVD/AVD through EXTI Line detection Interrupt                     */
   [2]   = "TAMP_STAMP_IRQn",        /*!< Tamper and TimeStamp interrupts through the EXTI line             */
@@ -66,6 +65,7 @@ static const char * const nvic_name[] = {
   [39]  = "USART3_IRQn",            /*!< USART3 global Interrupt                                           */
   [40]  = "EXTI15_10_IRQn",         /*!< External Line[15:10] Interrupts                                   */
   [41]  = "RTC_Alarm_IRQn",         /*!< RTC Alarm (A and B) through EXTI Line Interrupt                   */
+  [42]  = "DFSDM2_IRQn",            /*!< DFSDM2 global Interrupt                                           */
   [43]  = "TIM8_BRK_TIM12_IRQn",    /*!< TIM8 Break Interrupt and TIM12 global interrupt                   */
   [44]  = "TIM8_UP_TIM13_IRQn",     /*!< TIM8 Update Interrupt and TIM13 global interrupt                  */
   [45]  = "TIM8_TRG_COM_TIM14_IRQn",/*!< TIM8 Trigger and Commutation Interrupt and TIM14 global interrupt */
@@ -87,6 +87,10 @@ static const char * const nvic_name[] = {
   [61]  = "ETH_IRQn",               /*!< Ethernet global Interrupt                                         */
   [62]  = "ETH_WKUP_IRQn",          /*!< Ethernet Wakeup through EXTI line Interrupt                       */
   [63]  = "FDCAN_CAL_IRQn",         /*!< FDCAN Calibration unit Interrupt                                  */
+  [64]  = "CM7_SEV_IRQn",           /*!< CM7 Send event interrupt for CM4                                  */
+  [65]  = "CM4_SEV_IRQn",           /*!< CM4 Send event interrupt for CM7                                  */
+  [66]  = "DFSDM1_FLT6_IRQn",       /*!< DFSDM Filter6 Interrupt                                           */
+  [67]  = "DFSDM1_FLT7_IRQn",       /*!< DFSDM Filter7 Interrupt                                           */
   [68]  = "DMA2_Stream5_IRQn",      /*!< DMA2 Stream 5 global interrupt                                    */
   [69]  = "DMA2_Stream6_IRQn",      /*!< DMA2 Stream 6 global interrupt                                    */
   [70]  = "DMA2_Stream7_IRQn",      /*!< DMA2 Stream 7 global interrupt                                    */
@@ -97,7 +101,7 @@ static const char * const nvic_name[] = {
   [75]  = "OTG_HS_EP1_IN_IRQn",     /*!< USB OTG HS End Point 1 In global interrupt                        */
   [76]  = "OTG_HS_WKUP_IRQn",       /*!< USB OTG HS Wakeup through EXTI interrupt                          */
   [77]  = "OTG_HS_IRQn",            /*!< USB OTG HS global interrupt                                       */
-  [78]  = "DCMI_IRQn",              /*!< DCMI global interrupt                                             */
+  [78]  = "DCMI_PSSI_IRQn",         /*!< DCMI and PSSI global interrupt                                    */
   [79]  = "CRYP_IRQn",              /*!< CRYP crypto global interrupt                                      */
   [80]  = "HASH_RNG_IRQn",          /*!< HASH and RNG global interrupt                                     */
   [81]  = "FPU_IRQn",               /*!< FPU global interrupt                                              */
@@ -142,8 +146,10 @@ static const char * const nvic_name[] = {
   [120] = "MDIOS_IRQn",             /*!< MDIOS global Interrupt                                            */
   [121] = "JPEG_IRQn",              /*!< JPEG global Interrupt                                             */
   [122] = "MDMA_IRQn",              /*!< MDMA global Interrupt                                             */
+  [123] = "DSI_IRQn",               /*!< DSI global Interrupt                                              */
   [124] = "SDMMC2_IRQn",            /*!< SDMMC2 global Interrupt                                           */
   [125] = "HSEM1_IRQn",             /*!< HSEM1 global Interrupt                                            */
+  [126] = "HSEM2_IRQn",             /*!< HSEM2 global Interrupt                                            */
   [127] = "ADC3_IRQn",              /*!< ADC3 global Interrupt                                             */
   [128] = "DMAMUX2_OVR_IRQn",       /*!<DMAMUX2 Overrun interrupt                                          */
   [129] = "BDMA_Channel0_IRQn",     /*!< BDMA Channel 0 global Interrupt                                   */
@@ -160,32 +166,38 @@ static const char * const nvic_name[] = {
   [140] = "LPTIM4_IRQn",            /*!< LP TIM4 global interrupt                                          */
   [141] = "LPTIM5_IRQn",            /*!< LP TIM5 global interrupt                                          */
   [142] = "LPUART1_IRQn",           /*!< LP UART1 interrupt                                                */
+  [143] = "WWDG_RST_IRQn",          /*!<Window Watchdog reset interrupt (exti_d2_wwdg_it, exti_d1_wwdg_it) */
   [144] = "CRS_IRQn",               /*!< Clock Recovery Global Interrupt                                   */
   [145] = "ECC_IRQn",               /*!< ECC diagnostic Global Interrupt                                   */
   [146] = "SAI4_IRQn",              /*!< SAI4 global interrupt                                             */
+  [147] = "DTS_IRQn",               /*!< Digital Temperature Sensor Global Interrupt                       */
+  [148] = "HOLD_CORE_IRQn",         /*!< Hold core interrupt                                               */
   [149] = "WAKEUP_PIN_IRQn",        /*!< Interrupt for all 6 wake-up pins                                  */
-};
-/* Private function prototypes -----------------------------------------------*/
-/**
-  * @brief  获取NVIC优先级.
-  * @param  None.
-  * @retval None.
-  * @note   None.
-*/
-void nvic_irq_get(void)
-{
-  rt_kprintf("ldx name                 ");
-  rt_kprintf("E P A Priotity\n");
-  for (rt_uint8_t i = 0; i < 255; i++)
-  {
-      if(NVIC_GetEnableIRQ(i))
-      {
-          rt_kprintf("%3d ",i);
-          rt_kprintf("%-20.20s",nvic_name[i]);
-          NVIC_GetPendingIRQ(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
-          NVIC_GetActive(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
-          rt_kprintf(" %02d\n",NVIC_GetPriority(i));
-      }
-  }
+  [150] = "OCTOSPI2_IRQn",          /*!< OctoSPI2 global interrupt                                         */
+  [151] = "OTFDEC1_IRQn",           /*!< OTFDEC1 global interrupt                                          */
+  [152] = "OTFDEC2_IRQn",           /*!< OTFDEC2 global interrupt                                          */
+#if defined (STM32H735xx) || defined (STM32H733xx) || defined (STM32H730xx) || defined (STM32H730xxQ) || defined (STM32H725xx) || defined (STM32H723xx)
+  [153] = "FMAC_IRQn",              /*!< FMAC global interrupt                                             */
+  [154] = "CORDIC_IRQn",            /*!< CORDIC global interrupt                                           */
+#elif defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ)
+  [153] = "GFXMMU_IRQn",            /*!< GFXMMU global interrupt                                           */
+  [154] = "BDMA1_IRQn",             /*!< BDMA1 for DFSM global interrupt                                   */
+#endif /* defined (STM32H735xx) || defined (STM32H733xx) || defined (STM32H730xx) || defined (STM32H730xxQ) || defined (STM32H725xx) || defined (STM32H723xx) */
+  [155] = "UART9_IRQn",             /*!< UART9 global Interrupt                                            */
+  [156] = "USART10_IRQn",           /*!< USART10 global interrupt                                          */
+  [157] = "I2C5_EV_IRQn",           /*!< I2C5 event interrupt                                              */
+  [158] = "I2C5_ER_IRQn",           /*!< I2C5 error interrupt                                              */
+  [159] = "FDCAN3_IT0_IRQn",        /*!< FDCAN3 Interrupt line 0                                           */
+  [160] = "FDCAN3_IT1_IRQn",        /*!< FDCAN3 Interrupt line 1                                           */
+  [161] = "TIM23_IRQn",             /*!< TIM23 global interrupt                                            */
+  [162] = "TIM24_IRQn",             /*!< TIM24 global interrupt                                            */
+
+/* Exported variables ---------------------------------------------------------*/
+
+/* Exported functions prototypes ---------------------------------------------*/
+
+#ifdef __cplusplus
 }
-MSH_CMD_EXPORT(nvic_irq_get, get all enable NVIC_IRQ);
+#endif
+
+#endif /* __MAIN_H */

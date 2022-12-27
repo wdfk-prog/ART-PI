@@ -340,7 +340,7 @@
               <MiscControls>-Wno-pointer-bool-conversion -Wno-tautological-pointer-compare -Wno-invalid-source-encoding -Wno-logical-not-parentheses</MiscControls>
               <Define>__STDC_LIMIT_MACROS, LFS_CONFIG=lfs_config.h, sprintf=rt_sprintf, USE_HAL_DRIVER, RT_USING_LIBC, printf=rt_kprintf, __CLK_TCK=RT_TICK_PER_SECOND, __RTTHREAD__, RT_USING_ARMLIBC, snprintf=rt_snprintf</Define>
               <Undefine></Undefine>
-              <IncludePath>rt-thread\components\drivers\include;applications;rt-thread\components\libc\posix\io\poll;rt-thread\libcpu\arm\common;libraries\HAL_Drivers\config;rt-thread\include;rt-thread\components\libc\compilers\common\extension;libraries\HAL_Drivers;rt-thread\components\drivers\include;packages\littlefs-latest;rt-thread\components\drivers\spi;libraries\STM32H7xx_HAL\CMSIS\Include;libraries\HAL_Drivers\CMSIS\Include;board\CubeMX_Config\Core\Inc;rt-thread\components\finsh;packages\CmBacktrace-latest;libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Inc;rt-thread\components\utilities\ulog\backend;rt-thread\components\dfs\include;rt-thread\components\libc\compilers\common\extension\fcntl\octal;libraries\STM32H7xx_HAL\CMSIS\Device\ST\STM32H7xx\Include;libraries\samples;rt-thread\components\libc\posix\ipc;rt-thread\components\fal\inc;board\port;rt-thread\components\drivers\include;rt-thread\components\libc\posix\io\stdio;rt-thread\components\dfs\filesystems\romfs;rt-thread\components\libc\compilers\common\include;board;rt-thread\components\dfs\filesystems\devfs;rt-thread\components\drivers\include;.;rt-thread\components\utilities\ulog;rt-thread\components\utilities\ymodem;rt-thread\components\drivers\spi\sfud\inc;packages\syswatch-latest\inc;rt-thread\libcpu\arm\cortex-m7;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include</IncludePath>
+              <IncludePath>rt-thread\components\drivers\include;applications;rt-thread\components\libc\posix\io\poll;rt-thread\libcpu\arm\common;libraries\HAL_Drivers\config;rt-thread\include;rt-thread\components\libc\compilers\common\extension;libraries\HAL_Drivers;rt-thread\components\drivers\include;packages\littlefs-latest;rt-thread\components\drivers\spi;libraries\STM32H7xx_HAL\CMSIS\Include;libraries\HAL_Drivers\CMSIS\Include;board\CubeMX_Config\Core\Inc;rt-thread\components\finsh;packages\CmBacktrace-latest;libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Inc;rt-thread\components\utilities\ulog\backend;rt-thread\components\dfs\include;rt-thread\components\libc\compilers\common\extension\fcntl\octal;libraries\STM32H7xx_HAL\CMSIS\Device\ST\STM32H7xx\Include;libraries\samples;rt-thread\components\libc\posix\ipc;rt-thread\components\fal\inc;board\port;rt-thread\components\drivers\include;rt-thread\components\libc\posix\io\stdio;rt-thread\components\dfs\filesystems\romfs;rt-thread\components\libc\compilers\common\include;board;rt-thread\components\dfs\filesystems\devfs;packages\get_irq_priority;rt-thread\components\drivers\include;.;rt-thread\components\utilities\ulog;rt-thread\components\utilities\ymodem;rt-thread\components\drivers\spi\sfud\inc;packages\syswatch-latest\inc;rt-thread\libcpu\arm\cortex-m7;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\drivers\include</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -385,19 +385,14 @@
           <GroupName>Applications</GroupName>
           <Files>
             <File>
+              <FileName>user_uart1.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>applications\user_uart1.c</FilePath>
+            </File>
+            <File>
               <FileName>user_adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>applications\user_adc.c</FilePath>
-            </File>
-            <File>
-              <FileName>user_uart1.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\applications\user_uart1.c</FilePath>
-            </File>
-            <File>
-              <FileName>get_irq.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\applications\get_irq.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -405,24 +400,9 @@
           <GroupName>board/Drivers</GroupName>
           <Files>
             <File>
-              <FileName>main.c</FileName>
+              <FileName>board.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>iwdg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\iwdg.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_hal_msp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_hal_msp.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_sdio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\port\drv_sdio.c</FilePath>
+              <FilePath>board\board.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_it.c</FileName>
@@ -430,64 +410,9 @@
               <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</FilePath>
             </File>
             <File>
-              <FileName>wifi_config.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\port\wifi_config.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_spi_ili9488.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\port\drv_spi_ili9488.c</FilePath>
-            </File>
-            <File>
-              <FileName>gpio.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\gpio.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_qspi_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\port\drv_qspi_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>rtc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\rtc.c</FilePath>
-            </File>
-            <File>
-              <FileName>filesystem.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\port\filesystem.c</FilePath>
-            </File>
-            <File>
-              <FileName>dma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\dma.c</FilePath>
-            </File>
-            <File>
-              <FileName>board.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\board.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_eth.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\port\drv_eth.c</FilePath>
-            </File>
-            <File>
-              <FileName>system_stm32h7xx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\system_stm32h7xx.c</FilePath>
-            </File>
-            <File>
               <FileName>drv_mpu.c</FileName>
               <FileType>1</FileType>
               <FilePath>board\drv_mpu.c</FilePath>
-            </File>
-            <File>
-              <FileName>usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\usart.c</FilePath>
             </File>
             <File>
               <FileName>drv_wlan.c</FileName>
@@ -495,14 +420,84 @@
               <FilePath>board\port\drv_wlan.c</FilePath>
             </File>
             <File>
-              <FileName>spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\spi.c</FilePath>
-            </File>
-            <File>
               <FileName>adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>board\CubeMX_Config\Core\Src\adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\iwdg.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_qspi_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\port\drv_qspi_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\dma.c</FilePath>
+            </File>
+            <File>
+              <FileName>system_stm32h7xx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\system_stm32h7xx.c</FilePath>
+            </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\gpio.c</FilePath>
+            </File>
+            <File>
+              <FileName>wifi_config.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\port\wifi_config.c</FilePath>
+            </File>
+            <File>
+              <FileName>filesystem.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\port\filesystem.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_sdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\port\drv_sdio.c</FilePath>
+            </File>
+            <File>
+              <FileName>rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\rtc.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_spi_ili9488.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\port\drv_spi_ili9488.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_msp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_eth.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\port\drv_eth.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\spi.c</FilePath>
             </File>
             <File>
               <FileName>spi_flash_init.c</FileName>
@@ -520,9 +515,9 @@
           <GroupName>cm_backtrace</GroupName>
           <Files>
             <File>
-              <FileName>cmb_port.c</FileName>
+              <FileName>cmb_flash_log.c</FileName>
               <FileType>1</FileType>
-              <FilePath>packages\CmBacktrace-latest\cmb_port.c</FilePath>
+              <FilePath>packages\CmBacktrace-latest\cmb_flash_log.c</FilePath>
             </File>
             <File>
               <FileName>cm_backtrace.c</FileName>
@@ -530,9 +525,9 @@
               <FilePath>packages\CmBacktrace-latest\cm_backtrace.c</FilePath>
             </File>
             <File>
-              <FileName>cmb_flash_log.c</FileName>
+              <FileName>cmb_port.c</FileName>
               <FileType>1</FileType>
-              <FilePath>packages\CmBacktrace-latest\cmb_flash_log.c</FilePath>
+              <FilePath>packages\CmBacktrace-latest\cmb_port.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1704,6 +1699,16 @@
           </Files>
         </Group>
         <Group>
+          <GroupName>get_irq_priority</GroupName>
+          <Files>
+            <File>
+              <FileName>get_irq.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\get_irq_priority\get_irq.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>Kernel</GroupName>
           <Files>
             <File>
@@ -1782,14 +1787,14 @@
           <GroupName>littlefs</GroupName>
           <Files>
             <File>
-              <FileName>dfs_lfs.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>packages\littlefs-latest\dfs_lfs.c</FilePath>
-            </File>
-            <File>
               <FileName>lfs_util.c</FileName>
               <FileType>1</FileType>
               <FilePath>packages\littlefs-latest\lfs_util.c</FilePath>
+            </File>
+            <File>
+              <FileName>dfs_lfs.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\littlefs-latest\dfs_lfs.c</FilePath>
             </File>
             <File>
               <FileName>lfs.c</FileName>
@@ -1982,14 +1987,14 @@
           <GroupName>syswatch</GroupName>
           <Files>
             <File>
-              <FileName>syswatch.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>packages\syswatch-latest\src\syswatch.c</FilePath>
-            </File>
-            <File>
               <FileName>syswatch_test.c</FileName>
               <FileType>1</FileType>
               <FilePath>packages\syswatch-latest\src\syswatch_test.c</FilePath>
+            </File>
+            <File>
+              <FileName>syswatch.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\syswatch-latest\src\syswatch.c</FilePath>
             </File>
           </Files>
         </Group>
