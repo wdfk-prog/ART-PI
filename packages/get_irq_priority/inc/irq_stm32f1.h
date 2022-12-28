@@ -1,12 +1,12 @@
 /**
  * @file irq_stm32f1.h
- * @brief 
+ * @brief
  * @author HLY (1425075683@qq.com)
  * @version 1.0
  * @date 2022-12-27
  * @copyright Copyright (c) 2022
- * @attention 
- * @par ÐÞ¸ÄÈÕÖ¾:
+ * @attention
+ * @par ä¿®æ”¹æ—¥å¿—:
  * Date       Version Author  Description
  * 2022-12-27 1.0     HLY     first version
  */
@@ -31,8 +31,8 @@
   [17]  = "DMA1_Stream6_IRQn",      /*!< DMA1 Stream 6 global Interrupt                                    */
   [18]  = "ADC_IRQn",               /*!< ADC1 and  ADC2 global Interrupts                                  */
 #if defined (STM32F102x6) || defined (STM32F102xB)
-  [19]  = "USB_HP_IRQn",            /*!< USB Device High Priority                             */
-  [20]  = "USB_LP_IRQn",            /*!< USB Device Low Priority                              */ 
+  [19]  = "USB_HP_IRQn",            /*!< USB Device High Priority                                          */
+  [20]  = "USB_LP_IRQn",            /*!< USB Device Low Priority                                           */
 #else
   [19]  = "CAN1_TX_IRQn",           /*!< CAN1 TX Interrupt                                                 */
   [20]  = "CAN1_RX0_IRQn",          /*!< CAN1 RX0 Interrupt                                                */
@@ -41,9 +41,9 @@
   [22]  = "CAN1_SCE_IRQn",          /*!< CAN1 SCE Interrupt                                                */
   [23]  = "EXTI9_5_IRQn",           /*!< External Line[9:5] Interrupts                                     */
 #if defined (STM32F101xB) || defined (STM32F101xE) || defined (STM32F101xG) || defined (STM32F102x6) || defined (STM32F102xB) || defined (STM32F103x6)
-  [24] = "TIM9_IRQn",               /*!< TIM9 global Interrupt                                */
-  [25] = "TIM10_IRQn",              /*!< TIM10 global Interrupt                               */
-  [26] = "TIM11_IRQn",              /*!< TIM11 global interrupt                               */
+  [24] = "TIM9_IRQn",               /*!< TIM9 global Interrupt                                             */
+  [25] = "TIM10_IRQn",              /*!< TIM10 global Interrupt                                            */
+  [26] = "TIM11_IRQn",              /*!< TIM11 global interrupt                                            */
 #else
   [24]  = "TIM1_BRK_TIM9_IRQn",     /*!< TIM1 Break interrupt and TIM9 global interrupt                    */
   [25]  = "TIM1_UP_TIM10_IRQn",     /*!< TIM1 Update Interrupt and TIM10 global interrupt                  */

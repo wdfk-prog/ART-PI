@@ -1,12 +1,12 @@
 /**
  * @file irq_stm32f3.h
- * @brief 
+ * @brief
  * @author HLY (1425075683@qq.com)
  * @version 1.0
  * @date 2022-12-27
  * @copyright Copyright (c) 2022
- * @attention 
- * @par ÐÞ¸ÄÈÕÖ¾:
+ * @attention
+ * @par ä¿®æ”¹æ—¥å¿—:
  * Date       Version Author  Description
  * 2022-12-27 1.0     HLY     first version
  */
@@ -103,4 +103,4 @@
   [79]  = "TIM20_TRG_COM_IRQn",     /*!< TIM20 Trigger and Commutation Interrupt                            */
   [80]  = "TIM20_CC_IRQn",          /*!< TIM20 Capture Compare Interrupt                                    */
   [81]  = "FPU_IRQn",               /*!< Floating point Interrupt                                          */
-  [84]  = "SPI4_IRQn",              /*!< SPI4 global Interrupt                                             */   
+  [84]  = "SPI4_IRQn",              /*!< SPI4 global Interrupt                                             */

@@ -1,12 +1,12 @@
 /**
  * @file irq_stm32l4.h
- * @brief 
+ * @brief
  * @author HLY (1425075683@qq.com)
  * @version 1.0
  * @date 2022-12-27
  * @copyright Copyright (c) 2022
- * @attention 
- * @par ÐÞ¸ÄÈÕÖ¾:
+ * @attention
+ * @par ä¿®æ”¹æ—¥å¿—:
  * Date       Version Author  Description
  * 2022-12-27 1.0     HLY     first version
  */
