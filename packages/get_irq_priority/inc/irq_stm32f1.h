@@ -36,7 +36,7 @@
 #else
   [19]  = "CAN1_TX_IRQn",           /*!< CAN1 TX Interrupt                                                 */
   [20]  = "CAN1_RX0_IRQn",          /*!< CAN1 RX0 Interrupt                                                */
-#endif
+#endif /* defined (STM32F102x6) || defined (STM32F102xB) */
   [21]  = "CAN1_RX1_IRQn",          /*!< CAN1 RX1 Interrupt                                                */
   [22]  = "CAN1_SCE_IRQn",          /*!< CAN1 SCE Interrupt                                                */
   [23]  = "EXTI9_5_IRQn",           /*!< External Line[9:5] Interrupts                                     */
@@ -48,7 +48,7 @@
   [24]  = "TIM1_BRK_TIM9_IRQn",     /*!< TIM1 Break interrupt and TIM9 global interrupt                    */
   [25]  = "TIM1_UP_TIM10_IRQn",     /*!< TIM1 Update Interrupt and TIM10 global interrupt                  */
   [26]  = "TIM1_TRG_COM_TIM11_IRQn",/*!< TIM1 Trigger and Commutation Interrupt and TIM11 global interrupt */
-#endif
+#endif /* defined (STM32F101xB) || defined (STM32F101xE) || defined (STM32F101xG) || defined (STM32F102x6) || defined (STM32F102xB) || defined (STM32F103x6) */
   [27]  = "TIM1_CC_IRQn",           /*!< TIM1 Capture Compare Interrupt                                    */
   [28]  = "TIM2_IRQn",              /*!< TIM2 global Interrupt                                             */
   [29]  = "TIM3_IRQn",              /*!< TIM3 global Interrupt                                             */

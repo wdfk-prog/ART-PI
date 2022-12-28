@@ -30,6 +30,8 @@ typedef struct
 static const char * const nvic_name[] = {
 #if defined(SOC_SERIES_STM32H7)
     #include "inc/irq_stm32h7.h"
+#elif defined(SOC_SERIES_STM32F7)
+    #include "inc/irq_stm32f7.h"
 #elif defined(SOC_SERIES_STM32F4)
     #include "inc/irq_stm32f4.h"
 #elif defined(SOC_SERIES_STM32F1)
@@ -130,7 +132,7 @@ static void nvic_irq_get_priotity(void)
         }
     }
 }
-#ifdef RT_USING_MSH
+#if defined(RT_USING_MSH) || defined(RT_USING_FINSH)
 /**
   * @brief  MSH√¸¡Ó
   * @param  None

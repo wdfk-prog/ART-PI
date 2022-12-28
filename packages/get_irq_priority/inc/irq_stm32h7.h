@@ -176,7 +176,8 @@
   [134] = "BDMA2_Channel5_IRQn",     /*!< BDMA2 Channel 5 global Interrupt                                   */
   [135] = "BDMA2_Channel6_IRQn",     /*!< BDMA2 Channel 6 global Interrupt                                   */
   [136] = "BDMA2_Channel7_IRQn",     /*!< BDMA2 Channel 7 global Interrupt                                   */
-#endif
+#endif /* defined (STM32H743xx) || defined (STM32H753xx)  || defined (STM32H750xx) || defined (STM32H742xx) || \
+          defined (STM32H735xx) || defined (STM32H733xx) || defined (STM32H730xx) || defined (STM32H730xxQ) || defined (STM32H725xx) || defined (STM32H723xx) */
   [137] = "COMP_IRQn" ,             /*!< COMP global Interrupt                                             */
   [138] = "LPTIM2_IRQn",            /*!< LP TIM2 global interrupt                                          */
   [139] = "LPTIM3_IRQn",            /*!< LP TIM3 global interrupt                                          */

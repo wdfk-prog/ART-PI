@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿# get_irq_priority
+﻿﻿﻿﻿﻿﻿# get_irq_priority
 
 [TOC]
 
@@ -101,7 +101,17 @@ get_irq_priority package 遵循 LGPLv2.1 许可，详见 `LICENSE` 文件。
 
 ![get_irq_priority_4.png](figures/get_irq_priority_4.png)
 
-### 4.2 STM32F429测试示例
+### 4.2 STM32F747测试示例
+
+- 默认查询
+
+![get_irq_priority_10.png](figures/get_irq_priority_10.png)
+
+- 优先级排序查询
+
+![get_irq_priority_11.png](figures/get_irq_priority_11.png)
+
+### 4.3 STM32F429测试示例
 
 - 默认查询
 
@@ -111,7 +121,7 @@ get_irq_priority package 遵循 LGPLv2.1 许可，详见 `LICENSE` 文件。
 
 ![get_irq_priority_6.png](figures/get_irq_priority_6.png)
 
-### 4.3 STM32F103测试示例
+### 4.4 STM32F103测试示例
 
 - 默认查询
 
