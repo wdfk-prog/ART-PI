@@ -72,11 +72,11 @@
   [53]  = "UART5_IRQn",             /*!< UART5 global Interrupt                                            */
   [54]  = "TIM6_DAC_IRQn",          /*!< TIM6 global and DAC1&2 underrun error  interrupts                 */
   [55]  = "TIM7_IRQn",              /*!< TIM7 global interrupt                                             */
-  [56]  = "DMA2_Stream0_IRQn",      /*!<   DMA2 Stream 0 global Interrupt                                  */
-  [57]  = "DMA2_Stream1_IRQn",      /*!<   DMA2 Stream 1 global Interrupt                                  */
-  [58]  = "DMA2_Stream2_IRQn",      /*!<   DMA2 Stream 2 global Interrupt                                  */
-  [59]  = "DMA2_Stream3_IRQn",      /*!<   DMA2 Stream 3 global Interrupt                                  */
-  [60]  = "DMA2_Stream4_IRQn",      /*!<   DMA2 Stream 4 global Interrupt                                  */
+  [56]  = "DMA2_Stream0_IRQn",      /*!< DMA2 Stream 0 global Interrupt                                    */
+  [57]  = "DMA2_Stream1_IRQn",      /*!< DMA2 Stream 1 global Interrupt                                    */
+  [58]  = "DMA2_Stream2_IRQn",      /*!< DMA2 Stream 2 global Interrupt                                    */
+  [59]  = "DMA2_Stream3_IRQn",      /*!< DMA2 Stream 3 global Interrupt                                    */
+  [60]  = "DMA2_Stream4_IRQn",      /*!< DMA2 Stream 4 global Interrupt                                    */
   [61]  = "ETH_IRQn",               /*!< Ethernet global Interrupt                                         */
   [62]  = "ETH_WKUP_IRQn",          /*!< Ethernet Wakeup through EXTI line Interrupt                       */
   [63]  = "FDCAN_CAL_IRQn",         /*!< FDCAN Calibration unit Interrupt                                  */
@@ -97,10 +97,10 @@
 #if defined (STM32H735xx) || defined (STM32H733xx) || defined (STM32H730xx) || defined (STM32H730xxQ) || defined (STM32H725xx) || defined (STM32H723xx)
   [78]  = "DCMI_PSSI_IRQn",         /*!< DCMI and PSSI global interrupt                                    */
 #else
-  [78] = "DCMI_IRQn",               /*!< DCMI_IRQn global interrupt                                    */
+  [78] = "DCMI_IRQn",               /*!< DCMI_IRQn global interrupt                                        */
 #endif /* defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ) */
   [79]  = "CRYP_IRQn",              /*!< CRYP crypto global interrupt                                      */
-  [80]  = "RNG_IRQn",               /*!< RNG global interrupt                                     */
+  [80]  = "RNG_IRQn",               /*!< RNG global interrupt                                              */
   [81]  = "FPU_IRQn",               /*!< FPU global interrupt                                              */
   [82]  = "UART7_IRQn",             /*!< UART7 global interrupt                                            */
   [83]  = "UART8_IRQn",             /*!< UART8 global interrupt                                            */
@@ -113,7 +113,7 @@
   [90]  = "DMA2D_IRQn",             /*!< DMA2D global Interrupt                                            */
   [91]  = "SAI2_IRQn",              /*!< SAI2 global Interrupt                                             */
 #if defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ)
-  [92]  = "OCTOSPI1_IRQn",           /*!< OCTOSPI1 global interrupt                                         */
+  [92]  = "OCTOSPI1_IRQn",          /*!< OCTOSPI1 global interrupt                                         */
 #else
   [92]  = "QUADSPI_IRQn",           /*!< Quad SPI global interrupt                                         */
 #endif /* defined (STM32H7A3xx) ||defined (STM32H7A3xxQ) || defined (STM32H7B3xx) || defined (STM32H7B3xxQ) || defined (STM32H7B0xx)  || defined (STM32H7B0xxQ) */
@@ -134,10 +134,10 @@
   [107] = "HRTIM1_TIMD_IRQn",       /*!< HRTIM Timer D global Interrupt                                    */
   [108] = "HRTIM1_TIME_IRQn",       /*!< HRTIM Timer E global Interrupt                                    */
   [109] = "HRTIM1_FLT_IRQn",        /*!< HRTIM Fault global Interrupt                                      */
-  [110] = "DFSDM1_FLT0_IRQn",       /*!<DFSDM Filter1 Interrupt                                            */
-  [111] = "DFSDM1_FLT1_IRQn",       /*!<DFSDM Filter2 Interrupt                                            */
-  [112] = "DFSDM1_FLT2_IRQn",       /*!<DFSDM Filter3 Interrupt                                            */
-  [113] = "DFSDM1_FLT3_IRQn",       /*!<DFSDM Filter4 Interrupt                                            */
+  [110] = "DFSDM1_FLT0_IRQn",       /*!< DFSDM Filter1 Interrupt                                           */
+  [111] = "DFSDM1_FLT1_IRQn",       /*!< DFSDM Filter2 Interrupt                                           */
+  [112] = "DFSDM1_FLT2_IRQn",       /*!< DFSDM Filter3 Interrupt                                           */
+  [113] = "DFSDM1_FLT3_IRQn",       /*!< DFSDM Filter4 Interrupt                                           */
   [114] = "SAI3_IRQn",              /*!< SAI3 global Interrupt                                             */
   [115] = "SWPMI1_IRQn",            /*!< Serial Wire Interface 1 global interrupt                          */
   [116] = "TIM15_IRQn",             /*!< TIM15 global Interrupt                                            */
@@ -168,14 +168,14 @@
   [135] = "BDMA_Channel6_IRQn",     /*!< BDMA Channel 6 global Interrupt                                   */
   [136] = "BDMA_Channel7_IRQn",     /*!< BDMA Channel 7 global Interrupt                                   */
 #else
-  [129] = "BDMA2_Channel0_IRQn",     /*!< BDMA2 Channel 0 global Interrupt                                   */
-  [130] = "BDMA2_Channel1_IRQn",     /*!< BDMA2 Channel 1 global Interrupt                                   */
-  [131] = "BDMA2_Channel2_IRQn",     /*!< BDMA2 Channel 2 global Interrupt                                   */
-  [132] = "BDMA2_Channel3_IRQn",     /*!< BDMA2 Channel 3 global Interrupt                                   */
-  [133] = "BDMA2_Channel4_IRQn",     /*!< BDMA2 Channel 4 global Interrupt                                   */
-  [134] = "BDMA2_Channel5_IRQn",     /*!< BDMA2 Channel 5 global Interrupt                                   */
-  [135] = "BDMA2_Channel6_IRQn",     /*!< BDMA2 Channel 6 global Interrupt                                   */
-  [136] = "BDMA2_Channel7_IRQn",     /*!< BDMA2 Channel 7 global Interrupt                                   */
+  [129] = "BDMA2_Channel0_IRQn",    /*!< BDMA2 Channel 0 global Interrupt                                  */
+  [130] = "BDMA2_Channel1_IRQn",    /*!< BDMA2 Channel 1 global Interrupt                                  */
+  [131] = "BDMA2_Channel2_IRQn",    /*!< BDMA2 Channel 2 global Interrupt                                  */
+  [132] = "BDMA2_Channel3_IRQn",    /*!< BDMA2 Channel 3 global Interrupt                                  */
+  [133] = "BDMA2_Channel4_IRQn",    /*!< BDMA2 Channel 4 global Interrupt                                  */
+  [134] = "BDMA2_Channel5_IRQn",    /*!< BDMA2 Channel 5 global Interrupt                                  */
+  [135] = "BDMA2_Channel6_IRQn",    /*!< BDMA2 Channel 6 global Interrupt                                  */
+  [136] = "BDMA2_Channel7_IRQn",    /*!< BDMA2 Channel 7 global Interrupt                                  */
 #endif /* defined (STM32H743xx) || defined (STM32H753xx)  || defined (STM32H750xx) || defined (STM32H742xx) || \
           defined (STM32H735xx) || defined (STM32H733xx) || defined (STM32H730xx) || defined (STM32H730xxQ) || defined (STM32H725xx) || defined (STM32H723xx) */
   [137] = "COMP_IRQn" ,             /*!< COMP global Interrupt                                             */
@@ -189,7 +189,7 @@
   [141] = "USART10_IRQn"            /*!< USART10 global interrupt                                          */
 #endif /* defined (STM32H735xx) || defined (STM32H733xx) || defined (STM32H730xx) || defined (STM32H730xxQ) || defined (STM32H725xx) || defined (STM32H723xx) */
   [142] = "LPUART1_IRQn",           /*!< LP UART1 interrupt                                                */
-  [143] = "WWDG_RST_IRQn",          /*!<Window Watchdog reset interrupt (exti_d2_wwdg_it, exti_d1_wwdg_it) */
+  [143] = "WWDG_RST_IRQn",          /*!< Window Watchdog reset interrupt (exti_d2_wwdg_it, exti_d1_wwdg_it)*/
   [144] = "CRS_IRQn",               /*!< Clock Recovery Global Interrupt                                   */
   [145] = "ECC_IRQn",               /*!< ECC diagnostic Global Interrupt                                   */
   [146] = "SAI4_IRQn",              /*!< SAI4 global interrupt                                             */

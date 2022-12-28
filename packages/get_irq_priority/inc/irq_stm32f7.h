@@ -1,5 +1,5 @@
 /**
- * @file irq_stm32h7.h
+ * @file irq_stm32f7.h
  * @brief 
  * @author HLY (1425075683@qq.com)
  * @version 1.0
@@ -72,11 +72,11 @@
   [53]  = "UART5_IRQn",             /*!< UART5 global Interrupt                                            */
   [54]  = "TIM6_DAC_IRQn",          /*!< TIM6 global and DAC1&2 underrun error  interrupts                 */
   [55]  = "TIM7_IRQn",              /*!< TIM7 global interrupt                                             */
-  [56]  = "DMA2_Stream0_IRQn",      /*!<   DMA2 Stream 0 global Interrupt                                  */
-  [57]  = "DMA2_Stream1_IRQn",      /*!<   DMA2 Stream 1 global Interrupt                                  */
-  [58]  = "DMA2_Stream2_IRQn",      /*!<   DMA2 Stream 2 global Interrupt                                  */
-  [59]  = "DMA2_Stream3_IRQn",      /*!<   DMA2 Stream 3 global Interrupt                                  */
-  [60]  = "DMA2_Stream4_IRQn",      /*!<   DMA2 Stream 4 global Interrupt                                  */
+  [56]  = "DMA2_Stream0_IRQn",      /*!< DMA2 Stream 0 global Interrupt                                    */
+  [57]  = "DMA2_Stream1_IRQn",      /*!< DMA2 Stream 1 global Interrupt                                    */
+  [58]  = "DMA2_Stream2_IRQn",      /*!< DMA2 Stream 2 global Interrupt                                    */
+  [59]  = "DMA2_Stream3_IRQn",      /*!< DMA2 Stream 3 global Interrupt                                    */
+  [60]  = "DMA2_Stream4_IRQn",      /*!< DMA2 Stream 4 global Interrupt                                    */
   [61]  = "ETH_IRQn",               /*!< Ethernet global Interrupt                                         */
   [62]  = "ETH_WKUP_IRQn",          /*!< Ethernet Wakeup through EXTI line Interrupt                       */
   [63]  = "CAN2_TX_IRQn ",          /*!< CAN2 TX Interrupt                                                 */

@@ -46,8 +46,20 @@ static const char * const nvic_name[] = {
     #include "inc/irq_stm32f7.h"
 #elif defined(SOC_SERIES_STM32F4)
     #include "inc/irq_stm32f4.h"
+#elif defined(SOC_SERIES_STM32F3)
+    #include "inc/irq_stm32f3.h"
+#elif defined(SOC_SERIES_STM32F2)
+    #include "inc/irq_stm32f2.h"
 #elif defined(SOC_SERIES_STM32F1)
     #include "inc/irq_stm32f1.h"
+#elif defined(SOC_SERIES_STM32F0)
+    #include "inc/irq_stm32f0.h"
+#elif defined(SOC_SERIES_STM32G4)
+    #include "inc/irq_stm32g4.h"
+#elif defined(SOC_SERIES_STM32G0)
+    #include "inc/irq_stm32g0.h"
+#elif defined(SOC_SERIES_STM32L0)
+    #include "inc/irq_stm32l0.h"
 #else
     #error "Unsupported chips"
 #endif

@@ -1,5 +1,5 @@
 /**
- * @file irq_stm32f4.h
+ * @file irq_stm32f2.h
  * @brief 
  * @author HLY (1425075683@qq.com)
  * @version 1.0
@@ -72,15 +72,8 @@
   [58]  = "DMA2_Stream2_IRQn",      /*!< DMA2 Stream 2 global Interrupt                                    */
   [59]  = "DMA2_Stream3_IRQn",      /*!< DMA2 Stream 3 global Interrupt                                    */
   [60]  = "DMA2_Stream4_IRQn",      /*!< DMA2 Stream 4 global Interrupt                                    */
-#if defined (STM32F412Zx) || defined (STM32F413xx) || defined (STM32F423xx) || \
-    defined (STM32F412Cx) || defined (STM32F412Rx) || defined (STM32F412Vx)
-  [61]  = "DFSDM1_FLT0_IRQn",       /*!< DFSDM1 Filter 0 global Interrupt                                  */
-  [62]  = "DFSDM1_FLT1_IRQn",       /*!< DFSDM1 Filter 1 global Interrupt                                  */
-#else
   [61]  = "ETH_IRQn",               /*!< Ethernet global Interrupt                                         */
   [62]  = "ETH_WKUP_IRQn",          /*!< Ethernet Wakeup through EXTI line Interrupt                       */
-#endif /* defined (STM32F412Zx) || defined (STM32F413xx) || defined (STM32F423xx) || \
-          defined (STM32F412Cx) || defined (STM32F412Rx) || defined (STM32F412Vx) */
   [63]  = "CAN2_TX_IRQn ",          /*!< CAN2 TX Interrupt                                                 */
   [64]  = "CAN2_RX0_IRQn",          /*!< CAN2 RX0 Interrupt                                                */
   [65]  = "CAN2_RX1_IRQn",          /*!< CAN2 RX1 Interrupt                                                */
@@ -92,47 +85,10 @@
   [71]  = "USART6_IRQn",            /*!< USART6 global interrupt                                           */
   [72]  = "I2C3_EV_IRQn",           /*!< I2C3 event interrupt                                              */
   [73]  = "I2C3_ER_IRQn",           /*!< I2C3 error interrupt                                              */
-#if defined (STM32F412Zx) || defined (STM32F413xx) || defined (STM32F423xx)
-  [74]  = "CAN3_TX_IRQn",           /*!< CAN3 TX Interrupt                                                 */
-  [75]  = "CAN3_RX0_IRQn",          /*!< CAN3 RX0 Interrupt                                                */
-  [76]  = "CAN3_RX1_IRQn",          /*!< CAN3 RX1 Interrupt                                                */
-  [77]  = "CAN3_SCE_IRQn",          /*!< CAN3 SCE Interrupt                                                */
-#else
   [74]  = "OTG_HS_EP1_OUT_IRQn",    /*!< USB OTG HS End Point 1 Out global interrupt                       */
   [75]  = "OTG_HS_EP1_IN_IRQn",     /*!< USB OTG HS End Point 1 In global interrupt                        */
   [76]  = "OTG_HS_WKUP_IRQn",       /*!< USB OTG HS Wakeup through EXTI interrupt                          */
   [77]  = "OTG_HS_IRQn",            /*!< USB OTG HS global interrupt                                       */
-#endif /* defined (STM32F412Zx) || defined (STM32F413xx) || defined (STM32F423xx) */
   [78]  = "DCMI_IRQn",              /*!< DCMI_IRQn global interrupt                                        */
-#if defined(STM32F423xx)
-  [79] = "AES_IRQn",                /*!< AES global Interrupt                                              */
-#else
   [79]  = "CRYP_IRQn",              /*!< CRYP crypto global interrupt                                      */
-#endif /* defined(defined (STM32F423xx) */
   [80]  = "HASH_RNG_IRQn",          /*!< Hash and Rng global global interrupt                              */
-  [81]  = "FPU_IRQn",               /*!< FPU global interrupt                                              */
-  [82]  = "UART7_IRQn",             /*!< UART7 global interrupt                                            */
-  [83]  = "UART8_IRQn",             /*!< UART8 global interrupt                                            */
-  [84]  = "SPI4_IRQn",              /*!< SPI4 global Interrupt                                             */
-  [85]  = "SPI5_IRQn",              /*!< SPI5 global Interrupt                                             */
-  [86]  = "SPI6_IRQn",              /*!< SPI6 global Interrupt                                             */
-  [87]  = "SAI1_IRQn",              /*!< SAI1 global Interrupt                                             */
-#if defined (STM32F412Zx) || defined (STM32F413xx) || defined (STM32F423xx)
-  [88]  = "UART9_IRQn",             /*!< UART9 global Interrupt                                            */
-  [89]  = "UART10_IRQn",            /*!< UART10 global Interrupt                                           */
-#else
-  [88]  = "LTDC_IRQn",              /*!< LTDC global Interrupt                                             */
-  [89]  = "LTDC_ER_IRQn",           /*!< LTDC Error global Interrupt                                       */
-#endif /* defined (STM32F412Zx) || defined (STM32F413xx) || defined (STM32F423xx) */
-  [90]  = "DMA2D_IRQn",             /*!< DMA2D global Interrupt                                            */
-  [91]  = "SAI2_IRQn",              /*!< SAI2 global Interrupt                                             */
-  [92]  = "QUADSPI_IRQn",           /*!< Quad SPI global interrupt                                         */
-  [93]  = "CEC_IRQn",               /*!< CEC global Interrupt                                              */
-  [94]  = "SPDIF_RX_IRQn",          /*!< SPDIF-RX global Interrupt                                         */
-  [95]  = "FMPI2C1_EV_IRQn",        /*!< FMPI2C1 Event Interrupt                                           */
-  [96]  = "FMPI2C1_ER_IRQn",        /*!< FMPI2C1 Error Interrupt                                           */
-  [97]  = "LPTIM1_IRQn",            /*!< LP TIM1 interrupt                                                 */
-  [98]  = "DFSDM2_FLT0_IRQn",       /*!< DFSDM2 Filter 0 global Interrupt                                  */
-  [99]  = "DFSDM2_FLT1_IRQn",       /*!< DFSDM2 Filter 1 global Interrupt                                  */
-  [100] = "DFSDM2_FLT2_IRQn",       /*!< DFSDM2 Filter 2 global Interrupt                                  */
-  [101] = "DFSDM2_FLT3_IRQn",       /*!< DFSDM2 Filter 3 global Interrupt                                  */
