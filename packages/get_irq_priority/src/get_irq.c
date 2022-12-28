@@ -14,6 +14,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 #include <rtthread.h>
+#include <stdlib.h>
 #include "board.h"
 /* Private typedef -----------------------------------------------------------*/
 typedef struct
@@ -31,6 +32,8 @@ static const char * const nvic_name[] = {
     #include "inc/irq_stm32h7.h"
 #elif defined(SOC_SERIES_STM32F4)
     #include "inc/irq_stm32f4.h"
+#elif defined(SOC_SERIES_STM32F1)
+    #include "inc/irq_stm32f1.h"
 #else
     #error "Unsupported chips"
 #endif
@@ -58,9 +61,9 @@ static void nvic_irq_get(rt_uint8_t i)
 {
     irq_printf("%3d ",i);
     irq_printf("%-*.*s 1",NAME_LEN,NAME_LEN,nvic_name[i]);
-    NVIC_GetPendingIRQ(i) ? irq_printf(" 1") : irq_printf(" 0");
-    NVIC_GetActive(i)     ? irq_printf(" 1") : irq_printf(" 0");
-    irq_printf("    %02d\n",NVIC_GetPriority(i));
+    NVIC_GetPendingIRQ((IRQn_Type)i) ? irq_printf(" 1") : irq_printf(" 0");
+    NVIC_GetActive((IRQn_Type)i)     ? irq_printf(" 1") : irq_printf(" 0");
+    irq_printf("    %02d\n",NVIC_GetPriority((IRQn_Type)i));
 }
 /**
   * @brief  获取NVIC优先级,以中断编号排序.
@@ -73,7 +76,7 @@ static void nvic_irq_get_idx(void)
     nvic_irq_header();
     for (rt_uint8_t i = 0; i < IRQ_LEN; i++)
     {
-        if(NVIC_GetEnableIRQ(i))
+        if(NVIC_GetEnableIRQ((IRQn_Type)i))
         {
             nvic_irq_get(i);
         }
@@ -93,10 +96,10 @@ static void nvic_irq_get_priotity(void)
 
     for (rt_uint8_t i = 0; i < IRQ_LEN; i++)
     {
-        if(NVIC_GetEnableIRQ(i))
+        if(NVIC_GetEnableIRQ((IRQn_Type)i))
         {
           buff[i].ldx      = i;
-          buff[i].priotity = NVIC_GetPriority(i) + 1;//+1排除未使能0优先级
+          buff[i].priotity = NVIC_GetPriority((IRQn_Type)i) + 1;//+1排除未使能0优先级
         }
     }
     //排序
@@ -175,9 +178,9 @@ static void nvic_irq_msh(uint8_t argc, char **argv)
                 return;
             }
 
-            IRQn = atoi(argv[2]);
+            IRQn = (IRQn_Type)atoi(argv[2]);
             priority = atoi(argv[3]);
-            if((IRQn < 0 || IRQn > IRQ_LEN) || (priority < 0 || priority > 15))
+            if(IRQn > IRQ_LEN || priority > 15)
             {
                 irq_printf("IRQ must be greater than 0 and less than IQR LEN, currently IRQ = %d\n",IRQn);
                 irq_printf("priority must be greater than 0 and less than 15, currently priority = %d\n",priority);
