@@ -37,10 +37,17 @@ static const char * const nvic_name[] = {
 };
 #define IRQ_LEN sizeof(nvic_name) / sizeof(nvic_name[1])
 /* Private function prototypes -----------------------------------------------*/
-static void object_split(int len)
+rt_inline void object_split(char c,int len)
 {
-    while (len--) rt_kprintf(" ");
+    while (len--) rt_kprintf("%c",c);
 }
+
+rt_inline void nvic_irq_header(void)
+{
+    rt_kprintf("num name"); object_split(' ',NAME_LEN - 3); rt_kprintf("E P A Priotity\n");
+    rt_kprintf("--- ----"); object_split('-',NAME_LEN - 4);rt_kprintf(" - - - --------\n");
+}
+
 /**
   * @brief  获取NVIC优先级.
   * @param  None.
@@ -49,10 +56,7 @@ static void object_split(int len)
 */
 static void nvic_irq_get(rt_uint8_t i)
 {
-    /* see:Properties of the different exception types (continued)
-       Exception number(ldx) = 16 and above
-    */
-    rt_kprintf("%3d ",i + 16);
+    rt_kprintf("%3d ",i);
     rt_kprintf("%-*.*s 1",NAME_LEN,NAME_LEN,nvic_name[i]);
     NVIC_GetPendingIRQ(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
     NVIC_GetActive(i)     ? rt_kprintf(" 1") : rt_kprintf(" 0");
@@ -66,9 +70,7 @@ static void nvic_irq_get(rt_uint8_t i)
 */
 static void nvic_irq_get_idx(void)
 {
-    rt_kprintf("ldx name");
-    object_split(NAME_LEN - 3);
-    rt_kprintf("E P A Priotity\n");
+    nvic_irq_header();
     for (rt_uint8_t i = 0; i < IRQ_LEN; i++)
     {
         if(NVIC_GetEnableIRQ(i))
@@ -115,9 +117,8 @@ static void nvic_irq_get_priotity(void)
         }
     }
 
-    rt_kprintf("ldx name");
-    object_split(NAME_LEN - 3);
-    rt_kprintf("E P A Priotity\n");
+    nvic_irq_header();
+
     for (rt_uint8_t i = 0; i < IRQ_LEN; i++)
     {
         if(buff[i].priotity)
@@ -143,7 +144,7 @@ static void nvic_irq_msh(uint8_t argc, char **argv)
 
     const char* help_info[] =
     {
-            [IRQ_CMD_IDX]             = "nvic_irq idx        - Get all enable NVIC_IRQ,sort by interrupt number.",
+            [IRQ_CMD_IDX]             = "nvic_irq num        - Get all enable NVIC_IRQ,sort by interrupt number.",
             [IRQ_CMD_PRIOTITY]        = "nvic_irq priority   - Get all enable NVIC_IRQ,sort by interrupt priority from low to high.",
             [MOTOR_CMD_SET]           = "nvic_irq set        - Sets the NVIC IRQ level.",
     };
@@ -156,7 +157,7 @@ static void nvic_irq_msh(uint8_t argc, char **argv)
     {
         const char *operator = argv[1];
 
-        if (!rt_strcmp(operator, "idx"))
+        if (!rt_strcmp(operator, "num"))
         {
             nvic_irq_get_idx();
         }
@@ -166,7 +167,27 @@ static void nvic_irq_msh(uint8_t argc, char **argv)
         }
         else if (!rt_strcmp(operator, "set"))
         {
-            return;
+            IRQn_Type IRQn;
+            uint32_t priority;
+            if(argc <= 3) 
+            {
+                rt_kprintf("Usage: nvic_irq set [IRQn] [priority] --Sets the NVIC IRQ level.\n");
+                return;
+            }
+
+            IRQn = atoi(argv[2]);
+            priority = atoi(argv[3]);
+            if((IRQn < 0 || IRQn > IRQ_LEN) || (priority < 0 || priority > 15))
+            {
+                rt_kprintf("IRQ must be greater than 0 and less than IQR LEN, currently IRQ = %d\n",IRQn);
+                rt_kprintf("priority must be greater than 0 and less than 15, currently priority = %d\n",priority);
+                return;
+            }
+            else
+            {
+                NVIC_SetPriority(IRQn,priority);
+                rt_kprintf("The interrupt priority for IRQ number %i set to %d\n",IRQn,priority);
+            }
         }
         else
         {
