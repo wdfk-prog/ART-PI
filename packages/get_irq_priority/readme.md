@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿# get_irq_priority
+﻿﻿﻿﻿﻿﻿﻿# get_irq_priority
 
 [TOC]
 
@@ -73,7 +73,7 @@ get_irq_priority package 遵循 LGPLv2.1 许可，详见 `LICENSE` 文件。
 
 - 组件安装后，在控制台串口中输入**nvic_irq**后回车,既可查看当前使能的中断信息,以中断编号排序.
 
-![get_irq_priority_1.png](figures/get_irq_priority_1.png)
+![get_irq_priority_12.png](figures/get_irq_priority_12.png)
 
 - 在控制台串口中输入**nvic_irq num**后回车,既可查看当前使能的中断信息,,以中断优先级从低到高排序.
 

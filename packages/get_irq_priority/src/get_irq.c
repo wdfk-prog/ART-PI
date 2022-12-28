@@ -27,6 +27,18 @@ typedef struct
 /* Private macro -------------------------------------------------------------*/
 #define NAME_LEN 30 //中断名称长度
 /* Private variables ---------------------------------------------------------*/
+static const char * const exception_name[] = {
+/******  Cortex-M Processor Exceptions Numbers *****************************************************************/
+  [-NonMaskableInt_IRQn]   = "NonMaskableInt_IRQn",   /*!< 2 Non Maskable Interrupt                                          */
+  [-HardFault_IRQn]        = "HardFault_IRQn",        /*!< 3 Cortex-M Hard Fault Interrupt                                   */
+  [-MemoryManagement_IRQn] = "MemoryManagement_IRQn", /*!< 4 Cortex-M Memory Management Interrupt                            */
+  [-BusFault_IRQn]         = "BusFault_IRQn",         /*!< 5 Cortex-M Bus Fault Interrupt                                    */
+  [-UsageFault_IRQn]       = "UsageFault_IRQn",       /*!< 6 Cortex-M Usage Fault Interrupt                                  */
+  [-SVCall_IRQn]           = "SVCall_IRQn",           /*!< 11 Cortex-M SV Call Interrupt                                     */
+  [-DebugMonitor_IRQn]     = "DebugMonitor_IRQn",     /*!< 12 Cortex-M Debug Monitor Interrupt                               */
+  [-PendSV_IRQn]           = "PendSV_IRQn",           /*!< 14 Cortex-M Pend SV Interrupt                                     */
+  [-SysTick_IRQn]          = "SysTick_IRQn",          /*!< 15 Cortex-M System Tick Interrupt                                 */
+};
 static const char * const nvic_name[] = {
 #if defined(SOC_SERIES_STM32H7)
     #include "inc/irq_stm32h7.h"
@@ -46,15 +58,33 @@ rt_inline void object_split(char c,int len)
 {
     while (len--) irq_printf("%c",c);
 }
-
 rt_inline void nvic_irq_header(void)
 {
-    irq_printf("num name"); object_split(' ',NAME_LEN - 3); irq_printf("E P A Priotity\n");
-    irq_printf("--- ----"); object_split('-',NAME_LEN - 4);irq_printf(" - - - --------\n");
+    irq_printf("num IRQ name"); object_split(' ',NAME_LEN - 7); irq_printf("E P A Priotity\n");
+    irq_printf("--- --------"); object_split('-',NAME_LEN - 8);irq_printf(" - - - --------\n");
 }
-
 /**
-  * @brief  获取NVIC优先级.
+  * @brief  获取exception信息.
+  * @param  None.
+  * @retval None.
+  * @note   None.
+*/
+static void nvic_exception_get(void)
+{
+    irq_printf("num exception name"); object_split(' ',NAME_LEN - 13); irq_printf("E P A Priotity\n");
+    irq_printf("--- --------------"); object_split('-',NAME_LEN - 14);irq_printf(" - - - --------\n");
+
+    for (rt_int32_t i = NonMaskableInt_IRQn; i <= 1; i++)
+    {
+        if(exception_name[-i] == RT_NULL)
+          continue;
+        irq_printf("%3d ",16 + i);
+        irq_printf("%-*.*s X X X",NAME_LEN,NAME_LEN,exception_name[-i]);
+        irq_printf("    %02d\n",NVIC_GetPriority((IRQn_Type)+i));
+    }
+}
+/**
+  * @brief  获取NVIC信息.
   * @param  None.
   * @retval None.
   * @note   None.
@@ -68,7 +98,7 @@ static void nvic_irq_get(rt_uint8_t i)
     irq_printf("    %02d\n",NVIC_GetPriority((IRQn_Type)i));
 }
 /**
-  * @brief  获取NVIC优先级,以中断编号排序.
+  * @brief  获取NVIC信息,以中断编号排序.
   * @param  None.
   * @retval None.
   * @note   None.
@@ -85,7 +115,7 @@ static void nvic_irq_get_idx(void)
     }
 }
 /**
-  * @brief  获取NVIC优先级,以中断优先级从低到高排序.
+  * @brief  获取NVIC信息,以中断优先级从低到高排序.
   * @param  None.
   * @retval None.
   * @note   None.
@@ -156,6 +186,8 @@ static void nvic_irq_msh(uint8_t argc, char **argv)
 
     if (argc < 2)
     {
+        nvic_exception_get();
+        irq_printf("\n\n");
         nvic_irq_get_idx();
     }
     else
