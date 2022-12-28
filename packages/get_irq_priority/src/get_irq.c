@@ -37,7 +37,7 @@ static const char * const nvic_name[] = {
 };
 #define IRQ_LEN sizeof(nvic_name) / sizeof(nvic_name[1])
 /* Private function prototypes -----------------------------------------------*/
-rt_inline void object_split(int len)
+static void object_split(int len)
 {
     while (len--) rt_kprintf(" ");
 }
@@ -47,7 +47,7 @@ rt_inline void object_split(int len)
   * @retval None.
   * @note   None.
 */
-void nvic_irq_get(rt_uint8_t i)
+static void nvic_irq_get(rt_uint8_t i)
 {
     /* see:Properties of the different exception types (continued)
        Exception number(ldx) = 16 and above
@@ -64,7 +64,7 @@ void nvic_irq_get(rt_uint8_t i)
   * @retval None.
   * @note   None.
 */
-void nvic_irq_get_idx(void)
+static void nvic_irq_get_idx(void)
 {
     rt_kprintf("ldx name");
     object_split(NAME_LEN - 3);
@@ -77,15 +77,13 @@ void nvic_irq_get_idx(void)
         }
     }
 }
-MSH_CMD_EXPORT(nvic_irq_get_idx, get all enable NVIC_IRQ.Sort by interrupt number.);
-
 /**
   * @brief  获取NVIC优先级,以中断优先级从低到高排序.
   * @param  None.
   * @retval None.
   * @note   None.
 */
-void nvic_irq_get_priotity(void)
+static void nvic_irq_get_priotity(void)
 {
     type buff[IRQ_LEN];
     rt_uint8_t temp;
@@ -128,4 +126,58 @@ void nvic_irq_get_priotity(void)
         }
     }
 }
-MSH_CMD_EXPORT(nvic_irq_get_priotity, get all enable NVIC_IRQ.Sort by interrupt priority from low to high.);
+#ifdef RT_USING_MSH
+/**
+  * @brief  MSH命令
+  * @param  None
+  * @retval None
+  * @note   None
+*/
+static void nvic_irq_msh(uint8_t argc, char **argv) 
+{
+#define IRQ_CMD_IDX               0
+#define IRQ_CMD_PRIOTITY          1
+#define MOTOR_CMD_SET             2
+
+    size_t i = 0;
+
+    const char* help_info[] =
+    {
+            [IRQ_CMD_IDX]             = "nvic_irq idx        - Get all enable NVIC_IRQ,sort by interrupt number.",
+            [IRQ_CMD_PRIOTITY]        = "nvic_irq priority   - Get all enable NVIC_IRQ,sort by interrupt priority from low to high.",
+            [MOTOR_CMD_SET]           = "nvic_irq set        - Sets the NVIC IRQ level.",
+    };
+
+    if (argc < 2)
+    {
+        nvic_irq_get_idx();
+    }
+    else
+    {
+        const char *operator = argv[1];
+
+        if (!rt_strcmp(operator, "idx"))
+        {
+            nvic_irq_get_idx();
+        }
+        else if (!rt_strcmp(operator, "priority"))
+        {
+            nvic_irq_get_priotity();
+        }
+        else if (!rt_strcmp(operator, "set"))
+        {
+            return;
+        }
+        else
+        {
+            rt_kprintf("Usage:\n");
+            for (i = 0; i < sizeof(help_info) / sizeof(char*); i++)
+            {
+                rt_kprintf("%s\n", help_info[i]);
+            }
+            rt_kprintf("\n");
+        }
+    }
+}
+MSH_CMD_EXPORT_ALIAS(nvic_irq_msh,nvic_irq,nvic_irq command.);
+#endif /*RT_USING_MSH*/
