@@ -22,9 +22,9 @@ typedef struct
   rt_uint8_t priotity;  //优先级
 }type;
 /* Private define ------------------------------------------------------------*/
-
+#define irq_printf rt_kprintf
 /* Private macro -------------------------------------------------------------*/
-#define NAME_LEN 30
+#define NAME_LEN 30 //中断名称长度
 /* Private variables ---------------------------------------------------------*/
 static const char * const nvic_name[] = {
 #if defined(SOC_SERIES_STM32H7)
@@ -39,13 +39,13 @@ static const char * const nvic_name[] = {
 /* Private function prototypes -----------------------------------------------*/
 rt_inline void object_split(char c,int len)
 {
-    while (len--) rt_kprintf("%c",c);
+    while (len--) irq_printf("%c",c);
 }
 
 rt_inline void nvic_irq_header(void)
 {
-    rt_kprintf("num name"); object_split(' ',NAME_LEN - 3); rt_kprintf("E P A Priotity\n");
-    rt_kprintf("--- ----"); object_split('-',NAME_LEN - 4);rt_kprintf(" - - - --------\n");
+    irq_printf("num name"); object_split(' ',NAME_LEN - 3); irq_printf("E P A Priotity\n");
+    irq_printf("--- ----"); object_split('-',NAME_LEN - 4);irq_printf(" - - - --------\n");
 }
 
 /**
@@ -56,11 +56,11 @@ rt_inline void nvic_irq_header(void)
 */
 static void nvic_irq_get(rt_uint8_t i)
 {
-    rt_kprintf("%3d ",i);
-    rt_kprintf("%-*.*s 1",NAME_LEN,NAME_LEN,nvic_name[i]);
-    NVIC_GetPendingIRQ(i) ? rt_kprintf(" 1") : rt_kprintf(" 0");
-    NVIC_GetActive(i)     ? rt_kprintf(" 1") : rt_kprintf(" 0");
-    rt_kprintf("    %02d\n",NVIC_GetPriority(i));
+    irq_printf("%3d ",i);
+    irq_printf("%-*.*s 1",NAME_LEN,NAME_LEN,nvic_name[i]);
+    NVIC_GetPendingIRQ(i) ? irq_printf(" 1") : irq_printf(" 0");
+    NVIC_GetActive(i)     ? irq_printf(" 1") : irq_printf(" 0");
+    irq_printf("    %02d\n",NVIC_GetPriority(i));
 }
 /**
   * @brief  获取NVIC优先级,以中断编号排序.
@@ -171,7 +171,7 @@ static void nvic_irq_msh(uint8_t argc, char **argv)
             uint32_t priority;
             if(argc <= 3) 
             {
-                rt_kprintf("Usage: nvic_irq set [IRQn] [priority] --Sets the NVIC IRQ level.\n");
+                irq_printf("Usage: nvic_irq set [IRQn] [priority] --Sets the NVIC IRQ level.\n");
                 return;
             }
 
@@ -179,24 +179,24 @@ static void nvic_irq_msh(uint8_t argc, char **argv)
             priority = atoi(argv[3]);
             if((IRQn < 0 || IRQn > IRQ_LEN) || (priority < 0 || priority > 15))
             {
-                rt_kprintf("IRQ must be greater than 0 and less than IQR LEN, currently IRQ = %d\n",IRQn);
-                rt_kprintf("priority must be greater than 0 and less than 15, currently priority = %d\n",priority);
+                irq_printf("IRQ must be greater than 0 and less than IQR LEN, currently IRQ = %d\n",IRQn);
+                irq_printf("priority must be greater than 0 and less than 15, currently priority = %d\n",priority);
                 return;
             }
             else
             {
                 NVIC_SetPriority(IRQn,priority);
-                rt_kprintf("The interrupt priority for IRQ number %i set to %d\n",IRQn,priority);
+                irq_printf("The interrupt priority for IRQ number %i set to %d\n",IRQn,priority);
             }
         }
         else
         {
-            rt_kprintf("Usage:\n");
+            irq_printf("Usage:\n");
             for (i = 0; i < sizeof(help_info) / sizeof(char*); i++)
             {
-                rt_kprintf("%s\n", help_info[i]);
+                irq_printf("%s\n", help_info[i]);
             }
-            rt_kprintf("\n");
+            irq_printf("\n");
         }
     }
 }
