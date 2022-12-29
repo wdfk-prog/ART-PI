@@ -28,5 +28,10 @@
   "path": "/packages/system/syswatch", 
   "ver": "latest", 
   "name": "SYSWATCH"
+ }, 
+ {
+  "path": "/packages/misc/get_irq_priority", 
+  "ver": "latest", 
+  "name": "GET_IRQ_PRIORITY"
  }
 ]

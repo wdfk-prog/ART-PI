@@ -317,6 +317,8 @@
 /* entertainment: terminal games and other interesting software packages */
 
 /* end of entertainment: terminal games and other interesting software packages */
+#define PKG_USING_GET_IRQ_PRIORITY
+#define PKG_USING_GET_IRQ_PRIORITY_LATEST_VERSION
 /* end of miscellaneous packages */
 
 /* Arduino libraries */

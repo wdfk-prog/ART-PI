@@ -1,12 +1,12 @@
 /**
- * @file irq_stm32f2.h
- * @brief
+ * @file irq_stm32f3.h
+ * @brief 
  * @author HLY (1425075683@qq.com)
  * @version 1.0
  * @date 2022-12-27
  * @copyright Copyright (c) 2022
- * @attention
- * @par ä¿®æ”¹æ—¥å¿—:
+ * @attention 
+ * @par ÐÞ¸ÄÈÕÖ¾:
  * Date       Version Author  Description
  * 2022-12-27 1.0     HLY     first version
  */
@@ -22,22 +22,22 @@
   [8]   = "EXTI2_IRQn",             /*!< EXTI Line2 Interrupt                                              */
   [9]   = "EXTI3_IRQn",             /*!< EXTI Line3 Interrupt                                              */
   [10]  = "EXTI4_IRQn",             /*!< EXTI Line4 Interrupt                                              */
-  [11]  = "DMA1_Stream0_IRQn",      /*!< DMA1 Stream 0 global Interrupt                                    */
-  [12]  = "DMA1_Stream1_IRQn",      /*!< DMA1 Stream 1 global Interrupt                                    */
-  [13]  = "DMA1_Stream2_IRQn",      /*!< DMA1 Stream 2 global Interrupt                                    */
-  [14]  = "DMA1_Stream3_IRQn",      /*!< DMA1 Stream 3 global Interrupt                                    */
-  [15]  = "DMA1_Stream4_IRQn",      /*!< DMA1 Stream 4 global Interrupt                                    */
-  [16]  = "DMA1_Stream5_IRQn",      /*!< DMA1 Stream 5 global Interrupt                                    */
-  [17]  = "DMA1_Stream6_IRQn",      /*!< DMA1 Stream 6 global Interrupt                                    */
+  [11]  = "DMA1_Stream1_IRQn",      /*!< DMA1 Stream 1 global Interrupt                                    */
+  [12]  = "DMA1_Stream2_IRQn",      /*!< DMA1 Stream 2 global Interrupt                                    */
+  [13]  = "DMA1_Stream3_IRQn",      /*!< DMA1 Stream 3 global Interrupt                                    */
+  [14]  = "DMA1_Stream4_IRQn",      /*!< DMA1 Stream 4 global Interrupt                                    */
+  [15]  = "DMA1_Stream5_IRQn",      /*!< DMA1 Stream 5 global Interrupt                                    */
+  [16]  = "DMA1_Stream6_IRQn",      /*!< DMA1 Stream 6 global Interrupt                                    */
+  [17]  = "DMA1_Stream7_IRQn",      /*!< DMA1 Stream 7 global Interrupt                                    */
   [18]  = "ADC_IRQn",               /*!< ADC1 and  ADC2 global Interrupts                                  */
   [19]  = "CAN1_TX_IRQn",           /*!< CAN1 TX Interrupt                                                 */
   [20]  = "CAN1_RX0_IRQn",          /*!< CAN1 RX0 Interrupt                                                */
   [21]  = "CAN1_RX1_IRQn",          /*!< CAN1 RX1 Interrupt                                                */
   [22]  = "CAN1_SCE_IRQn",          /*!< CAN1 SCE Interrupt                                                */
   [23]  = "EXTI9_5_IRQn",           /*!< External Line[9:5] Interrupts                                     */
-  [24]  = "TIM1_BRK_TIM9_IRQn",     /*!< TIM1 Break interrupt and TIM9 global interrupt                    */
-  [25]  = "TIM1_UP_TIM10_IRQn",     /*!< TIM1 Update Interrupt and TIM10 global interrupt                  */
-  [26]  = "TIM1_TRG_COM_TIM11_IRQn",/*!< TIM1 Trigger and Commutation Interrupt and TIM11 global interrupt */
+  [24]  = "TIM1_BRK_TIM15_IRQn",    /*!< TIM1 Break and TIM15 Interrupts                                   */
+  [25]  = "TIM1_UP_TIM16_IRQn",     /*!< TIM1 Update and TIM16 Interrupts                                  */
+  [26]  = "TIM1_TRG_COM_TIM17_IRQn",/*!< TIM1 Trigger and Commutation and TIM17 Interrupt                  */
   [27]  = "TIM1_CC_IRQn",           /*!< TIM1 Capture Compare Interrupt                                    */
   [28]  = "TIM2_IRQn",              /*!< TIM2 global Interrupt                                             */
   [29]  = "TIM3_IRQn",              /*!< TIM3 global Interrupt                                             */
@@ -53,12 +53,12 @@
   [39]  = "USART3_IRQn",            /*!< USART3 global Interrupt                                           */
   [40]  = "EXTI15_10_IRQn",         /*!< External Line[15:10] Interrupts                                   */
   [41]  = "RTC_Alarm_IRQn",         /*!< RTC Alarm (A and B) through EXTI Line Interrupt                   */
-  [42]  = "OTG_FS_WKUP_IRQn",       /*!< USB OTG FS Wakeup through EXTI line interrupt                     */
-  [43]  = "TIM8_BRK_TIM12_IRQn",    /*!< TIM8 Break Interrupt and TIM12 global interrupt                   */
-  [44]  = "TIM8_UP_TIM13_IRQn",     /*!< TIM8 Update Interrupt and TIM13 global interrupt                  */
-  [45]  = "TIM8_TRG_COM_TIM14_IRQn",/*!< TIM8 Trigger and Commutation Interrupt and TIM14 global interrupt */
+  [42]  = "USBWakeUp_IRQn",         /*!< USB Wakeup Interrupt                                              */
+  [43]  = "TIM8_BRK_IRQn",          /*!< TIM8 Break Interrupt                                              */
+  [44]  = "TIM8_UP_IRQn",           /*!< TIM8 Update Interrupt                                             */
+  [45]  = "TIM8_TRG_COM_IRQn",      /*!< TIM8 Trigger and Commutation Interrupt                            */
   [46]  = "TIM8_CC_IRQn",           /*!< TIM8 Capture Compare Interrupt                                    */
-  [47]  = "DMA1_Stream7_IRQn",      /*!< DMA1 Stream7 Interrupt                                            */
+  [47]  = "ADC3_IRQn",              /*!< ADC3 global Interrupt                                             */
   [48]  = "FMC_IRQn",               /*!< FMC global Interrupt                                              */
   [49]  = "SDIO_IRQn",              /*!< SDIO global Interrupt                                             */
   [50]  = "TIM5_IRQn",              /*!< TIM5 global Interrupt                                             */
@@ -67,28 +67,40 @@
   [53]  = "UART5_IRQn",             /*!< UART5 global Interrupt                                            */
   [54]  = "TIM6_DAC_IRQn",          /*!< TIM6 global and DAC1&2 underrun error  interrupts                 */
   [55]  = "TIM7_IRQn",              /*!< TIM7 global interrupt                                             */
-  [56]  = "DMA2_Stream0_IRQn",      /*!< DMA2 Stream 0 global Interrupt                                    */
-  [57]  = "DMA2_Stream1_IRQn",      /*!< DMA2 Stream 1 global Interrupt                                    */
-  [58]  = "DMA2_Stream2_IRQn",      /*!< DMA2 Stream 2 global Interrupt                                    */
-  [59]  = "DMA2_Stream3_IRQn",      /*!< DMA2 Stream 3 global Interrupt                                    */
-  [60]  = "DMA2_Stream4_IRQn",      /*!< DMA2 Stream 4 global Interrupt                                    */
-  [61]  = "ETH_IRQn",               /*!< Ethernet global Interrupt                                         */
-  [62]  = "ETH_WKUP_IRQn",          /*!< Ethernet Wakeup through EXTI line Interrupt                       */
-  [63]  = "CAN2_TX_IRQn ",          /*!< CAN2 TX Interrupt                                                 */
-  [64]  = "CAN2_RX0_IRQn",          /*!< CAN2 RX0 Interrupt                                                */
-  [65]  = "CAN2_RX1_IRQn",          /*!< CAN2 RX1 Interrupt                                                */
-  [66]  = "CAN2_SCE_IRQn",          /*!< CAN2 SCE Interrupt                                                */
-  [67]  = "OTG_FS_IRQn",            /*!< USB OTG FS global Interrupt                                       */
-  [68]  = "DMA2_Stream5_IRQn",      /*!< DMA2 Stream 5 global interrupt                                    */
-  [69]  = "DMA2_Stream6_IRQn",      /*!< DMA2 Stream 6 global interrupt                                    */
-  [70]  = "DMA2_Stream7_IRQn",      /*!< DMA2 Stream 7 global interrupt                                    */
+  [56]  = "DMA2_Stream1_IRQn",      /*!< DMA2 Stream 1 global Interrupt                                    */
+  [57]  = "DMA2_Stream2_IRQn",      /*!< DMA2 Stream 2 global Interrupt                                    */
+  [58]  = "DMA2_Stream3_IRQn",      /*!< DMA2 Stream 3 global Interrupt                                    */
+  [59]  = "DMA2_Stream4_IRQn",      /*!< DMA2 Stream 4 global Interrupt                                    */
+  [60]  = "DMA2_Stream5_IRQn",      /*!< DMA2 Stream 5 global Interrupt                                    */
+#if defined(STM32F373xC) || defined(STM32F378xx)
+  [61]  = "SDADC1_IRQn",            /*!< ADC Sigma Delta 1 global Interrupt                                */
+  [62]  = "SDADC2_IRQn",            /*!< ADC Sigma Delta 2 global Interrupt                                */
+  [63]  = "SDADC3_IRQn",            /*!< ADC Sigma Delta 1 global Interrupt                                */
+#else
+  [61]  = "ADC4_IRQn",              /*!< ADC4  global Interrupt                                            */
+#endif /* defined(STM32F373xC) || defined(STM32F378xx) */
+  [64]  = "COMP1_2_3_IRQn",         /*!< COMP1, COMP2 and COMP3 global Interrupt via EXTI Line21, 22 and 29*/
+  [65]  = "COMP4_5_6_IRQn",         /*!< COMP4, COMP5 and COMP6 global Interrupt via EXTI Line30, 31 and 32*/
+  [66]  = "COMP7_IRQn",             /*!< COMP7 global Interrupt via EXTI Line33                            */
+#if defined(STM32F334x8)
+  [67]  = "HRTIM1_Master_IRQn",     /*!< HRTIM Master Timer global Interrupts                              */
+  [68]  = "HRTIM1_TIMA_IRQn",       /*!< HRTIM Timer A global Interrupt                                    */
+  [69]  = "HRTIM1_TIMB_IRQn",       /*!< HRTIM Timer B global Interrupt                                    */
+  [70]  = "HRTIM1_TIMC_IRQn",       /*!< HRTIM Timer C global Interrupt                                    */
+  [71]  = "HRTIM1_TIMD_IRQn",       /*!< HRTIM Timer D global Interrupt                                    */
+  [72]  = "HRTIM1_TIME_IRQn",       /*!< HRTIM Timer E global Interrupt                                    */
+  [73]  = "HRTIM1_FLT_IRQn",        /*!< HRTIM Fault global Interrupt                                      */
+#else
   [71]  = "USART6_IRQn",            /*!< USART6 global interrupt                                           */
   [72]  = "I2C3_EV_IRQn",           /*!< I2C3 event interrupt                                              */
   [73]  = "I2C3_ER_IRQn",           /*!< I2C3 error interrupt                                              */
-  [74]  = "OTG_HS_EP1_OUT_IRQn",    /*!< USB OTG HS End Point 1 Out global interrupt                       */
-  [75]  = "OTG_HS_EP1_IN_IRQn",     /*!< USB OTG HS End Point 1 In global interrupt                        */
-  [76]  = "OTG_HS_WKUP_IRQn",       /*!< USB OTG HS Wakeup through EXTI interrupt                          */
-  [77]  = "OTG_HS_IRQn",            /*!< USB OTG HS global interrupt                                       */
-  [78]  = "DCMI_IRQn",              /*!< DCMI_IRQn global interrupt                                        */
-  [79]  = "CRYP_IRQn",              /*!< CRYP crypto global interrupt                                      */
-  [80]  = "HASH_RNG_IRQn",          /*!< Hash and Rng global global interrupt                              */
+#endif /* defined(STM32F334x8) */
+  [74]  = "USB_HP_IRQn",            /*!< USB High Priority global Interrupt                                */
+  [75]  = "USB_LP_IRQn",            /*!< USB Low Priority global Interrupt                                 */
+  [76]  = "USBWakeUp_RMP_IRQn",     /*!< USB Wakeup Interrupt remap                                        */
+  [77]  = "TIM20_BRK_IRQn",         /*!< TIM20 Break Interrupt                                             */
+  [78]  = "TIM20_UP_IRQn",          /*!< TIM20 Update Interrupt                                            */
+  [79]  = "TIM20_TRG_COM_IRQn",     /*!< TIM20 Trigger and Commutation Interrupt                           */
+  [80]  = "TIM20_CC_IRQn",          /*!< TIM20 Capture Compare Interrupt                                   */
+  [81]  = "FPU_IRQn",               /*!< Floating point Interrupt                                          */
+  [84]  = "SPI4_IRQn",              /*!< SPI4 global Interrupt                                             */
