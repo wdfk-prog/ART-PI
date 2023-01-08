@@ -20,7 +20,7 @@ if  CROSS_TOOL == 'gcc':
     EXEC_PATH   = r'/opt/gcc-arm-none-eabi/bin/'
 elif CROSS_TOOL == 'keil':
     PLATFORM    = 'armclang'
-    EXEC_PATH   = r'D:\Program Files(x86)\Keil\Keil_v5'
+    EXEC_PATH   = r'D:\Program files (x86)\Keil\Keil_v5'
 elif CROSS_TOOL == 'iar':
     PLATFORM    = 'iccarm'
     EXEC_PATH   = r'C:/Program Files (x86)/IAR Systems/Embedded Workbench 8.3'
