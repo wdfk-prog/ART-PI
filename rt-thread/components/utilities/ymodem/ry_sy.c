@@ -30,16 +30,6 @@ struct custom_ctx
     char fpath[DFS_PATH_MAX];
 };
 
-static const char *_get_path_lastname(const char *path)
-{
-    char *ptr;
-    if ((ptr = (char *)strrchr(path, '/')) == NULL)
-        return path;
-
-    /* skip the '/' then return */
-    return ++ptr;
-}
-
 static enum rym_code _rym_recv_begin(
     struct rym_ctx *ctx,
     rt_uint8_t *buf,
@@ -120,7 +110,6 @@ static enum rym_code _rym_send_begin(
     struct stat file_buf;
     char insert_0 = '\0';
     rt_err_t err;
-    const char *path;
 
     cctx->fd = open(cctx->fpath, O_RDONLY);
     if (cctx->fd < 0)
@@ -136,9 +125,7 @@ static enum rym_code _rym_send_begin(
         rt_kprintf("error open file.\n");
         return RYM_ERR_FILE;
     }
-
-    path = _get_path_lastname(cctx->fpath);
-    rt_sprintf((char *)buf, "%s%c%d", path, insert_0, file_buf.st_size);
+    rt_sprintf((char *)buf, "%s%c%d", (char *) & (cctx->fpath[1]), insert_0, file_buf.st_size);
 
     return RYM_CODE_SOH;
 }
