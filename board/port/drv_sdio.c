@@ -15,7 +15,7 @@
     #error "Please define at least one BSP_USING_SDIOx"
 #endif
 
-#include "drv_sdio.h"
+#include "port\drv_sdio.h"
 
 #define DBG_TAG              "drv.sdio"
 #ifdef DRV_DEBUG
