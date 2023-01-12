@@ -71,7 +71,7 @@ static void _sdcard_mount(void)
     if (device == NULL)
     {
         mmcsd_wait_cd_changed(0);
-        sdcard_change();
+        stm32_mmcsd_change();
         mmcsd_wait_cd_changed(RT_WAITING_FOREVER);
         device = rt_device_find("sd0");
     }
