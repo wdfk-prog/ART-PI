@@ -71,7 +71,7 @@ static void _sdcard_mount(void)
     if (device == NULL)
     {
         mmcsd_wait_cd_changed(0);
-        stm32_mmcsd_change();
+        sdcard_change();
         mmcsd_wait_cd_changed(RT_WAITING_FOREVER);
         device = rt_device_find("sd0");
     }
@@ -86,6 +86,10 @@ static void _sdcard_mount(void)
         {
             LOG_W("sd card mount to '/sdcard' failed!");
         }
+    }
+    else
+    {
+        LOG_E("find 'sd0' failed!");
     }
 }
 
