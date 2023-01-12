@@ -410,19 +410,34 @@
           <GroupName>board/Drivers</GroupName>
           <Files>
             <File>
+              <FileName>spi_flash_init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\port\spi_flash_init.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\main.c</FilePath>
+            </File>
+            <File>
               <FileName>rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>board\CubeMX_Config\Core\Src\rtc.c</FilePath>
             </File>
             <File>
-              <FileName>drv_sdio.c</FileName>
+              <FileName>dma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\port\drv_sdio.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\dma.c</FilePath>
             </File>
             <File>
-              <FileName>stm32h7xx_it.c</FileName>
+              <FileName>mdma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\mdma.c</FilePath>
+            </File>
+            <File>
+              <FileName>board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\board.c</FilePath>
             </File>
             <File>
               <FileName>filesystem.c</FileName>
@@ -430,29 +445,24 @@
               <FilePath>board\port\filesystem.c</FilePath>
             </File>
             <File>
-              <FileName>usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>iwdg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\iwdg.c</FilePath>
-            </File>
-            <File>
-              <FileName>sdmmc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\sdmmc.c</FilePath>
-            </File>
-            <File>
               <FileName>drv_mpu.c</FileName>
               <FileType>1</FileType>
               <FilePath>board\drv_mpu.c</FilePath>
             </File>
             <File>
-              <FileName>spi_flash_init.c</FileName>
+              <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\port\spi_flash_init.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>ulog_file_be.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\port\ulog_file_be.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</FilePath>
             </File>
             <File>
               <FileName>gpio.c</FileName>
@@ -465,34 +475,9 @@
               <FilePath>board\port\wifi_config.c</FilePath>
             </File>
             <File>
-              <FileName>drv_eth.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\port\drv_eth.c</FilePath>
-            </File>
-            <File>
               <FileName>drv_wlan.c</FileName>
               <FileType>1</FileType>
               <FilePath>board\port\drv_wlan.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_hal_msp.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_hal_msp.c</FilePath>
-            </File>
-            <File>
-              <FileName>drv_qspi_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\port\drv_qspi_flash.c</FilePath>
-            </File>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>spi.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\spi.c</FilePath>
             </File>
             <File>
               <FileName>adc.c</FileName>
@@ -500,19 +485,19 @@
               <FilePath>board\CubeMX_Config\Core\Src\adc.c</FilePath>
             </File>
             <File>
-              <FileName>dma.c</FileName>
+              <FileName>usart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\dma.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\usart.c</FilePath>
             </File>
             <File>
-              <FileName>drv_spi_ili9488.c</FileName>
+              <FileName>drv_eth.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\port\drv_spi_ili9488.c</FilePath>
+              <FilePath>board\port\drv_eth.c</FilePath>
             </File>
             <File>
-              <FileName>ulog_file_be.c</FileName>
+              <FileName>spi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\port\ulog_file_be.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\spi.c</FilePath>
             </File>
             <File>
               <FileName>system_stm32h7xx.c</FileName>
@@ -520,14 +505,24 @@
               <FilePath>board\CubeMX_Config\Core\Src\system_stm32h7xx.c</FilePath>
             </File>
             <File>
-              <FileName>mdma.c</FileName>
+              <FileName>drv_spi_ili9488.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\mdma.c</FilePath>
+              <FilePath>board\port\drv_spi_ili9488.c</FilePath>
             </File>
             <File>
-              <FileName>board.c</FileName>
+              <FileName>drv_qspi_flash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\board.c</FilePath>
+              <FilePath>board\port\drv_qspi_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>sdmmc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\sdmmc.c</FilePath>
+            </File>
+            <File>
+              <FileName>iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\iwdg.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -535,14 +530,14 @@
           <GroupName>cm_backtrace</GroupName>
           <Files>
             <File>
-              <FileName>cmb_flash_log.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>packages\CmBacktrace-latest\cmb_flash_log.c</FilePath>
-            </File>
-            <File>
               <FileName>cm_backtrace.c</FileName>
               <FileType>1</FileType>
               <FilePath>packages\CmBacktrace-latest\cm_backtrace.c</FilePath>
+            </File>
+            <File>
+              <FileName>cmb_flash_log.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\CmBacktrace-latest\cmb_flash_log.c</FilePath>
             </File>
             <File>
               <FileName>cmb_port.c</FileName>
@@ -1943,7 +1938,7 @@
               <FilePath>libraries\HAL_Drivers\drv_wdt.c</FilePath>
             </File>
             <File>
-              <FileName>HAL_Drivers_drv_sdio.c</FileName>
+              <FileName>drv_sdio.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\HAL_Drivers\drv_sdio.c</FilePath>
             </File>
@@ -1968,14 +1963,14 @@
               <FilePath>rt-thread\components\fal\src\fal_rtt.c</FilePath>
             </File>
             <File>
+              <FileName>fal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\fal\src\fal.c</FilePath>
+            </File>
+            <File>
               <FileName>fal_partition.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\components\fal\src\fal_partition.c</FilePath>
-            </File>
-            <File>
-              <FileName>fal_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\components\fal\src\fal_flash.c</FilePath>
             </File>
             <File>
               <FileName>fal_flash_sfud_port.c</FileName>
@@ -1983,9 +1978,9 @@
               <FilePath>rt-thread\components\fal\samples\porting\fal_flash_sfud_port.c</FilePath>
             </File>
             <File>
-              <FileName>fal.c</FileName>
+              <FileName>fal_flash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\fal\src\fal.c</FilePath>
+              <FilePath>rt-thread\components\fal\src\fal_flash.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2153,11 +2148,6 @@
           <GroupName>littlefs</GroupName>
           <Files>
             <File>
-              <FileName>lfs_crc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>packages\littlefs-latest\lfs_crc.c</FilePath>
-            </File>
-            <File>
               <FileName>lfs_util.c</FileName>
               <FileType>1</FileType>
               <FilePath>packages\littlefs-latest\lfs_util.c</FilePath>
@@ -2166,6 +2156,11 @@
               <FileName>lfs.c</FileName>
               <FileType>1</FileType>
               <FilePath>packages\littlefs-latest\lfs.c</FilePath>
+            </File>
+            <File>
+              <FileName>lfs_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\littlefs-latest\lfs_crc.c</FilePath>
             </File>
             <File>
               <FileName>dfs_lfs.c</FileName>
