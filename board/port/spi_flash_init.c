@@ -20,8 +20,7 @@ static int rt_flash_init(void)
     extern rt_spi_flash_device_t rt_sfud_flash_probe(const char *spi_flash_dev_name, const char *spi_dev_name);
 
     __HAL_RCC_GPIOA_CLK_ENABLE();
-    rt_hw_spi_device_attach("spi1", SPI_DEVICE_NAME, GPIOA, GPIO_PIN_4);
-
+    rt_hw_spi_device_attach("spi1", "spi10", GET_PIN(A, 4));
     /* initialize SPI Flash device */
     if (RT_NULL == rt_sfud_flash_probe("norflash0", SPI_DEVICE_NAME))
     {
