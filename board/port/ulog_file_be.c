@@ -14,7 +14,7 @@
 #include "ulog_file_be.h"
 #include <ulog_be.h>
 /* Private includes ----------------------------------------------------------*/
-#include "main.h"
+
 /* Private typedef -----------------------------------------------------------*/
 /*
 * 后端注册表
@@ -35,27 +35,32 @@ struct _log_file
 typedef enum 
 {
     console_id,
-    sys_id,
-    motion_id,
+    flash_sys_id,
+    flash_motion_id,
+    sd_sys_id,
 }ulog_file_be_name;
 /* Private define ------------------------------------------------------------*/
-#define ROOT_PATH "/flash/log"
+#define FLASH_ROOT_PATH "/flash/log"
+#define SD_ROOT_PATH    "/sdcard/log"
 #define FILE_SIZE 512 * 1024
 #define BUFF_SIZE 512
 /* Private macro -------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
-static struct ulog_backend sys_log_backend;
-static struct ulog_file_be sys_log_file;
-static struct ulog_backend motion_log_backend;
-static struct ulog_file_be motion_log_file;
+static struct ulog_backend flash_sys_log_backend;
+static struct ulog_file_be flash_sys_log_file;
+static struct ulog_backend flash_motion_log_backend;
+static struct ulog_file_be flash_motion_log_file;
+static struct ulog_backend sd_sys_log_backend;
+static struct ulog_file_be sd_sys_log_file;
 static struct ulog_file_be console_log_file;
 
 static struct _log_file table[] =
 {
-    {"console"  ,RT_NULL,&console_log_file,                                    },
-    {"sys"      ,&sys_log_backend,&sys_log_file,ROOT_PATH,10,FILE_SIZE,BUFF_SIZE},
-    {"motion"   ,&motion_log_backend,&motion_log_file,ROOT_PATH,5,FILE_SIZE,BUFF_SIZE,},
+    {"console"  ,RT_NULL,                   &console_log_file,      RT_NULL,         0,                   0},
+    {"sys"      ,&flash_sys_log_backend,    &flash_sys_log_file,    FLASH_ROOT_PATH,10, FILE_SIZE,BUFF_SIZE},
+    {"motion"   ,&flash_motion_log_backend, &flash_motion_log_file, FLASH_ROOT_PATH, 5, FILE_SIZE,BUFF_SIZE},
+    {"sys"      ,&sd_sys_log_backend,       &sd_sys_log_file,       SD_ROOT_PATH,   10, FILE_SIZE,BUFF_SIZE},
 };
 /* Private function prototypes -----------------------------------------------*/
 /************************系统日志文件后端操作函数*****************************************/
@@ -81,10 +86,26 @@ static rt_bool_t sys_log_file_backend_filter(struct ulog_backend *backend, rt_ui
 */
 void sys_log_file_backend_init(void)
 {
-    struct ulog_file_be *file_be = &sys_log_file;
-    uint8_t id = sys_id;
-    file_be->parent = sys_log_backend;
+    struct ulog_file_be *file_be = &flash_sys_log_file;
+    uint8_t id = flash_sys_id;
+    file_be->parent = flash_sys_log_backend;
     ulog_backend_filter_t filter = sys_log_file_backend_filter;
+
+    ulog_file_backend_init( file_be, 
+                            table[id].name,
+                            table[id].dir_path,
+                            table[id].max_num,
+                            table[id].max_size,
+                            table[id].buf_size);
+    
+    ulog_file_backend_enable(file_be);
+
+    ulog_backend_set_filter(&file_be->parent,filter);
+  
+    file_be = &sd_sys_log_file;
+    id = sd_sys_id;
+    file_be->parent = sd_sys_log_backend;
+    filter = sys_log_file_backend_filter;
 
     ulog_file_backend_init( file_be, 
                             table[id].name,
@@ -121,9 +142,9 @@ static rt_bool_t motion_log_file_backend_filter(struct ulog_backend *backend, rt
 */
 void motion_log_file_backend_init(void)
 {
-    struct ulog_file_be *file_be = &motion_log_file;
-    uint8_t id = motion_id;
-    file_be->parent = motion_log_backend;
+    struct ulog_file_be *file_be = &flash_motion_log_file;
+    uint8_t id = flash_motion_id;
+    file_be->parent = flash_motion_log_backend;
     ulog_backend_filter_t filter = motion_log_file_backend_filter;
 
     ulog_file_backend_init( file_be, 
