@@ -81,6 +81,15 @@ static void _sdcard_mount(void)
         if (dfs_mount("sd0", "/sdcard", "elm", 0, 0) == RT_EOK)
         {
             LOG_I("sd card mount to '/sdcard'");
+            
+#if(OUT_FILE_ENABLE == 1)
+          sys_log_file_backend_init();
+          motion_log_file_backend_init();
+#endif /*(OUT_FILE_ENABLE == 1)*/
+#if (FLASHDB_FILE_ENABLE == 1)
+          /*数据库初始化*/
+          flash_kvdb_init();
+#endif /*(FLASHDB_FILE_ENABLE == 1)*/
         }
         else
         {
@@ -189,16 +198,17 @@ int mount_init(void)
     {
         LOG_E("create sd_mount thread err!");
     }
-
-#endif /* BSP_USING_SDCARD_FS */
+#else
 #if(OUT_FILE_ENABLE == 1)
-    sys_log_file_backend_init();
-    motion_log_file_backend_init();
+          sys_log_file_backend_init();
+          motion_log_file_backend_init();
 #endif /*(OUT_FILE_ENABLE == 1)*/
 #if (FLASHDB_FILE_ENABLE == 1)
-    /*数据库初始化*/
-    flash_kvdb_init();
+          /*数据库初始化*/
+          flash_kvdb_init();
 #endif /*(FLASHDB_FILE_ENABLE == 1)*/
+#endif /* BSP_USING_SDCARD_FS */
+    
     return RT_EOK;
 }
 #endif /* BSP_USING_FS */

@@ -58,9 +58,9 @@ static struct ulog_file_be console_log_file;
 static struct _log_file table[] =
 {
     {"console"  ,RT_NULL,                   &console_log_file,      RT_NULL,         0,                   0},
-    {"sys"      ,&flash_sys_log_backend,    &flash_sys_log_file,    FLASH_ROOT_PATH,10, FILE_SIZE,BUFF_SIZE},
+    {"flash_sys",&flash_sys_log_backend,    &flash_sys_log_file,    FLASH_ROOT_PATH,10, FILE_SIZE,BUFF_SIZE},
     {"motion"   ,&flash_motion_log_backend, &flash_motion_log_file, FLASH_ROOT_PATH, 5, FILE_SIZE,BUFF_SIZE},
-    {"sys"      ,&sd_sys_log_backend,       &sd_sys_log_file,       SD_ROOT_PATH,   10, FILE_SIZE,BUFF_SIZE},
+    {"cd_sys"   ,&sd_sys_log_backend,       &sd_sys_log_file,       SD_ROOT_PATH,   10, FILE_SIZE,BUFF_SIZE},
 };
 /* Private function prototypes -----------------------------------------------*/
 /************************系统日志文件后端操作函数*****************************************/
@@ -195,6 +195,12 @@ int ulog_console_backend_filter_init(void)
     return 0;
 }
 INIT_DEVICE_EXPORT(ulog_console_backend_filter_init);
+
+rt_inline void object_split(int len)
+{
+    while (len--) rt_kprintf("-");
+}
+
 /**
   * @brief  日志文件后端卸载
   * @param  None.
@@ -232,10 +238,11 @@ static void cmd_log_file_backend(uint8_t argc, char **argv)
         if(!rt_strcmp(operator,"list")) 
         {
             const char *item_title = "file_be";
-            int maxlen = RT_NAME_MAX;    
+            int maxlen = RT_NAME_MAX;
 
             rt_kprintf("%-*.*s init_state\n",maxlen,maxlen,item_title);
-            rt_kprintf("-------- ----------\n");
+            object_split(maxlen);
+            rt_kprintf(" ----------\n");
             for(uint8_t i = 0; i < sizeof(table) / sizeof(table[0]); i++)
             {
                 rt_kprintf("%-*.*s",maxlen,maxlen,table[i].name);
