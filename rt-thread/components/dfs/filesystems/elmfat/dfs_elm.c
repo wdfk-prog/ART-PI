@@ -333,18 +333,6 @@ int dfs_elm_open(struct dfs_fd *file)
     struct dfs_filesystem *fs = file->vnode->fs;
     extern int elm_get_vol(FATFS * fat);
 
-    RT_ASSERT(file->vnode->ref_count > 0);
-    if (file->vnode->ref_count > 1)
-    {
-        if (file->vnode->type == FT_DIRECTORY
-                && !(file->flags & O_DIRECTORY))
-        {
-            return -ENOENT;
-        }
-        file->pos = 0;
-        return 0;
-    }
-
     if (fs == NULL)
         return -ENOENT;
 
@@ -437,7 +425,7 @@ int dfs_elm_open(struct dfs_fd *file)
             file->pos  = fd->fptr;
             file->vnode->size = f_size(fd);
             file->vnode->type = FT_REGULAR;
-            file->vnode->data = fd;
+            file->data = fd;
 
             if (file->flags & O_APPEND)
             {
@@ -480,7 +468,7 @@ int dfs_elm_close(struct dfs_fd *file)
     else if (file->vnode->type == FT_REGULAR)
     {
         FIL *fd = RT_NULL;
-        fd = (FIL *)(file->vnode->data);
+        fd = (FIL *)(file->data);
         RT_ASSERT(fd != RT_NULL);
 
         result = f_close(fd);
@@ -503,7 +491,7 @@ int dfs_elm_ioctl(struct dfs_fd *file, int cmd, void *args)
             FIL *fd;
             FSIZE_t fptr, length;
             FRESULT result = FR_OK;
-            fd = (FIL *)(file->vnode->data);
+            fd = (FIL *)(file->data);
             RT_ASSERT(fd != RT_NULL);
 
             /* save file read/write point */
@@ -541,7 +529,7 @@ int dfs_elm_read(struct dfs_fd *file, void *buf, size_t len)
         return -EISDIR;
     }
 
-    fd = (FIL *)(file->vnode->data);
+    fd = (FIL *)(file->data);
     RT_ASSERT(fd != RT_NULL);
 
     result = f_read(fd, buf, len, &byte_read);
@@ -564,7 +552,7 @@ int dfs_elm_write(struct dfs_fd *file, const void *buf, size_t len)
         return -EISDIR;
     }
 
-    fd = (FIL *)(file->vnode->data);
+    fd = (FIL *)(file->data);
     RT_ASSERT(fd != RT_NULL);
 
     result = f_write(fd, buf, len, &byte_write);
@@ -582,7 +570,7 @@ int dfs_elm_flush(struct dfs_fd *file)
     FIL *fd;
     FRESULT result;
 
-    fd = (FIL *)(file->vnode->data);
+    fd = (FIL *)(file->data);
     RT_ASSERT(fd != RT_NULL);
 
     result = f_sync(fd);
@@ -597,7 +585,7 @@ int dfs_elm_lseek(struct dfs_fd *file, off_t offset)
         FIL *fd;
 
         /* regular file type */
-        fd = (FIL *)(file->vnode->data);
+        fd = (FIL *)(file->data);
         RT_ASSERT(fd != RT_NULL);
 
         result = f_lseek(fd, offset);
@@ -1036,4 +1024,3 @@ void ff_memfree(void *mem)
     rt_free(mem);
 }
 #endif /* FF_USE_LFN == 3 */
-
