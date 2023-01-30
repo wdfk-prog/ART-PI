@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2023, RT-Thread Development Team
+ * Copyright (c) 2006-2021, RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -333,6 +333,17 @@ int dfs_elm_open(struct dfs_fd *file)
     struct dfs_filesystem *fs = file->vnode->fs;
     extern int elm_get_vol(FATFS * fat);
 
+    RT_ASSERT(file->vnode->ref_count > 0);
+    if (file->vnode->ref_count > 1)
+    {
+        if (file->vnode->type == FT_DIRECTORY
+                && !(file->flags & O_DIRECTORY))
+        {
+            return -ENOENT;
+        }
+        file->pos = 0;
+    }
+
     if (fs == NULL)
         return -ENOENT;
 
@@ -449,6 +460,11 @@ int dfs_elm_close(struct dfs_fd *file)
 {
     FRESULT result;
 
+    RT_ASSERT(file->vnode->ref_count > 0);
+    if (file->vnode->ref_count > 1)
+    {
+        return 0;
+    }
     result = FR_OK;
     if (file->vnode->type == FT_DIRECTORY)
     {
@@ -1019,3 +1035,4 @@ void ff_memfree(void *mem)
     rt_free(mem);
 }
 #endif /* FF_USE_LFN == 3 */
+
