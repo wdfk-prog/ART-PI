@@ -449,11 +449,6 @@ int dfs_elm_close(struct dfs_fd *file)
 {
     FRESULT result;
 
-    RT_ASSERT(file->vnode->ref_count > 0);
-    if (file->vnode->ref_count > 1)
-    {
-        return 0;
-    }
     result = FR_OK;
     if (file->vnode->type == FT_DIRECTORY)
     {
