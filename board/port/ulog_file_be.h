@@ -30,9 +30,10 @@ extern "C" {
 /* Exported variables ---------------------------------------------------------*/
 
 /* Exported functions prototypes ---------------------------------------------*/
-extern void sys_log_file_backend_init(void);
-extern void motion_log_file_backend_init(void);
+extern void flash_sys_log_file_backend_init(void);
+extern void flash_motion_log_file_backend_init(void);
 
+extern void sdcard_sys_log_file_backend_init(void);
 #ifdef __cplusplus
 }
 #endif
