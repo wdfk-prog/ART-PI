@@ -25,5 +25,5 @@ config RT_STUDIO_BUILT_IN
 source "$RTT_DIR/Kconfig"
 source "$PKGS_DIR/Kconfig"
 source "$RTT_DIR/../libraries/Kconfig"
-source "applications/Kconfig"
+source "BoardDriver/Kconfig"
 
