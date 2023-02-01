@@ -223,9 +223,6 @@ static rt_timer_t timer1;
 static iLed_t Led1;
 static void Led_CallBack(iLed_t *handle);
 
-#define LED_BULE_PIN GET_PIN(I, 8)
-#define LED_RED_PIN  GET_PIN(C, 15)
-
 // 亮灭时间 = 500 -》 500ms
 uint16_t LED_MODE_1[] = {500, 500};                               // 正常模式：亮500 灭500
 uint16_t LED_MODE_2[] = {200, 200, 200, 200, 200, 200, 200, 500}; // 四次闪烁后长灭
@@ -260,8 +257,6 @@ static void timeout1(void *parameter)
  */
 static int User_Led_Init(void)
 {
-    rt_pin_mode(LED_RED_PIN, PIN_MODE_OUTPUT);
-    rt_pin_mode(LED_BULE_PIN, PIN_MODE_OUTPUT);
     led_creat(&Led1, led_set, led_reset);
     led_set_mode(&Led1, LED_MODE_1, sizeof(LED_MODE_1), -1); // 正常
 
