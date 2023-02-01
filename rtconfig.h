@@ -343,6 +343,8 @@
 /* entertainment: terminal games and other interesting software packages */
 
 /* end of entertainment: terminal games and other interesting software packages */
+#define PKG_USING_GET_IRQ_PRIORITY
+#define PKG_USING_GET_IRQ_PRIORITY_LATEST_VERSION
 /* end of miscellaneous packages */
 
 /* Arduino libraries */
@@ -391,9 +393,10 @@
 
 /* Hardware Drivers Config */
 
+#define BOARD_STM32H750_ARTPI
 #define SOC_STM32H750XB
 #define SOC_SERIES_STM32H7
-#define BOARD_STM32H750_ARTPI
+#define SOC_FAMILY_STM32
 #define BSP_SCB_ENABLE_I_CACHE
 #define BSP_SCB_ENABLE_D_CACHE
 
