@@ -186,7 +186,8 @@ rt_weak void rt_hw_board_init(void)
 #if defined(RT_USING_HEAP)
     rt_system_heap_init((void *)HEAP_BEGIN, (void *)HEAP_END);
 #endif
-
+//    extern void MX_GPIO_Init(void);
+//    MX_GPIO_Init();
     /* Pin driver initialization is open by default */
 #ifdef RT_USING_PIN
     rt_hw_pin_init();
