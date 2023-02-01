@@ -24,7 +24,7 @@
 #include "adc.h"
 #include "dma.h"
 #include "iwdg.h"
-#include "mdma.h"
+#include "quadspi.h"
 #include "rtc.h"
 #include "sdmmc.h"
 #include "spi.h"

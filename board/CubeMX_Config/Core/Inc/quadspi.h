@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * File Name          : mdma.h
-  * Description        : This file contains all the function prototypes for
-  *                      the mdma.c file
+  * @file    quadspi.h
+  * @brief   This file contains all the function prototypes for
+  *          the quadspi.c file
   ******************************************************************************
   * @attention
   *
@@ -17,30 +17,28 @@
   ******************************************************************************
   */
 /* USER CODE END Header */
-
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __mdma_H
-#define __mdma_H
+#ifndef __QUADSPI_H__
+#define __QUADSPI_H__
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-/* MDMA transfer handles -----------------------------------------------------*/
-extern MDMA_HandleTypeDef hmdma_mdma_channel40_sdmmc1_end_data_0;
-
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
+
+extern QSPI_HandleTypeDef hqspi;
 
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
-void MX_MDMA_Init(void);
+void MX_QUADSPI_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 
@@ -50,8 +48,5 @@ void MX_MDMA_Init(void);
 }
 #endif
 
-#endif /* __mdma_H */
+#endif /* __QUADSPI_H__ */
 
-/**
-  * @}
-  */
