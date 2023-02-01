@@ -9,7 +9,7 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "led.h"
+#include "drv_led.h"
 /* Private includes ----------------------------------------------------------*/
 #include "gpio.h"
 /* Private define ------------------------------------------------------------*/
@@ -217,58 +217,3 @@ void led_tick_loop(void)
         led_handle(target);
     }
 }
-/*************************用户编写***********************************/
-#include "drv_gpio.h"
-static rt_timer_t timer1;
-static iLed_t Led1;
-static void Led_CallBack(iLed_t *handle);
-
-// 亮灭时间 = 500 -》 500ms
-uint16_t LED_MODE_1[] = {500, 500};                               // 正常模式：亮500 灭500
-uint16_t LED_MODE_2[] = {200, 200, 200, 200, 200, 200, 200, 500}; // 四次闪烁后长灭
-uint16_t LED_MODE_3[] = {200, 200, 200, 200, 200, 500};           // 三次闪烁后长灭
-uint16_t LED_MODE_4[] = {100, 100};                               // 不断闪烁
-uint16_t LED_MODE_5[] = {200, 200, 100, 500};                     // 两次闪烁后长灭
-uint16_t LED_MODE_6[] = {0, 200};                                 // 灯灭
-// 置一
-void led_set()
-{
-    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_RESET);
-}
-// 置零
-void led_reset()
-{
-    HAL_GPIO_WritePin(LED_GPIO_Port, LED_Pin, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(LED_RED_GPIO_Port, LED_RED_Pin, GPIO_PIN_SET);
-}
-/* 定时器 1 超时函数 */
-static void timeout1(void *parameter)
-{
-    led_tick();
-    led_tick_loop();
-}
-
-/**
- * @brief  用户初始化LED
- * @param  None.
- * @retval None.
- * @note
- */
-static int User_Led_Init(void)
-{
-    led_creat(&Led1, led_set, led_reset);
-    led_set_mode(&Led1, LED_MODE_1, sizeof(LED_MODE_1), -1); // 正常
-
-    /* 创建定时器 1  周期定时器 */
-    timer1 = rt_timer_create("timer1",
-                             timeout1,
-                             RT_NULL,
-                             1,
-                             RT_TIMER_FLAG_PERIODIC);
-    /* 启动定时器 1 */
-    if (timer1 != RT_NULL) 
-        rt_timer_start(timer1);
-    return 0;
-}
-INIT_APP_EXPORT(User_Led_Init);

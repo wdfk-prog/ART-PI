@@ -1,7 +1,7 @@
 /**
   ******************************************************************************
-  * @file    led.c
-  * @brief   led
+  * @file    drv_led.H
+  * @brief   drv_led
   ******************************************************************************
   * @attention https://blog.csdn.net/weixin_35698805/article/details/112614144
   * @author
@@ -9,8 +9,8 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __LED_H
-#define __LED_H
+#ifndef __DRV_LED_H
+#define __DRV_LED_H
 /*
 使用方法：
 static iLed_t Led1;
@@ -42,4 +42,7 @@ typedef struct iLed_t
 extern void led_tick_loop(void);
 extern void led_loop(void);
 extern void led_tick(void);
-#endif /* __LED_H */
+
+extern int8_t led_creat(iLed_t *handle, void (*on)(void), void (*off)(void));
+extern void led_set_mode(iLed_t *handle, uint16_t *mode, uint16_t modeLen, int16_t times);
+#endif /* __DRV_LED_H */
