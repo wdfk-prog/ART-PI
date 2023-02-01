@@ -69,4 +69,4 @@ static int rt_qspi_flash_init(void)
 }
 INIT_ENV_EXPORT(rt_qspi_flash_init);
 
-#endif/* BSP_USING_QSPI_FLASH */
+#endif /* BSP_USING_QSPI_FLASH */

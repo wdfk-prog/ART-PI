@@ -64,9 +64,9 @@ int mpu_init(void)
     MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
     MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
     MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-    
+
     HAL_MPU_ConfigRegion(&MPU_InitStruct);
-  
+
     /* Configure the MPU attributes as Cacheable write through 
        for LwIP RAM heap which contains the Tx buffers */
     MPU_InitStruct.Enable = MPU_REGION_ENABLE;
@@ -95,13 +95,12 @@ int mpu_init(void)
     MPU_InitStruct.IsShareable       = MPU_ACCESS_NOT_SHAREABLE;
     MPU_InitStruct.IsCacheable       = MPU_ACCESS_CACHEABLE;
     MPU_InitStruct.IsBufferable      = MPU_ACCESS_NOT_BUFFERABLE;
-    
+
     HAL_MPU_ConfigRegion(&MPU_InitStruct);
 
     /* Enable the MPU */
     HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 
     return RT_EOK;
-
 }
 INIT_BOARD_EXPORT(mpu_init);

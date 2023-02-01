@@ -1,11 +1,11 @@
 /**
  * @file filesystem.c
- * @brief 
+ * @brief
  * @author HLY (1425075683@qq.com)
  * @version 1.0
  * @date 2022-12-22
  * @copyright Copyright (c) 2022
- * @attention 
+ * @attention
  * @par 修改日志:
  * Date       Version Author  Description
  * 2022-12-22 1.0     HLY     first version
@@ -15,20 +15,20 @@
 /* Private includes ----------------------------------------------------------*/
 #ifdef BSP_USING_FS
 #if DFS_FILESYSTEMS_MAX < 4
-    #error "Please define DFS_FILESYSTEMS_MAX more than 4"
+#error "Please define DFS_FILESYSTEMS_MAX more than 4"
 #endif
 #if DFS_FILESYSTEM_TYPES_MAX < 4
-    #error "Please define DFS_FILESYSTEM_TYPES_MAX more than 4"
+#error "Please define DFS_FILESYSTEM_TYPES_MAX more than 4"
 #endif
 
 #include <dfs_fs.h>
 #include "dfs_romfs.h"
 #ifdef BSP_USING_SDCARD_FS
-    #include <board.h>
-    #include "drv_sdio.h"
+#include <board.h>
+#include "drv_sdio.h"
 #endif /* BSP_USING_SDCARD_FS */
 #ifdef BSP_USING_SPI_FLASH_FS
-    #include "fal.h"
+#include "fal.h"
 #endif /* BSP_USING_SPI_FLASH_FS */
 
 #include "ulog_file_be.h"
@@ -44,18 +44,15 @@
 
 /* Private variables ---------------------------------------------------------*/
 static const rt_uint8_t _romfs_root_readme_txt[] = {
-0x20,0x20,0x5c,0x20,0x7c,0x20,0x2f,0x0d,0x0a,0x20,0x2d,0x20,0x48,0x4c,0x59,0x20,0x2d,0x20,0x20,0x20,0x20,0x56,0x65,0x72,0x73,0x69,0x6f,0x6e,0x20,0x20,0x56,0x30,0x2e,0x30,0x2e,0x31,0x0d,0x0a,0x20,0x20,0x2f,0x20,0x7c,0x20,0x5c,0x20,0x20,0x20,0x20,0x20,0x0d,0x0a
-};
+    0x20, 0x20, 0x5c, 0x20, 0x7c, 0x20, 0x2f, 0x0d, 0x0a, 0x20, 0x2d, 0x20, 0x48, 0x4c, 0x59, 0x20, 0x2d, 0x20, 0x20, 0x20, 0x20, 0x56, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x20, 0x20, 0x56, 0x30, 0x2e, 0x30, 0x2e, 0x31, 0x0d, 0x0a, 0x20, 0x20, 0x2f, 0x20, 0x7c, 0x20, 0x5c, 0x20, 0x20, 0x20, 0x20, 0x20, 0x0d, 0x0a};
 
 static const struct romfs_dirent _romfs_root[] = {
     {ROMFS_DIRENT_DIR, "flash", RT_NULL, 0},
-    {ROMFS_DIRENT_FILE, "readme.txt", (rt_uint8_t *)_romfs_root_readme_txt, sizeof(_romfs_root_readme_txt)/sizeof(_romfs_root_readme_txt[0])},
-    {ROMFS_DIRENT_DIR, "sdcard", RT_NULL, 0}
-};
+    {ROMFS_DIRENT_FILE, "readme.txt", (rt_uint8_t *)_romfs_root_readme_txt, sizeof(_romfs_root_readme_txt) / sizeof(_romfs_root_readme_txt[0])},
+    {ROMFS_DIRENT_DIR, "sdcard", RT_NULL, 0}};
 
 const struct romfs_dirent romfs_root = {
-    ROMFS_DIRENT_DIR, "/", (rt_uint8_t *)_romfs_root, sizeof(_romfs_root)/sizeof(_romfs_root[0])
-};
+    ROMFS_DIRENT_DIR, "/", (rt_uint8_t *)_romfs_root, sizeof(_romfs_root) / sizeof(_romfs_root[0])};
 /* Private function prototypes -----------------------------------------------*/
 #ifdef BSP_USING_SDCARD_FS
 
@@ -81,8 +78,8 @@ static void _sdcard_mount(void)
         if (dfs_mount("sd0", "/sdcard", "elm", 0, 0) == RT_EOK)
         {
             LOG_I("sd card mount to '/sdcard'");
-#if(OUT_FILE_ENABLE == 1)
-          sdcard_sys_log_file_backend_init();
+#if (OUT_FILE_ENABLE == 1)
+            sdcard_sys_log_file_backend_init();
 #endif /*(OUT_FILE_ENABLE == 1)*/
         }
         else
@@ -153,7 +150,7 @@ int mount_init(void)
 
     if (flash_dev)
     {
-        //mount filesystem
+        // mount filesystem
         if (dfs_mount(flash_dev->parent.name, "/flash", "lfs", 0, 0) != 0)
         {
             LOG_W("mount to '/flash' failed! try to mkfs %s", flash_dev->parent.name);
@@ -193,13 +190,13 @@ int mount_init(void)
         LOG_E("create sd_mount thread err!");
     }
 #endif /* BSP_USING_SDCARD_FS */
-#if(OUT_FILE_ENABLE == 1)
-          flash_sys_log_file_backend_init();
-          flash_motion_log_file_backend_init();
+#if (OUT_FILE_ENABLE == 1)
+    flash_sys_log_file_backend_init();
+    flash_motion_log_file_backend_init();
 #endif /*(OUT_FILE_ENABLE == 1)*/
 #if (FLASHDB_FILE_ENABLE == 1)
-          /*数据库初始化*/
-          flash_kvdb_init();
+    /*数据库初始化*/
+    flash_kvdb_init();
 #endif /*(FLASHDB_FILE_ENABLE == 1)*/
     return RT_EOK;
 }

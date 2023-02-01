@@ -13,7 +13,7 @@
 #include <spi_flash.h>
 #include <drv_spi.h>
 
-#define SPI_DEVICE_NAME     "spi10"
+#define SPI_DEVICE_NAME "spi10"
 
 static int rt_flash_init(void)
 {
@@ -26,9 +26,9 @@ static int rt_flash_init(void)
     {
         return -RT_ERROR;
     }
-    
+
     struct rt_spi_device *spi_dev;
- /* 查找 spi 设备获取设备句柄 */
+    /* 查找 spi 设备获取设备句柄 */
     spi_dev = (struct rt_spi_device *)rt_device_find(SPI_DEVICE_NAME);
     if (!spi_dev)
     {
@@ -36,11 +36,11 @@ static int rt_flash_init(void)
     }
     else
     {
-       struct rt_spi_configuration cfg;
-      cfg.data_width = 8;
-      cfg.mode = RT_SPI_MODE_0 | RT_SPI_MSB;
-      cfg.max_hz = 100 * 1000 *1000;//100MHZ
-      rt_spi_configure(spi_dev,&cfg);
+        struct rt_spi_configuration cfg;
+        cfg.data_width = 8;
+        cfg.mode = RT_SPI_MODE_0 | RT_SPI_MSB;
+        cfg.max_hz = 100 * 1000 * 1000; // 100MHZ
+        rt_spi_configure(spi_dev, &cfg);
     }
     return RT_EOK;
 }
