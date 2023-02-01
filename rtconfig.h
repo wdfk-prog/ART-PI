@@ -343,6 +343,18 @@
 /* entertainment: terminal games and other interesting software packages */
 
 /* end of entertainment: terminal games and other interesting software packages */
+#define PKG_USING_MFBD
+#define PKG_MFBD_BTN_CODE_SIZE_2BYTE
+#define PKG_MFBD_BTN_CODE_SIZE 2
+#define PKG_MFBD_BTN_COUNT_SIZE_2BYTE
+#define PKG_MFBD_BTN_COUNT_SIZE 2
+#define PKG_MFBD_BTN_INDEX_SIZE_4BYTE
+#define PKG_MFBD_BTN_INDEX_SIZE 4
+#define PKG_MFBD_USE_TINY_BUTTON
+#define PKG_MFBD_USE_NORMAL_BUTTON
+#define PKG_MFBD_USE_MULTIFUCNTION_BUTTON
+#define PKG_USING_MFBD_LATEST_VERSION
+#define PKG_MFBD_VER_NUM 0x999999
 #define PKG_USING_GET_IRQ_PRIORITY
 #define PKG_USING_GET_IRQ_PRIORITY_LATEST_VERSION
 /* end of miscellaneous packages */
