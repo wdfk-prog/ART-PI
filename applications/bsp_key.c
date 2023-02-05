@@ -73,7 +73,7 @@ static const X_GPIO_T s_gpio_list[HARD_KEY_NUM] =
 /*支持Button单击、长按的操作，不支持多次连击操作*/
 #if MFBD_USE_NORMAL_BUTTON//重复时间与长按时间请大于滤波时间
 /*                       名称,             按键索引,          滤波时间,        重复时间，     长按时间        */
-MFBD_NBTN_DEFAULT_DEFINE(KEY1,            KID_KEY1,         50/SCAN_PERIOD,1000/SCAN_PERIOD, 1000/SCAN_PERIOD);//持续读取
+MFBD_NBTN_DEFAULT_DEFINE(KEY1,            KID_KEY1);//持续读取
 #endif /* MFBD_USE_NORMAL_BUTTON */
 #if MFBD_USE_NORMAL_BUTTON
 MFBD_NBTN_ARRAYLIST(nbtn_list,
@@ -104,16 +104,16 @@ const mfbd_group_t btn_group =
 #if MFBD_PARAMS_SAME_IN_GROUP
 
 #if MFBD_USE_TINY_BUTTON || MFBD_USE_NORMAL_BUTTON || MFBD_USE_MULTIFUCNTION_BUTTON
-    3,
+    50/SCAN_PERIOD,                                //滤波时间
 #endif /*  MFBD_USE_TINY_BUTTON || MFBD_USE_NORMAL_BUTTON || MFBD_USE_MULTIFUCNTION_BUTTON */
 
 #if MFBD_USE_NORMAL_BUTTON || MFBD_USE_MULTIFUCNTION_BUTTON
-    30,
-    150,
+    300/SCAN_PERIOD,                               //重复时间
+    1500/SCAN_PERIOD,                              //长按时间
 #endif /* MFBD_USE_NORMAL_BUTTON || MFBD_USE_MULTIFUCNTION_BUTTON */
 
 #if MFBD_USE_MULTIFUCNTION_BUTTON
-    75,
+    750/SCAN_PERIOD,                              //多次点击时间
 #endif /* MFBD_USE_MULTIFUCNTION_BUTTON */
 
 #endif /*MFBD_PARAMS_SAME_IN_GROUP*/
