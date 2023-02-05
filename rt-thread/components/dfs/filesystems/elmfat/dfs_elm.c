@@ -342,7 +342,6 @@ int dfs_elm_open(struct dfs_fd *file)
             return -ENOENT;
         }
         file->pos = 0;
-        return 0;
     }
 
     if (fs == NULL)
