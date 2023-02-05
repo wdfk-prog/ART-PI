@@ -58,11 +58,11 @@ static const X_GPIO_T s_gpio_list[HARD_KEY_NUM] =
 };	
 /* Private define ------------------------------------------------------------*/
 /* 扫描线程配置 */
-#define SCAN_THREAD_PRIORITY      3//线程优先级
+#define SCAN_THREAD_PRIORITY      28//线程优先级
 #define SCAN_THREAD_TIMESLICE     10 //线程时间片
 #define SCAN_THREAD_STACK_SIZE    512//栈大小
 /* 处理线程配置 */
-#define HANDLER_THREAD_PRIORITY   4//线程优先级
+#define HANDLER_THREAD_PRIORITY   29//线程优先级
 #define HANDLER_THREAD_TIMESLICE  10 //线程时间片
 #define HANDLER_THREAD_STACK_SIZE 1024//栈大小
 
