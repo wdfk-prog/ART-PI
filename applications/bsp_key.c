@@ -30,26 +30,33 @@ typedef struct
 	uint16_t pin;
 	uint8_t ActiveLevel;	/* 激活电平 */
 }X_GPIO_T;
-/* 按键ID*/
+/* 按键ID */
 typedef enum
 {
   KID_KEY1 = 0X00,
   HARD_KEY_NUM,
 }KEY_ID;
 /*
-	定义键值代码, 必须按如下次序定时每个键的按下、弹起和长按事件
-
+  定义多次点击状态
+*/
+typedef enum
+{
+  KEY_NONE,
+  KEY1_CLICK_1,
+  KEY1_CLICK_2,
+  KEY1_CLICK_3,
+  MAX_CLICK_NUM,
+}CLICK_CODE;
+/*	
+  定义键值代码,必须按如下次序定时每个键的按下、弹起和长按事件
 	推荐使用enum, 不用#define，原因：
 	(1) 便于新增键值,方便调整顺序，使代码看起来舒服点
 	(2) 编译器可帮我们避免键值重复。
 */
 typedef enum
 {
-	KEY_NONE = 0X00,			      /* 0 表示按键事件 */
-
-  KEY1_DOWN_CODE,				   
-  KEY1_UP_CODE,				    
-  KEY1_LONG_CODE,				   
+  KEY1_UP_CODE = MAX_CLICK_NUM,
+  KEY1_LONG_CODE,
 }KEY_CODE;
 /* GPIO和PIN定义 */
 static const X_GPIO_T s_gpio_list[HARD_KEY_NUM] = 
@@ -70,13 +77,15 @@ static const X_GPIO_T s_gpio_list[HARD_KEY_NUM] =
 #define SCAN_PERIOD          10//扫描周期 单位ms
 #define HANDLER_PERIOD       50//处理周期 单位ms
 /* Private macro -------------------------------------------------------------*/
-/*支持Button单击、长按的操作，不支持多次连击操作*/
-#if MFBD_USE_NORMAL_BUTTON//重复时间与长按时间请大于滤波时间
-/*                       名称,             按键索引,          滤波时间,        重复时间，     长按时间        */
-MFBD_NBTN_DEFAULT_DEFINE(KEY1,            KID_KEY1);//持续读取
+const mfbd_btn_code_t KEY1_DOWN_CODES[MAX_CLICK_NUM - 1] = 
+{KEY1_CLICK_1,KEY1_CLICK_2,KEY1_CLICK_3};
+/*支持Button单击&长按的操作,多次连击操作*/
+#if MFBD_USE_MULTIFUCNTION_BUTTON//重复时间与长按时间请大于滤波时间
+/*                       名称,             按键索引, 最大点击数量 */
+MFBD_MBTN_DEFAULT_DEFINE(KEY1,            KID_KEY1,  MAX_CLICK_NUM - 1);//持续读取
 #endif /* MFBD_USE_NORMAL_BUTTON */
-#if MFBD_USE_NORMAL_BUTTON
-MFBD_NBTN_ARRAYLIST(nbtn_list,
+#if MFBD_USE_MULTIFUCNTION_BUTTON
+MFBD_MBTN_ARRAYLIST(mbtn_list,
                     &KEY1    );
 #endif /* MFBD_USE_NORMAL_BUTTON */
 /* Private variables ---------------------------------------------------------*/
@@ -108,12 +117,12 @@ const mfbd_group_t btn_group =
 #endif /*  MFBD_USE_TINY_BUTTON || MFBD_USE_NORMAL_BUTTON || MFBD_USE_MULTIFUCNTION_BUTTON */
 
 #if MFBD_USE_NORMAL_BUTTON || MFBD_USE_MULTIFUCNTION_BUTTON
-    300/SCAN_PERIOD,                               //重复时间
-    1500/SCAN_PERIOD,                              //长按时间
+    2000/SCAN_PERIOD,                              //重复时间
+    1000/SCAN_PERIOD,                              //长按时间
 #endif /* MFBD_USE_NORMAL_BUTTON || MFBD_USE_MULTIFUCNTION_BUTTON */
 
 #if MFBD_USE_MULTIFUCNTION_BUTTON
-    750/SCAN_PERIOD,                              //多次点击时间
+    300/SCAN_PERIOD,                               //多次点击时间
 #endif /* MFBD_USE_MULTIFUCNTION_BUTTON */
 
 #endif /*MFBD_PARAMS_SAME_IN_GROUP*/
@@ -133,15 +142,21 @@ void key_handle(mfbd_btn_code_t ucKeyCode)
       case KEY1_UP_CODE:
         LOG_I("KEY1 UP");
         break;
-      case KEY1_DOWN_CODE: 
+      case KEY1_CLICK_1: 
         LOG_I("KEY1 DOWN");
-        break;
         break;
       case KEY1_LONG_CODE:
         LOG_I("KEY1 LONG");
         break;
+      case KEY1_CLICK_2: 
+        LOG_I("KEY1 CLICK 2");
+        break;
+      case KEY1_CLICK_3: 
+        LOG_I("KEY1 CLICK 3");
+        break;
       default:
         /* 其它的键值不处理 */
+        LOG_I("KEY1 %d",ucKeyCode);
         break;
     }
   }
