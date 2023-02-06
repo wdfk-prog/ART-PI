@@ -159,7 +159,7 @@
           <Type>0</Type>
           <LineNumber>544</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-1878986716</Address>
+          <Address>-1878986692</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -175,7 +175,7 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>KEY1_DOWN_CODES[4]</ItemText>
+          <ItemText>KEY1_DOWN_CODES</ItemText>
         </Ww>
         <Ww>
           <count>1</count>
