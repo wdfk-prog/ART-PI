@@ -140,6 +140,14 @@
 
 /* Using USB */
 
+#define RT_USING_USB
+#define RT_USING_USB_DEVICE
+#define RT_USBD_THREAD_STACK_SZ 4096
+#define USB_VENDOR_ID 0x0FFE
+#define USB_PRODUCT_ID 0x0001
+#define _RT_USB_DEVICE_MSTORAGE
+#define RT_USB_DEVICE_MSTORAGE
+#define RT_USB_MSTORAGE_DISK_NAME "sd0"
 /* end of Using USB */
 /* end of Device Drivers */
 
@@ -443,6 +451,7 @@
 #define BSP_SPI1_RX_USING_DMA
 #define BSP_USING_SDIO
 #define BSP_USING_SDIO1
+#define BSP_USING_USBD
 #define BSP_USING_ONCHIP_RTC
 #define BSP_USING_WDT
 /* end of On-chip Peripheral */
