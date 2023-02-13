@@ -182,6 +182,10 @@ rt_weak void rt_hw_board_init(void)
     /* System clock initialization */
     SystemClock_Config();
 
+extern void PeriphCommonClock_Config(void);
+    /* Configure the peripherals common clocks */
+    PeriphCommonClock_Config();
+
     /* Heap initialization */
 #if defined(RT_USING_HEAP)
     rt_system_heap_init((void *)HEAP_BEGIN, (void *)HEAP_END);

@@ -306,6 +306,7 @@ static int Version(void)
                                  HAL_RCC_GetPCLK1Freq(),
                                  HAL_RCC_GetPCLK2Freq());
   LOG_W("SPI1_Frequency   = %d", HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI123));
+  LOG_W("SDMMC_Frequency  = %d", HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDMMC));
   LOG_W("HAL version      = V%d.%d.%d", HAL_GetHalVersion() >> 24, HAL_GetHalVersion() >> 16 & 0XFF, HAL_GetHalVersion() >> 8 & 0XFF);
   LOG_W("ARMcompiler version = %d", __ARMCOMPILER_VERSION);
   return RT_EOK;

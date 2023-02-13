@@ -101,9 +101,6 @@
 #define HW_SDIO_POWER_ON                       (0x03U)
 
 #define HW_SDIO_FLOW_ENABLE                    (0x01U << 14)
-#define HW_SDIO_BUSWIDE_1B                     (0x00U << 11)
-#define HW_SDIO_BUSWIDE_4B                     (0x01U << 11)
-#define HW_SDIO_BUSWIDE_8B                     (0x02U << 11)
 #define HW_SDIO_BYPASS_ENABLE                  (0x01U << 10)
 #define HW_SDIO_IDLE_ENABLE                    (0x01U << 9)
 #define HW_SDIO_CLK_ENABLE                     (0x01U << 8)

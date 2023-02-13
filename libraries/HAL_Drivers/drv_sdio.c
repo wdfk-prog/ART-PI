@@ -260,6 +260,7 @@ static void rthw_sdio_send_command(struct rthw_sdio *sdio, struct sdio_pkg *pkg)
           data ? data->blksize : 0
          );
 
+    /* open irq */
     hw_sdio->mask |= SDIO_MASKR_ALL;
     reg_cmd = cmd->cmd_code | SDMMC_CMD_CPSMEN;
 
@@ -377,7 +378,7 @@ static void rthw_sdio_request(struct rt_mmcsd_host *host, struct rt_mmcsd_req *r
   */
 static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *io_cfg)
 {
-    rt_uint32_t clkcr, temp, clk_src;
+    rt_uint32_t clkcr, div, clk_src;
     rt_uint32_t clk = io_cfg->clock;
     struct rthw_sdio *sdio = host->private_data;
     struct stm32_sdio *hw_sdio = sdio->sdio_des.hw_sdio;
@@ -408,80 +409,80 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
          );
 
     RTHW_SDIO_LOCK(sdio);
-    
-//    rt_uint32_t div;
-//    div = clk_src / clk;
-//    if ((clk == 0) || (div == 0))
-//    {
-//        clkcr = 0;
-//    }
-//    else
-//    {
-//        if (div < 2)
-//        {
-//            div = 2;
-//        }
-//        else if (div > 0xFF)
-//        {
-//            div = 0xFF;
-//        }
-//        div -= 2;
-//        clkcr = div | HW_SDIO_CLK_ENABLE;
-//    }
+    /* Related register definitions are inconsistent and incompatible */
+#if defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F2) || defined(SOC_SERIES_STM32F4)
+    div = clk_src / clk;
+    if ((clk == 0) || (div == 0))
+    {
+        clkcr = 0;
+    }
+    else
+    {
+        if (div < 2)
+        {
+            div = 2;
+        }
+        else if (div > 0xFF)
+        {
+            div = 0xFF;
+        }
+        div -= 2;
+        clkcr = div | SDIO_CLKCR_CLKEN;
+    }
 
-//    if (io_cfg->bus_width == MMCSD_BUS_WIDTH_8)
-//    {
-//        clkcr |= HW_SDIO_BUSWIDE_8B;
-//    }
-//    else if (io_cfg->bus_width == MMCSD_BUS_WIDTH_4)
-//    {
-//        clkcr |= HW_SDIO_BUSWIDE_4B;
-//    }
-//    else
-//    {
-//        clkcr |= HW_SDIO_BUSWIDE_1B;
-//    }
+    if (io_cfg->bus_width == MMCSD_BUS_WIDTH_8)
+    {
+        clkcr |= SDIO_CLKCR_WIDBUS_1;
+    }
+    else if (io_cfg->bus_width == MMCSD_BUS_WIDTH_4)
+    {
+        clkcr |= SDIO_CLKCR_WIDBUS_0;
+    }
 
-//    hw_sdio->clkcr = clkcr;
-
-    clk_src = SDIO_CLOCK_FREQ;
-
+    hw_sdio->clkcr = clkcr;
+#elif defined(SOC_SERIES_STM32L4) || defined(SOC_SERIES_STM32F7) || defined(SOC_SERIES_STM32H7)
     if (clk > 0)
     {
         if (clk > host->freq_max)
             clk = host->freq_max;
 
-        temp = DIV_ROUND_UP(clk_src, 2 * clk);
+        div = DIV_ROUND_UP(clk_src, 2 * clk);
 
-        if (temp > 0x3FF)
-            temp = 0x3FF;
+        if (div > 0x3FF)
+            div = 0x3FF;
     }
 
     if (io_cfg->bus_width == MMCSD_BUS_WIDTH_4)
-        temp |= SDMMC_CLKCR_WIDBUS_0;
+    {
+        div |= SDMMC_CLKCR_WIDBUS_0;
+    }
     else if (io_cfg->bus_width == MMCSD_BUS_WIDTH_8)
-        temp |= SDMMC_CLKCR_WIDBUS_1;
+    {
+        div |= SDMMC_CLKCR_WIDBUS_1;
+    }
 
-    hw_sdio->clkcr = temp;
+    hw_sdio->clkcr = div;
+#endif /*  defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F4) */
 
-    if (io_cfg->power_mode == MMCSD_POWER_ON)
-        hw_sdio->power |= SDMMC_POWER_PWRCTRL;
-
-//    switch (io_cfg->power_mode)
-//    {
-//    case MMCSD_POWER_OFF:
-//        hw_sdio->power = HW_SDIO_POWER_OFF;
-//        break;
-//    case MMCSD_POWER_UP:
-//        hw_sdio->power = HW_SDIO_POWER_UP;
-//        break;
-//    case MMCSD_POWER_ON:
-//        hw_sdio->power = HW_SDIO_POWER_ON;
-//        break;
-//    default:
-//        LOG_W("unknown power_mode %d", io_cfg->power_mode);
-//        break;
-//    }
+    switch ((io_cfg->power_mode)&0X03)
+    {
+    case MMCSD_POWER_OFF:
+        hw_sdio->power |= HW_SDIO_POWER_OFF;
+        break;
+    case MMCSD_POWER_UP:
+        /* In  F4 series chips, 0X01 is reserved bit and has no practical effect.
+           For H7 series chips, 0X01 is power-on after power-off,The SDMMC disables the function and the card clock stops.
+           For H7 series chips, 0X03 is the power-on function.
+        */
+        hw_sdio->power |= HW_SDIO_POWER_ON;
+        break;
+    case MMCSD_POWER_ON:
+        hw_sdio->power |= HW_SDIO_POWER_ON;
+        break;
+    default:
+        LOG_W("unknown power_mode %d", io_cfg->power_mode);
+        break;
+    }
 
     RTHW_SDIO_UNLOCK(sdio);
 }
@@ -601,7 +602,12 @@ struct rt_mmcsd_host *sdio_host_create(struct stm32_sdio_des *sdio_des)
     host->ops = &ops;
     host->freq_min = 400 * 1000;
     host->freq_max = SDIO_MAX_FREQ;
+#if defined(SOC_SERIES_STM32H7)
     host->valid_ocr = VDD_32_33 | VDD_33_34;/* The voltage range supported is 3.2v-3.4v */
+#else
+    host->valid_ocr = 0X00FFFF80;/* The voltage range supported is 1.65v-3.6v */
+#endif /* defined(SOC_SERIES_STM32H7) */
+
 #ifndef SDIO_USING_1_BIT
     host->flags = MMCSD_BUSWIDTH_4 | MMCSD_MUTBLKWRITE | MMCSD_SUP_HIGHSPEED;
 #else
@@ -630,7 +636,11 @@ struct rt_mmcsd_host *sdio_host_create(struct stm32_sdio_des *sdio_des)
   */
 static rt_uint32_t stm32_sdio_clock_get(struct stm32_sdio *hw_sdio)
 {
-    return HAL_RCC_GetPCLK2Freq();
+#if defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F2) || defined(SOC_SERIES_STM32F4)
+    return HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDIO);
+#elif defined(SOC_SERIES_STM32L4) || defined(SOC_SERIES_STM32F7) || defined(SOC_SERIES_STM32H7)
+    return HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDMMC);
+#endif /*  defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F4) */
 }
 
 void SDIO_IRQHandler(void)
