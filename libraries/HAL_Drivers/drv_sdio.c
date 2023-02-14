@@ -53,9 +53,9 @@ struct rthw_sdio
 rt_align(SDIO_ALIGN_LEN)
 static rt_uint8_t cache_buf[SDIO_BUFF_SIZE];
 
-static rt_uint32_t stm32_sdio_clk_get(struct stm32_sdio *hw_sdio)
+static rt_uint32_t stm32_sdio_clk_get(SD_HandleTypeDef *hw_sdio)
 {
-    return SDIO_CLOCK_FREQ;
+    return SDIO_CLOCK_FREQ;//¿ÉÓÅ»¯
 }
 
 /**
@@ -147,7 +147,7 @@ static void rthw_sdio_wait_completed(struct rthw_sdio *sdio)
     rt_uint32_t status;
     struct rt_mmcsd_cmd *cmd = sdio->pkg->cmd;
     struct rt_mmcsd_data *data = cmd->data;
-    struct stm32_sdio *hw_sdio = sdio->sdio_des.hw_sdio;
+    SD_TypeDef *hw_sdio = sdio->sdio_des.hw_sdio.Instance;
 
     if (rt_event_recv(&sdio->event, 0xffffffff, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
                       rt_tick_from_millisecond(5000), &status) != RT_EOK)
@@ -162,13 +162,13 @@ static void rthw_sdio_wait_completed(struct rthw_sdio *sdio)
         return;
     }
 
-    cmd->resp[0] = hw_sdio->resp1;
+    cmd->resp[0] = hw_sdio->RESP1;
 
     if (resp_type(cmd) == RESP_R2)
     {
-        cmd->resp[1] = hw_sdio->resp2;
-        cmd->resp[2] = hw_sdio->resp3;
-        cmd->resp[3] = hw_sdio->resp4;
+        cmd->resp[1] = hw_sdio->RESP2;
+        cmd->resp[2] = hw_sdio->RESP3;
+        cmd->resp[3] = hw_sdio->RESP4;
     }
 
     if (status & HW_SDIO_ERRORS)
@@ -236,7 +236,7 @@ static void rthw_sdio_send_command(struct rthw_sdio *sdio, struct sdio_pkg *pkg)
 {
     struct rt_mmcsd_cmd *cmd = pkg->cmd;
     struct rt_mmcsd_data *data = cmd->data;
-    struct stm32_sdio *hw_sdio = sdio->sdio_des.hw_sdio;
+    SD_TypeDef *hw_sdio = sdio->sdio_des.hw_sdio.Instance;
     rt_uint32_t reg_cmd;
 
     rt_event_control(&sdio->event, RT_IPC_CMD_RESET, RT_NULL);
@@ -261,7 +261,7 @@ static void rthw_sdio_send_command(struct rthw_sdio *sdio, struct sdio_pkg *pkg)
          );
 
     /* open irq */
-    hw_sdio->mask |= SDIO_MASKR_ALL;
+    hw_sdio->MASK |= SDIO_MASKR_ALL;
     reg_cmd = cmd->cmd_code | SDMMC_CMD_CPSMEN;
 
     /* data pre configuration */
@@ -270,12 +270,12 @@ static void rthw_sdio_send_command(struct rthw_sdio *sdio, struct sdio_pkg *pkg)
         SCB_CleanInvalidateDCache();
 
         reg_cmd |= SDMMC_CMD_CMDTRANS;
-        hw_sdio->mask &= ~(SDMMC_MASK_CMDRENDIE | SDMMC_MASK_CMDSENTIE);
-        hw_sdio->dtimer = HW_SDIO_DATATIMEOUT;
-        hw_sdio->dlen = data->blks * data->blksize;
-        hw_sdio->dctrl = (get_order(data->blksize) << 4) | (data->flags & DATA_DIR_READ ? SDMMC_DCTRL_DTDIR : 0);
-        hw_sdio->idmabase0r = (rt_uint32_t)cache_buf;
-        hw_sdio->idmatrlr = SDMMC_IDMA_IDMAEN;
+        hw_sdio->MASK &= ~(SDMMC_MASK_CMDRENDIE | SDMMC_MASK_CMDSENTIE);
+        hw_sdio->DTIMER = HW_SDIO_DATATIMEOUT;
+        hw_sdio->DLEN = data->blks * data->blksize;
+        hw_sdio->DCTRL = (get_order(data->blksize) << 4) | (data->flags & DATA_DIR_READ ? SDMMC_DCTRL_DTDIR : 0);
+        hw_sdio->IDMABASE0 = (rt_uint32_t)cache_buf;
+        hw_sdio->IDMACTRL = SDMMC_IDMA_IDMAEN;
     }
 
     if (resp_type(cmd) == RESP_R2)
@@ -283,8 +283,8 @@ static void rthw_sdio_send_command(struct rthw_sdio *sdio, struct sdio_pkg *pkg)
     else if(resp_type(cmd) != RESP_NONE)
         reg_cmd |= SDMMC_CMD_WAITRESP_0;
 
-    hw_sdio->arg = cmd->arg;
-    hw_sdio->cmd = reg_cmd;
+    hw_sdio->ARG = cmd->arg;
+    hw_sdio->CMD = reg_cmd;
     /* wait completed */
     rthw_sdio_wait_completed(sdio);
 
@@ -293,12 +293,12 @@ static void rthw_sdio_send_command(struct rthw_sdio *sdio, struct sdio_pkg *pkg)
     {
         volatile rt_uint32_t count = SDIO_TX_RX_COMPLETE_TIMEOUT_LOOPS;
 
-        while (count && (hw_sdio->sta & SDMMC_STA_DPSMACT))
+        while (count && (hw_sdio->STA & SDMMC_STA_DPSMACT))
         {
             count--;
         }
 
-        if ((count == 0) || (hw_sdio->sta & HW_SDIO_ERRORS))
+        if ((count == 0) || (hw_sdio->STA & HW_SDIO_ERRORS))
         {
             cmd->err = -RT_ERROR;
         }
@@ -381,9 +381,9 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
     rt_uint32_t clkcr, div, clk_src;
     rt_uint32_t clk = io_cfg->clock;
     struct rthw_sdio *sdio = host->private_data;
-    struct stm32_sdio *hw_sdio = sdio->sdio_des.hw_sdio;
+    SD_TypeDef *hw_sdio = sdio->sdio_des.hw_sdio.Instance;
 
-    clk_src = sdio->sdio_des.clk_get(sdio->sdio_des.hw_sdio);
+    clk_src = sdio->sdio_des.clk_get(&sdio->sdio_des.hw_sdio);
     if (clk_src < 400 * 1000)
     {
         LOG_E("The clock rate is too low! rata:%d", clk_src);
@@ -461,23 +461,23 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
         div |= SDMMC_CLKCR_WIDBUS_1;
     }
 
-    hw_sdio->clkcr = div;
+    hw_sdio->CLKCR = div;
 #endif /*  defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F4) */
 
     switch ((io_cfg->power_mode)&0X03)
     {
     case MMCSD_POWER_OFF:
-        hw_sdio->power |= HW_SDIO_POWER_OFF;
+        hw_sdio->POWER |= HW_SDIO_POWER_OFF;
         break;
     case MMCSD_POWER_UP:
         /* In  F4 series chips, 0X01 is reserved bit and has no practical effect.
            For H7 series chips, 0X01 is power-on after power-off,The SDMMC disables the function and the card clock stops.
            For H7 series chips, 0X03 is the power-on function.
         */
-        hw_sdio->power |= HW_SDIO_POWER_ON;
+        hw_sdio->POWER |= HW_SDIO_POWER_ON;
         break;
     case MMCSD_POWER_ON:
-        hw_sdio->power |= HW_SDIO_POWER_ON;
+        hw_sdio->POWER |= HW_SDIO_POWER_ON;
         break;
     default:
         LOG_W("unknown power_mode %d", io_cfg->power_mode);
@@ -496,17 +496,17 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
 void rthw_sdio_irq_update(struct rt_mmcsd_host *host, rt_int32_t enable)
 {
     struct rthw_sdio *sdio = host->private_data;
-    struct stm32_sdio *hw_sdio = sdio->sdio_des.hw_sdio;
+    SD_TypeDef *hw_sdio = sdio->sdio_des.hw_sdio.Instance;
 
     if (enable)
     {
         LOG_D("enable sdio irq");
-        hw_sdio->mask |= HW_SDIO_IT_SDIOIT;
+        hw_sdio->MASK |= HW_SDIO_IT_SDIOIT;
     }
     else
     {
         LOG_D("disable sdio irq");
-        hw_sdio->mask &= ~HW_SDIO_IT_SDIOIT;
+        hw_sdio->MASK &= ~HW_SDIO_IT_SDIOIT;
     }
 }
 
@@ -529,11 +529,11 @@ static rt_int32_t rthw_sd_detect(struct rt_mmcsd_host *host)
 void rthw_sdio_irq_process(struct rt_mmcsd_host *host)
 {
     struct rthw_sdio *sdio = host->private_data;
-    struct stm32_sdio *hw_sdio = sdio->sdio_des.hw_sdio;
-    rt_uint32_t intstatus = hw_sdio->sta;
+    SD_TypeDef *hw_sdio = sdio->sdio_des.hw_sdio.Instance;
+    rt_uint32_t intstatus = hw_sdio->STA;
 
     /* clear irq flag*/
-    hw_sdio->icr = intstatus;
+    hw_sdio->ICR = intstatus;
 
     rt_event_send(&sdio->event, intstatus);
 }
@@ -580,18 +580,16 @@ struct rt_mmcsd_host *sdio_host_create(struct stm32_sdio_des *sdio_des)
 
     rt_memcpy(&sdio->sdio_des, sdio_des, sizeof(struct stm32_sdio_des));
 #ifdef BSP_USING_SDIO1
-    if((SDCARD_INSTANCE_TYPE *)sdio_des->hw_sdio == SDMMC1)
+    if(sdio_des->hw_sdio.Instance == SDCARD1_INSTANCE)
     {
-        sdio->sdio_des.hw_sdio = (sdio_des->hw_sdio == RT_NULL ? (struct stm32_sdio *)SDIO1_BASE_ADDRESS : sdio_des->hw_sdio);
         sdio->sdio_des.clk_get = (sdio_des->clk_get == RT_NULL ? stm32_sdio_clk_get : sdio_des->clk_get);
         rt_event_init(&sdio->event, "sdio1", RT_IPC_FLAG_FIFO);
         rt_mutex_init(&sdio->mutex, "sdio1", RT_IPC_FLAG_PRIO);
     }
 #endif /* BSP_USING_SDIO1 */
 #ifdef BSP_USING_SDIO2
-    if((SDCARD_INSTANCE_TYPE *)sdio_des->hw_sdio == SDMMC1)
+    if(sdio_des->hw_sdio == SDCARD2_INSTANCE)
     {
-        sdio->sdio_des.hw_sdio = (sdio_des->hw_sdio == RT_NULL ? (struct stm32_sdio *)SDIO2_BASE_ADDRESS : sdio_des->hw_sdio);
         sdio->sdio_des.clk_get = (sdio_des->clk_get == RT_NULL ? stm32_sdio_clk_get : sdio_des->clk_get);
         rt_event_init(&sdio->event, "sdio2", RT_IPC_FLAG_FIFO);
         rt_mutex_init(&sdio->mutex, "sdio2", RT_IPC_FLAG_PRIO);
@@ -634,7 +632,7 @@ struct rt_mmcsd_host *sdio_host_create(struct stm32_sdio_des *sdio_des)
   * @param  hw_sdio: stm32_sdio
   * @retval PCLK2Freq
   */
-static rt_uint32_t stm32_sdio_clock_get(struct stm32_sdio *hw_sdio)
+static rt_uint32_t stm32_sdio_clock_get(SD_HandleTypeDef *hw_sdio)
 {
 #if defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F2) || defined(SOC_SERIES_STM32F4)
     return HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDIO);
@@ -678,28 +676,14 @@ int rt_hw_sdio_init(void)
 {
 #ifdef BSP_USING_SDIO1
     struct stm32_sdio_des sdio_des1;
-    SD_HandleTypeDef hsd1;
-    hsd1.Instance = SDCARD1_INSTANCE;
-    {
-        rt_uint32_t tmpreg = 0x00U;
-#if defined(SOC_SERIES_STM32F1)
-        /* enable DMA clock && Delay after an RCC peripheral clock enabling*/
-        SET_BIT(RCC->AHBENR, sdio_config.dma_rx.dma_rcc);
-        tmpreg = READ_BIT(RCC->AHBENR, sdio_config.dma_rx.dma_rcc);
-#elif defined(SOC_SERIES_STM32F4) || defined(SOC_SERIES_STM32F7) || defined(SOC_SERIES_STM32L4) || defined(SOC_SERIES_STM32F2)
-   || defined(SOC_SERIES_STM32H7)
-        SET_BIT(RCC->AHB1ENR, sdio_config.dma_rx.dma_rcc);
-        /* Delay after an RCC peripheral clock enabling */
-        tmpreg = READ_BIT(RCC->AHB1ENR, sdio_config.dma_rx.dma_rcc);
-#endif /* defined(SOC_SERIES_STM32F1) */
-        UNUSED(tmpreg); /* To avoid compiler warnings */
-    }
-    HAL_SD_MspInit(&hsd1);
+
+    sdio_des1.hw_sdio.Instance = SDCARD1_INSTANCE;
+
+    HAL_SD_MspInit(&sdio_des1.hw_sdio);
     HAL_NVIC_SetPriority(SDCARD1_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(SDCARD1_IRQn);
 
     sdio_des1.clk_get  = stm32_sdio_clock_get;
-    sdio_des1.hw_sdio  = (struct stm32_sdio *)SDCARD1_INSTANCE;
 
     host1 = sdio_host_create(&sdio_des1);
 
@@ -712,25 +696,12 @@ int rt_hw_sdio_init(void)
 
 #ifdef BSP_USING_SDIO2
     struct stm32_sdio_des sdio_des1;
-    SD_HandleTypeDef hsd2;
-    hsd2.Instance = SDCARD1_INSTANCE;
-    {
-        rt_uint32_t tmpreg = 0x00U;
-#if defined(SOC_SERIES_STM32F1)
-        /* enable DMA clock && Delay after an RCC peripheral clock enabling*/
-        SET_BIT(RCC->AHBENR, sdio_config.dma_rx.dma_rcc);
-        tmpreg = READ_BIT(RCC->AHBENR, sdio_config.dma_rx.dma_rcc);
-#elif defined(SOC_SERIES_STM32F4) || defined(SOC_SERIES_STM32F7) || defined(SOC_SERIES_STM32L4) || defined(SOC_SERIES_STM32F2)
-   || defined(SOC_SERIES_STM32H7)
-        SET_BIT(RCC->AHB1ENR, sdio_config.dma_rx.dma_rcc);
-        /* Delay after an RCC peripheral clock enabling */
-        tmpreg = READ_BIT(RCC->AHB1ENR, sdio_config.dma_rx.dma_rcc);
-#endif /* defined(SOC_SERIES_STM32F1) */
-        UNUSED(tmpreg); /* To avoid compiler warnings */
-    }
+
+    sdio_des2.hsd.Instance = SDCARD2_INSTANCE;
+
     HAL_NVIC_SetPriority(SDCARD2_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(SDCARD2_IRQn);
-    HAL_SD_MspInit(&hsd2);
+    HAL_SD_MspInit(&sdio_des2.hsd);
 
     sdio_des2.clk_get  = stm32_sdio_clock_get;
     sdio_des2.hw_sdio  = (struct stm32_sdio *)SDCARD2_INSTANCE;

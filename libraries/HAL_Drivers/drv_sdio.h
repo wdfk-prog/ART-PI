@@ -20,15 +20,12 @@
 #include <drivers/mmcsd_core.h>
 #include <drivers/sdio.h>
 
-#if defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F2) || defined(SOC_SERIES_STM32F4)
-#define SDCARD_INSTANCE_TYPE              SDIO_TypeDef
-#elif defined(SOC_SERIES_STM32L4) || defined(SOC_SERIES_STM32F7) || defined(SOC_SERIES_STM32H7)
-#define SDCARD_INSTANCE_TYPE              SDMMC_TypeDef
-#endif /*  defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F4) */
+#define SDCARD_INSTANCE_TYPE              SD_TypeDef
 
 #if defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F2) || defined(SOC_SERIES_STM32F4)
 #define SDCARD1_INSTANCE                   SDIO
 #define SDCARD1_IRQn                       SDIO_IRQn
+#define SDIO1_BASE_ADDRESS                (SDIO_BASE)
 #elif defined(SOC_SERIES_STM32L4) || defined(SOC_SERIES_STM32F7) || defined(SOC_SERIES_STM32H7)
 #define SDCARD1_INSTANCE                   SDMMC1
 #define SDCARD1_IRQn                       SDMMC1_IRQn
@@ -141,41 +138,13 @@
 
 #define HW_SDIO_DATATIMEOUT                 (0xFFFFFFFFU)
 
-struct stm32_sdio
-{
-    volatile rt_uint32_t power;         /* offset 0x00 */
-    volatile rt_uint32_t clkcr;         /* offset 0x04 */
-    volatile rt_uint32_t arg;           /* offset 0x08 */
-    volatile rt_uint32_t cmd;           /* offset 0x0C */
-    volatile rt_uint32_t respcmd;       /* offset 0x10 */
-    volatile rt_uint32_t resp1;         /* offset 0x14 */
-    volatile rt_uint32_t resp2;         /* offset 0x18 */
-    volatile rt_uint32_t resp3;         /* offset 0x1C */
-    volatile rt_uint32_t resp4;         /* offset 0x20 */
-    volatile rt_uint32_t dtimer;        /* offset 0x24 */
-    volatile rt_uint32_t dlen;          /* offset 0x28 */
-    volatile rt_uint32_t dctrl;         /* offset 0x2C */
-    volatile rt_uint32_t dcount;        /* offset 0x30 */
-    volatile rt_uint32_t sta;           /* offset 0x34 */
-    volatile rt_uint32_t icr;           /* offset 0x38 */
-    volatile rt_uint32_t mask;          /* offset 0x3C */
-    volatile rt_uint32_t acktimer;      /* offset 0x40 */
-    volatile rt_uint32_t reserved0[3];  /* offset 0x44 ~ 0x4C */
-    volatile rt_uint32_t idmatrlr;      /* offset 0x50 */
-    volatile rt_uint32_t idmabsizer;    /* offset 0x54 */
-    volatile rt_uint32_t idmabase0r;    /* offset 0x58 */
-    volatile rt_uint32_t idmabase1r;    /* offset 0x5C */
-    volatile rt_uint32_t reserved1[8];  /* offset 0x60 ~ 7C */
-    volatile rt_uint32_t fifo;          /* offset 0x80 */
-};
-
 typedef rt_err_t (*dma_txconfig)(rt_uint32_t *src, rt_uint32_t *dst, int size);
 typedef rt_err_t (*dma_rxconfig)(rt_uint32_t *src, rt_uint32_t *dst, int size);
-typedef rt_uint32_t (*sdio_clk_get)(struct stm32_sdio *hw_sdio);
+typedef rt_uint32_t (*sdio_clk_get)(SD_HandleTypeDef *hw_sdio);
 
 struct stm32_sdio_des
 {
-    struct stm32_sdio *hw_sdio;
+    SD_HandleTypeDef hw_sdio;
     sdio_clk_get clk_get;
 };
 
