@@ -676,13 +676,13 @@ int rt_hw_sdio_init(void)
 {
 #ifdef BSP_USING_SDIO1
     struct stm32_sdio_des sdio_des1;
-
+    rt_memset(&sdio_des1, 0, sizeof(sdio_des1));
     sdio_des1.hw_sdio.Instance = SDCARD1_INSTANCE;
-
+    /* Msp SD initialization */
     HAL_SD_MspInit(&sdio_des1.hw_sdio);
+
     HAL_NVIC_SetPriority(SDCARD1_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(SDCARD1_IRQn);
-
     sdio_des1.clk_get  = stm32_sdio_clock_get;
 
     host1 = sdio_host_create(&sdio_des1);
@@ -690,7 +690,7 @@ int rt_hw_sdio_init(void)
     if (host1 == RT_NULL)
     {
         LOG_E("host1 create fail");
-        return -1;
+        return -RT_ERROR;
     }
 #endif /* BSP_USING_SDIO1 */
 
