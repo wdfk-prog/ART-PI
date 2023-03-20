@@ -629,7 +629,7 @@ __exit:
         if (at_server_local)
         {
             rt_free(at_server_local);
-        }
+        }components/drivers/i2c/i2c_core.c
 
         LOG_E("RT-Thread AT server (V%s) initialize failed(%d).", AT_SW_VERSION, result);
     }
