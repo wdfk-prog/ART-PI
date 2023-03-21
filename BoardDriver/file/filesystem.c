@@ -75,17 +75,30 @@ static void _sdcard_mount(void)
 
     if (device != RT_NULL)
     {
+        rt_err_t ret = RT_EOK;
         if (dfs_mount("sd0", "/sdcard", "elm", 0, 0) == RT_EOK)
         {
             LOG_I("sd card mount to '/sdcard'");
-#if (OUT_FILE_ENABLE == 1)
-            sdcard_sys_log_file_backend_init();
-#endif /*(OUT_FILE_ENABLE == 1)*/
         }
         else
         {
-            LOG_W("sd card mount to '/sdcard' failed!");
+            dfs_mkfs("elm", "sd0");
+            if (dfs_mount("sd0", "/sdcard", "elm", 0, 0) == RT_EOK)
+            {
+                LOG_I("sd card mkfs to '/sdcard'");
+            }
+            else
+            {
+                LOG_W("sd card mount to '/sdcard' failed!");
+                ret = -RT_ERROR;
+            }
         }
+#if (OUT_FILE_ENABLE == 1)
+        if(ret == RT_EOK)
+        {
+            sdcard_sys_log_file_backend_init();
+        }
+#endif /*(OUT_FILE_ENABLE == 1)*/
     }
     else
     {
