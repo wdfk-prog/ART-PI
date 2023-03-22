@@ -41,7 +41,7 @@ typedef enum
 }ulog_file_be_name;
 /* Private define ------------------------------------------------------------*/
 #define FLASH_ROOT_PATH "/flash/log"
-#define SD_ROOT_PATH    "/sdcard/log"
+#define SD_ROOT_PATH    "/sdcard/log1"
 #define FILE_SIZE 512 * 1024
 #define BUFF_SIZE 512
 /* Private macro -------------------------------------------------------------*/

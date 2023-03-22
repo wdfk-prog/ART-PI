@@ -57,6 +57,11 @@
 #define SDIO_MAX_FREQ        (25 * 1000 * 1000)
 #endif
 
+/* Frequencies used in the driver for clock divider calculation */
+#define SD_INIT_FREQ                   400000U   /* Initalization phase : 400 kHz max */
+#define SD_NORMAL_SPEED_FREQ           25000000U /* Normal speed phase : 25 MHz max */
+#define SD_HIGH_SPEED_FREQ             50000000U /* High speed phase : 50 MHz max */
+
 #define HW_SDIO_IT_CCRCFAIL                    (0x01U << 0)
 #define HW_SDIO_IT_DCRCFAIL                    (0x01U << 1)
 #define HW_SDIO_IT_CTIMEOUT                    (0x01U << 2)

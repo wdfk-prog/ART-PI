@@ -53,11 +53,6 @@ struct rthw_sdio
 rt_align(SDIO_ALIGN_LEN)
 static rt_uint8_t cache_buf[SDIO_BUFF_SIZE];
 
-static rt_uint32_t stm32_sdio_clk_get(SD_HandleTypeDef *hw_sdio)
-{
-    return SDIO_CLOCK_FREQ;//¿ÉÓÅ»¯
-}
-
 /**
   * @brief  This function get order from sdio.
   * @param  data
@@ -441,27 +436,91 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
 
     hw_sdio->clkcr = clkcr;
 #elif defined(SOC_SERIES_STM32L4) || defined(SOC_SERIES_STM32F7) || defined(SOC_SERIES_STM32H7)
-    if (clk > 0)
+    SD_HandleTypeDef *hsd = &sdio->sdio_des.hw_sdio;
+    SDMMC_InitTypeDef Init;
+    rt_uint32_t sdmmc_clk      = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDMMC);
+    if (sdmmc_clk != 0U)
     {
-        if (clk > host->freq_max)
-            clk = host->freq_max;
-
-        div = DIV_ROUND_UP(clk_src, 2 * clk);
-
-        if (div > 0x3FF)
-            div = 0x3FF;
+      /* Configure the SDMMC peripheral */
+      Init.ClockEdge           = hsd->Init.ClockEdge;
+      Init.ClockPowerSave      = hsd->Init.ClockPowerSave;
+      if (io_cfg->bus_width == MMCSD_BUS_WIDTH_4)
+      {
+          Init.BusWide             = SDMMC_BUS_WIDE_4B;
+      }
+      else if (io_cfg->bus_width == MMCSD_BUS_WIDTH_8)
+      {
+          Init.BusWide             = SDMMC_BUS_WIDE_8B;
+      }
+      else
+      {
+          Init.BusWide             = SDMMC_BUS_WIDE_1B;
+      }
+      Init.HardwareFlowControl = hsd->Init.HardwareFlowControl;
+      /* Check if user Clock div < Normal speed 25Mhz, no change in Clockdiv */
+      if (hsd->Init.ClockDiv >= (sdmmc_clk / (2U * SD_NORMAL_SPEED_FREQ)))
+      {
+            Init.ClockDiv = hsd->Init.ClockDiv;
+      }
+      else if (hsd->SdCard.CardSpeed == CARD_ULTRA_HIGH_SPEED)
+      {
+            /* UltraHigh speed SD card,user Clock div */
+            Init.ClockDiv = hsd->Init.ClockDiv;
+      }
+      else if (hsd->SdCard.CardSpeed == CARD_HIGH_SPEED)
+      {
+            /* High speed SD card, Max Frequency = 50Mhz */
+            if (hsd->Init.ClockDiv == 0U)
+            {
+                if (sdmmc_clk > SD_HIGH_SPEED_FREQ)
+                {
+                    Init.ClockDiv = sdmmc_clk / (2U * SD_HIGH_SPEED_FREQ);
+                }
+                else
+                {
+                    Init.ClockDiv = hsd->Init.ClockDiv;
+                }
+            }
+            else
+            {
+                if ((sdmmc_clk/(2U * hsd->Init.ClockDiv)) > SD_HIGH_SPEED_FREQ)
+                {
+                    Init.ClockDiv = sdmmc_clk / (2U * SD_HIGH_SPEED_FREQ);
+                }
+                else
+                {
+                    Init.ClockDiv = hsd->Init.ClockDiv;
+                }
+            }
+      }
+      else
+      {
+            /* No High speed SD card, Max Frequency = 25Mhz */
+            if (hsd->Init.ClockDiv == 0U)
+            {
+                if (sdmmc_clk > SD_NORMAL_SPEED_FREQ)
+                {
+                    Init.ClockDiv = sdmmc_clk / (2U * SD_NORMAL_SPEED_FREQ);
+                }
+                else
+                {
+                    Init.ClockDiv = hsd->Init.ClockDiv;
+                }
+            }
+            else
+            {
+                if ((sdmmc_clk/(2U * hsd->Init.ClockDiv)) > SD_NORMAL_SPEED_FREQ)
+                {
+                    Init.ClockDiv = sdmmc_clk / (2U * SD_NORMAL_SPEED_FREQ);
+                }
+                else
+                {
+                    Init.ClockDiv = hsd->Init.ClockDiv;
+                }
+            }
+      }
+      (void)SDMMC_Init(hsd->Instance, Init);
     }
-
-    if (io_cfg->bus_width == MMCSD_BUS_WIDTH_4)
-    {
-        div |= SDMMC_CLKCR_WIDBUS_0;
-    }
-    else if (io_cfg->bus_width == MMCSD_BUS_WIDTH_8)
-    {
-        div |= SDMMC_CLKCR_WIDBUS_1;
-    }
-
-    hw_sdio->CLKCR = div;
 #endif /*  defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F4) */
 
     switch ((io_cfg->power_mode)&0X03)
@@ -483,7 +542,6 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
         LOG_W("unknown power_mode %d", io_cfg->power_mode);
         break;
     }
-
     RTHW_SDIO_UNLOCK(sdio);
 }
 
@@ -496,17 +554,16 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
 void rthw_sdio_irq_update(struct rt_mmcsd_host *host, rt_int32_t enable)
 {
     struct rthw_sdio *sdio = host->private_data;
-    SD_TypeDef *hw_sdio = sdio->sdio_des.hw_sdio.Instance;
 
     if (enable)
     {
         LOG_D("enable sdio irq");
-        hw_sdio->MASK |= HW_SDIO_IT_SDIOIT;
+        __HAL_SD_ENABLE_IT(&sdio->sdio_des.hw_sdio, SDMMC_IT_SDIOIT);
     }
     else
     {
         LOG_D("disable sdio irq");
-        hw_sdio->MASK &= ~HW_SDIO_IT_SDIOIT;
+        __HAL_SD_ENABLE_IT(&sdio->sdio_des.hw_sdio, SDMMC_IT_SDIOIT);
     }
 }
 
@@ -582,7 +639,6 @@ struct rt_mmcsd_host *sdio_host_create(struct stm32_sdio_des *sdio_des)
 #ifdef BSP_USING_SDIO1
     if(sdio_des->hw_sdio.Instance == SDCARD1_INSTANCE)
     {
-        sdio->sdio_des.clk_get = (sdio_des->clk_get == RT_NULL ? stm32_sdio_clk_get : sdio_des->clk_get);
         rt_event_init(&sdio->event, "sdio1", RT_IPC_FLAG_FIFO);
         rt_mutex_init(&sdio->mutex, "sdio1", RT_IPC_FLAG_PRIO);
     }
@@ -590,7 +646,6 @@ struct rt_mmcsd_host *sdio_host_create(struct stm32_sdio_des *sdio_des)
 #ifdef BSP_USING_SDIO2
     if(sdio_des->hw_sdio == SDCARD2_INSTANCE)
     {
-        sdio->sdio_des.clk_get = (sdio_des->clk_get == RT_NULL ? stm32_sdio_clk_get : sdio_des->clk_get);
         rt_event_init(&sdio->event, "sdio2", RT_IPC_FLAG_FIFO);
         rt_mutex_init(&sdio->mutex, "sdio2", RT_IPC_FLAG_PRIO);
     }
@@ -680,7 +735,7 @@ int rt_hw_sdio_init(void)
     sdio_des1.hw_sdio.Instance = SDCARD1_INSTANCE;
     /* Msp SD initialization */
     HAL_SD_MspInit(&sdio_des1.hw_sdio);
-
+    /* NVIC configuration for SDIO interrupts */
     HAL_NVIC_SetPriority(SDCARD1_IRQn, 2, 0);
     HAL_NVIC_EnableIRQ(SDCARD1_IRQn);
     sdio_des1.clk_get  = stm32_sdio_clock_get;
