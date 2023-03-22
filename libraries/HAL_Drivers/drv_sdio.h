@@ -86,8 +86,6 @@
 #define HW_SDIO_IT_RXDAVL                      (0x01U << 21)
 #define HW_SDIO_IT_SDIOIT                      (0x01U << 22)
 
-#define DIV_ROUND_UP(n,d) (((n) + (d) - 1) / (d))
-
 #define HW_SDIO_ERRORS \
     (HW_SDIO_IT_CCRCFAIL | HW_SDIO_IT_CTIMEOUT | \
      HW_SDIO_IT_DCRCFAIL | HW_SDIO_IT_DTIMEOUT | \

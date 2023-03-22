@@ -377,20 +377,23 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
     rt_uint32_t clk = io_cfg->clock;
     struct rthw_sdio *sdio = host->private_data;
     SD_TypeDef *hw_sdio = sdio->sdio_des.hw_sdio.Instance;
+    SD_HandleTypeDef *hsd = &sdio->sdio_des.hw_sdio;
+    SDMMC_InitTypeDef Init;
 
-    clk_src = sdio->sdio_des.clk_get(&sdio->sdio_des.hw_sdio);
-    if (clk_src < 400 * 1000)
+    rt_uint32_t sdmmc_clk      = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDMMC);
+    if (sdmmc_clk < 400 * 1000)
     {
-        LOG_E("The clock rate is too low! rata:%d", clk_src);
+        LOG_E("The clock rate is too low! rata:%d", sdmmc_clk);
         return;
     }
 
-    if (clk > host->freq_max) clk = host->freq_max;
+    if (clk > host->freq_max)
+        clk = host->freq_max;
 
-    if (clk > clk_src)
+    if (clk > sdmmc_clk)
     {
         LOG_W("Setting rate is greater than clock source rate.");
-        clk = clk_src;
+        clk = sdmmc_clk;
     }
 
     LOG_D("clk:%d width:%s%s%s power:%s%s%s",
@@ -403,72 +406,39 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
           io_cfg->power_mode == MMCSD_POWER_ON ? "ON" : ""
          );
 
-    RTHW_SDIO_LOCK(sdio);
-    /* Related register definitions are inconsistent and incompatible */
-#if defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F2) || defined(SOC_SERIES_STM32F4)
-    div = clk_src / clk;
-    if ((clk == 0) || (div == 0))
-    {
-        clkcr = 0;
-    }
-    else
-    {
-        if (div < 2)
-        {
-            div = 2;
-        }
-        else if (div > 0xFF)
-        {
-            div = 0xFF;
-        }
-        div -= 2;
-        clkcr = div | SDIO_CLKCR_CLKEN;
-    }
-
-    if (io_cfg->bus_width == MMCSD_BUS_WIDTH_8)
-    {
-        clkcr |= SDIO_CLKCR_WIDBUS_1;
-    }
-    else if (io_cfg->bus_width == MMCSD_BUS_WIDTH_4)
-    {
-        clkcr |= SDIO_CLKCR_WIDBUS_0;
-    }
-
-    hw_sdio->clkcr = clkcr;
-#elif defined(SOC_SERIES_STM32L4) || defined(SOC_SERIES_STM32F7) || defined(SOC_SERIES_STM32H7)
-    SD_HandleTypeDef *hsd = &sdio->sdio_des.hw_sdio;
-    SDMMC_InitTypeDef Init;
-    rt_uint32_t sdmmc_clk      = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDMMC);
     if (sdmmc_clk != 0U)
     {
-      /* Configure the SDMMC peripheral */
-      Init.ClockEdge           = hsd->Init.ClockEdge;
-      Init.ClockPowerSave      = hsd->Init.ClockPowerSave;
-      if (io_cfg->bus_width == MMCSD_BUS_WIDTH_4)
-      {
-          Init.BusWide             = SDMMC_BUS_WIDE_4B;
-      }
-      else if (io_cfg->bus_width == MMCSD_BUS_WIDTH_8)
-      {
-          Init.BusWide             = SDMMC_BUS_WIDE_8B;
-      }
-      else
-      {
-          Init.BusWide             = SDMMC_BUS_WIDE_1B;
-      }
-      Init.HardwareFlowControl = hsd->Init.HardwareFlowControl;
-      /* Check if user Clock div < Normal speed 25Mhz, no change in Clockdiv */
-      if (hsd->Init.ClockDiv >= (sdmmc_clk / (2U * SD_NORMAL_SPEED_FREQ)))
-      {
+        hsd->Init.ClockDiv = sdmmc_clk / (2U * SD_INIT_FREQ);
+        /* Configure the SDMMC peripheral */
+        Init.ClockEdge           = hsd->Init.ClockEdge;
+        Init.ClockPowerSave      = hsd->Init.ClockPowerSave;
+        if (io_cfg->bus_width == MMCSD_BUS_WIDTH_4)
+        {
+            Init.BusWide             = SDMMC_BUS_WIDE_4B;
+        }
+        else if (io_cfg->bus_width == MMCSD_BUS_WIDTH_8)
+        {
+            Init.BusWide             = SDMMC_BUS_WIDE_8B;
+        }
+        else
+        {
+            Init.BusWide             = SDMMC_BUS_WIDE_1B;
+        }
+        Init.HardwareFlowControl = hsd->Init.HardwareFlowControl;
+        /* Check if user Clock div < Normal speed 25Mhz, no change in Clockdiv */
+        if (hsd->Init.ClockDiv >= (sdmmc_clk / (2U * SD_NORMAL_SPEED_FREQ)))
+        {
             Init.ClockDiv = hsd->Init.ClockDiv;
-      }
-      else if (hsd->SdCard.CardSpeed == CARD_ULTRA_HIGH_SPEED)
-      {
+        }
+        //CARD_ULTRA_HIGH_SPEED :UHS-I SD Card <50Mo/s for SDR50, DDR5 Cards and <104Mo/s for SDR104, Spec version 3.01
+        else if (MMCSD_TIMING_UHS_SDR50 <= io_cfg->timing && io_cfg->timing <= MMCSD_TIMING_UHS_DDR50)
+        {
             /* UltraHigh speed SD card,user Clock div */
             Init.ClockDiv = hsd->Init.ClockDiv;
-      }
-      else if (hsd->SdCard.CardSpeed == CARD_HIGH_SPEED)
-      {
+        }
+        //CARD_HIGH_SPEED: High Speed Card <25Mo/s , Spec version 2.00
+        else if (io_cfg->timing == MMCSD_TIMING_SD_HS)
+        {
             /* High speed SD card, Max Frequency = 50Mhz */
             if (hsd->Init.ClockDiv == 0U)
             {
@@ -492,9 +462,10 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
                     Init.ClockDiv = hsd->Init.ClockDiv;
                 }
             }
-      }
-      else
-      {
+        }
+        //CARD_NORMAL_SPEED: Normal Speed Card <12.5Mo/s , Spec Version 1.01
+        else if (io_cfg->timing == MMCSD_TIMING_LEGACY)
+        {
             /* No High speed SD card, Max Frequency = 25Mhz */
             if (hsd->Init.ClockDiv == 0U)
             {
@@ -518,31 +489,28 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
                     Init.ClockDiv = hsd->Init.ClockDiv;
                 }
             }
-      }
-      (void)SDMMC_Init(hsd->Instance, Init);
+        }
+        (void)SDMMC_Init(hsd->Instance, Init);
     }
-#endif /*  defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F4) */
-
     switch ((io_cfg->power_mode)&0X03)
     {
     case MMCSD_POWER_OFF:
-        hw_sdio->POWER |= HW_SDIO_POWER_OFF;
+        /* Set Power State to OFF */
+        (void)SDMMC_PowerState_OFF(hsd->Instance);
         break;
     case MMCSD_POWER_UP:
         /* In  F4 series chips, 0X01 is reserved bit and has no practical effect.
-           For H7 series chips, 0X01 is power-on after power-off,The SDMMC disables the function and the card clock stops.
+           For F7 series chips, 0X01 is power-on after power-off,The SDMMC disables the function and the card clock stops.
            For H7 series chips, 0X03 is the power-on function.
         */
-        hw_sdio->POWER |= HW_SDIO_POWER_ON;
-        break;
     case MMCSD_POWER_ON:
-        hw_sdio->POWER |= HW_SDIO_POWER_ON;
+        /* Set Power State to ON */
+        (void)SDMMC_PowerState_ON(hsd->Instance);
         break;
     default:
-        LOG_W("unknown power_mode %d", io_cfg->power_mode);
+        LOG_W("unknown power mode %d", io_cfg->power_mode);
         break;
     }
-    RTHW_SDIO_UNLOCK(sdio);
 }
 
 /**
