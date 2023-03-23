@@ -158,12 +158,7 @@
         <Ww>
           <count>0</count>
           <WinNumber>1</WinNumber>
-          <ItemText>Init,0x0A</ItemText>
-        </Ww>
-        <Ww>
-          <count>1</count>
-          <WinNumber>1</WinNumber>
-          <ItemText>hsd-&gt;Init,0x0A</ItemText>
+          <ItemText>cmd</ItemText>
         </Ww>
       </WatchWindow1>
       <Tracepoint>
