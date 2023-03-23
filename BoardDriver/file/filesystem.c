@@ -68,24 +68,37 @@ static void _sdcard_mount(void)
     if (device == NULL)
     {
         mmcsd_wait_cd_changed(0);
-        stm32_mmcsd_change();
+        sdcard_change();
         mmcsd_wait_cd_changed(RT_WAITING_FOREVER);
         device = rt_device_find("sd0");
     }
 
     if (device != RT_NULL)
     {
+        rt_err_t ret = RT_EOK;
         if (dfs_mount("sd0", "/sdcard", "elm", 0, 0) == RT_EOK)
         {
             LOG_I("sd card mount to '/sdcard'");
-#if (OUT_FILE_ENABLE == 1)
-            sdcard_sys_log_file_backend_init();
-#endif /*(OUT_FILE_ENABLE == 1)*/
         }
         else
         {
-            LOG_W("sd card mount to '/sdcard' failed!");
+            dfs_mkfs("elm", "sd0");
+            if (dfs_mount("sd0", "/sdcard", "elm", 0, 0) == RT_EOK)
+            {
+                LOG_I("sd card mkfs to '/sdcard'");
+            }
+            else
+            {
+                LOG_W("sd card mount to '/sdcard' failed!");
+                ret = -RT_ERROR;
+            }
         }
+#if (OUT_FILE_ENABLE == 1)
+        if(ret == RT_EOK)
+        {
+            sdcard_sys_log_file_backend_init();
+        }
+#endif /*(OUT_FILE_ENABLE == 1)*/
     }
     else
     {
@@ -100,7 +113,7 @@ static void _sdcard_unmount(void)
     LOG_I("Unmount \"/sdcard\"");
 
     mmcsd_wait_cd_changed(0);
-    stm32_mmcsd_change();
+    sdcard_change();
     mmcsd_wait_cd_changed(RT_WAITING_FOREVER);
 }
 
