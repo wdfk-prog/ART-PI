@@ -25,14 +25,11 @@
 #endif /* DRV_DEBUG */
 #include <rtdbg.h>
 
-static struct stm32_sdio_class sdio_obj;
 static struct rt_mmcsd_host *host1;
 static struct rt_mmcsd_host *host2;
+static rt_mutex_t mmcsd_mutex = RT_NULL;
 
 #define SDIO_TX_RX_COMPLETE_TIMEOUT_LOOPS    (1000000)
-
-#define RTHW_SDIO_LOCK(_sdio)   rt_mutex_take(&_sdio->mutex, RT_WAITING_FOREVER)
-#define RTHW_SDIO_UNLOCK(_sdio) rt_mutex_release(&_sdio->mutex);
 
 struct sdio_pkg
 {
@@ -46,7 +43,6 @@ struct rthw_sdio
     struct rt_mmcsd_host *host;
     struct stm32_sdio_des sdio_des;
     struct rt_event event;
-    struct rt_mutex mutex;
     struct sdio_pkg *pkg;
 };
 
@@ -140,10 +136,8 @@ static int get_order(rt_uint32_t data)
 static void rthw_sdio_wait_completed(struct rthw_sdio *sdio)
 {
     rt_uint32_t status;
-    rt_err_t errorstate;
     struct rt_mmcsd_cmd *cmd = sdio->pkg->cmd;
-    struct rt_mmcsd_data *data = cmd->data;
-    SD_TypeDef *hsd = sdio->sdio_des.hw_sdio.Instance;
+    struct stm32_sdio *hw_sdio = sdio->sdio_des.hw_sdio;
 
     if (rt_event_recv(&sdio->event, 0xffffffff, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR,
                       rt_tick_from_millisecond(5000), &status) != RT_EOK)
@@ -153,22 +147,18 @@ static void rthw_sdio_wait_completed(struct rthw_sdio *sdio)
         return;
     }
 
-    if (sdio->pkg == RT_NULL)
-    {
-        return;
-    }
-    /* Get Card Specific Data */
-    cmd->resp[0] = hsd->RESP1;
+    cmd->resp[0] = hw_sdio->resp1;
+
     if (resp_type(cmd) == RESP_R2)
     {
-        cmd->resp[1] = hsd->RESP2;
-        cmd->resp[2] = hsd->RESP3;
-        cmd->resp[3] = hsd->RESP4;
+        cmd->resp[1] = hw_sdio->resp2;
+        cmd->resp[2] = hw_sdio->resp3;
+        cmd->resp[3] = hw_sdio->resp4;
     }
-    /* Check for error conditions */
-    if (status & HW_SDIO_ERRORS)
+
+    if (status & SDIO_ERRORS)
     {
-        if ((status & HW_SDIO_IT_CCRCFAIL) && (resp_type(cmd) & (RESP_R3 | RESP_R4)))
+        if ((status & SDMMC_STA_CCRCFAIL) && (resp_type(cmd) & (RESP_R3 | RESP_R4)))
         {
             cmd->err = RT_EOK;
         }
@@ -182,19 +172,6 @@ static void rthw_sdio_wait_completed(struct rthw_sdio *sdio)
         cmd->err = RT_EOK;
     }
 
-    if (status & HW_SDIO_IT_CTIMEOUT)
-    {
-        cmd->err = -RT_ETIMEOUT;
-    }
-    if (status & HW_SDIO_IT_DCRCFAIL)
-    {
-        data->err = -RT_ERROR;
-    }
-
-    if (status & HW_SDIO_IT_DTIMEOUT)
-    {
-        data->err = -RT_ETIMEOUT;
-    }
 
     if (cmd->err == RT_EOK)
     {
@@ -202,71 +179,9 @@ static void rthw_sdio_wait_completed(struct rthw_sdio *sdio)
     }
     else
     {
-        LOG_D("err:0x%08x, %s%s%s%s%s%s%s cmd:%d arg:0x%08x rw:%c len:%d blksize:%d",
-              status,
-              status & HW_SDIO_IT_CCRCFAIL  ? "CCRCFAIL "    : "",
-              status & HW_SDIO_IT_DCRCFAIL  ? "DCRCFAIL "    : "",
-              status & HW_SDIO_IT_CTIMEOUT  ? "CTIMEOUT "    : "",
-              status & HW_SDIO_IT_DTIMEOUT  ? "DTIMEOUT "    : "",
-              status & HW_SDIO_IT_TXUNDERR  ? "TXUNDERR "    : "",
-              status & HW_SDIO_IT_RXOVERR   ? "RXOVERR "     : "",
-              status == 0                   ? "NULL"         : "",
-              cmd->cmd_code,
-              cmd->arg,
-              data ? (data->flags & DATA_DIR_WRITE ?  'w' : 'r') : '-',
-              data ? data->blks * data->blksize : 0,
-              data ? data->blksize : 0
-             );
-      }
-}
-#if defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F2) || defined(SOC_SERIES_STM32F4)
-/**
-  * @brief  This function transfer data by dma.
-  * @param  sdio  rthw_sdio
-  * @param  pkg   sdio package
-  * @retval None
-  */
-static void rthw_sdio_transfer_by_dma(struct rthw_sdio *sdio, struct sdio_pkg *pkg)
-{
-    struct rt_mmcsd_data *data;
-    int size;
-    void *buff;
-    struct stm32_sdio *hw_sdio;
-
-    if ((RT_NULL == pkg) || (RT_NULL == sdio))
-    {
-        LOG_E("rthw_sdio_transfer_by_dma invalid args");
-        return;
-    }
-
-    data = pkg->cmd->data;
-    if (RT_NULL == data)
-    {
-        LOG_E("rthw_sdio_transfer_by_dma invalid args");
-        return;
-    }
-
-    buff = pkg->buff;
-    if (RT_NULL == buff)
-    {
-        LOG_E("rthw_sdio_transfer_by_dma invalid args");
-        return;
-    }
-    hw_sdio = sdio->sdio_des.hw_sdio;
-    size = data->blks * data->blksize;
-
-    if (data->flags & DATA_DIR_WRITE)
-    {
-        sdio->sdio_des.txconfig((rt_uint32_t *)buff, (rt_uint32_t *)&hw_sdio->fifo, size);
-        hw_sdio->dctrl |= HW_SDIO_DMA_ENABLE;
-    }
-    else if (data->flags & DATA_DIR_READ)
-    {
-        sdio->sdio_des.rxconfig((rt_uint32_t *)&hw_sdio->fifo, (rt_uint32_t *)buff, size);
-        hw_sdio->dctrl |= HW_SDIO_DMA_ENABLE | HW_SDIO_DPSM_ENABLE;
+        LOG_D("send command error = %d", cmd->err);
     }
 }
-#endif /*  defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F4) */
 
 /**
   * @brief  This function send command.
@@ -278,7 +193,7 @@ static void rthw_sdio_send_command(struct rthw_sdio *sdio, struct sdio_pkg *pkg)
 {
     struct rt_mmcsd_cmd *cmd = pkg->cmd;
     struct rt_mmcsd_data *data = cmd->data;
-    SD_TypeDef *hsd = sdio->sdio_des.hw_sdio.Instance;
+    struct stm32_sdio *hw_sdio = sdio->sdio_des.hw_sdio;
     rt_uint32_t reg_cmd;
 
     rt_event_control(&sdio->event, RT_IPC_CMD_RESET, RT_NULL);
@@ -302,8 +217,7 @@ static void rthw_sdio_send_command(struct rthw_sdio *sdio, struct sdio_pkg *pkg)
           data ? data->blksize : 0
          );
 
-    /* open irq */
-    __HAL_SD_ENABLE_IT(&sdio->sdio_des.hw_sdio, SDIO_MASKR_ALL);
+    hw_sdio->mask |= SDIO_MASKR_ALL;
     reg_cmd = cmd->cmd_code | SDMMC_CMD_CPSMEN;
 
     /* data pre configuration */
@@ -312,28 +226,21 @@ static void rthw_sdio_send_command(struct rthw_sdio *sdio, struct sdio_pkg *pkg)
         SCB_CleanInvalidateDCache();
 
         reg_cmd |= SDMMC_CMD_CMDTRANS;
-        __HAL_SD_DISABLE_IT(&sdio->sdio_des.hw_sdio, SDMMC_MASK_CMDRENDIE | SDMMC_MASK_CMDSENTIE);
-        hsd->DTIMER = HW_SDIO_DATATIMEOUT;
-        hsd->DLEN = data->blks * data->blksize;
-        hsd->DCTRL = (get_order(data->blksize) << 4) | (data->flags & DATA_DIR_READ ? SDMMC_DCTRL_DTDIR : 0);
-        hsd->IDMABASE0 = (rt_uint32_t)cache_buf;
-        hsd->IDMACTRL = SDMMC_IDMA_IDMAEN;
+        hw_sdio->mask &= ~(SDMMC_MASK_CMDRENDIE | SDMMC_MASK_CMDSENTIE);
+        hw_sdio->dtimer = HW_SDIO_DATATIMEOUT;
+        hw_sdio->dlen = data->blks * data->blksize;
+        hw_sdio->dctrl = (get_order(data->blksize) << 4) | (data->flags & DATA_DIR_READ ? SDMMC_DCTRL_DTDIR : 0);
+        hw_sdio->idmabase0r = (rt_uint32_t)cache_buf;
+        hw_sdio->idmatrlr = SDMMC_IDMA_IDMAEN;
     }
-    /* config cmd reg */
+
     if (resp_type(cmd) == RESP_R2)
         reg_cmd |= SDMMC_CMD_WAITRESP;
     else if(resp_type(cmd) != RESP_NONE)
         reg_cmd |= SDMMC_CMD_WAITRESP_0;
 
-//    if (resp_type(cmd) == RESP_NONE)
-//        reg_cmd |= SDMMC_RESPONSE_NO;
-//    else if (resp_type(cmd) == RESP_R2)
-//        reg_cmd |= SDMMC_RESPONSE_LONG;
-//    else
-//        reg_cmd |= SDMMC_RESPONSE_SHORT;
-
-    hsd->ARG = cmd->arg;
-    hsd->CMD = reg_cmd;
+    hw_sdio->arg = cmd->arg;
+    hw_sdio->cmd = reg_cmd;
     /* wait completed */
     rthw_sdio_wait_completed(sdio);
 
@@ -342,12 +249,12 @@ static void rthw_sdio_send_command(struct rthw_sdio *sdio, struct sdio_pkg *pkg)
     {
         volatile rt_uint32_t count = SDIO_TX_RX_COMPLETE_TIMEOUT_LOOPS;
 
-        while (count && (hsd->STA & SDMMC_STA_DPSMACT))
+        while (count && (hw_sdio->sta & SDMMC_STA_DPSMACT))
         {
             count--;
         }
 
-        if ((count == 0) || (hsd->STA & HW_SDIO_ERRORS))
+        if ((count == 0) || (hw_sdio->sta & SDIO_ERRORS))
         {
             cmd->err = -RT_ERROR;
         }
@@ -376,7 +283,8 @@ static void rthw_sdio_request(struct rt_mmcsd_host *host, struct rt_mmcsd_req *r
     struct rthw_sdio *sdio = host->private_data;
     struct rt_mmcsd_data *data;
 
-    RTHW_SDIO_LOCK(sdio);
+
+    rt_mutex_take(mmcsd_mutex, RT_WAITING_FOREVER);
 
     if (req->cmd != RT_NULL)
     {
@@ -388,23 +296,15 @@ static void rthw_sdio_request(struct rt_mmcsd_host *host, struct rt_mmcsd_req *r
         {
             rt_uint32_t size = data->blks * data->blksize;
 
-            pkg.buff = data->buf;
-            if ((rt_uint32_t)data->buf & (SDIO_ALIGN_LEN - 1))
+            RT_ASSERT(size <= SDIO_BUFF_SIZE);
+
+            if (data->flags & DATA_DIR_WRITE)
             {
-                pkg.buff = cache_buf;
-                if (data->flags & DATA_DIR_WRITE)
-                {
-                    rt_memcpy(cache_buf, data->buf, size);
-                }
+                rt_memcpy(cache_buf, data->buf, size);
             }
         }
 
         rthw_sdio_send_command(sdio, &pkg);
-
-        if ((data != RT_NULL) && (data->flags & DATA_DIR_READ) && ((rt_uint32_t)data->buf & (SDIO_ALIGN_LEN - 1)))
-        {
-            rt_memcpy(data->buf, cache_buf, data->blksize * data->blks);
-        }
     }
 
     if (req->stop != RT_NULL)
@@ -414,9 +314,27 @@ static void rthw_sdio_request(struct rt_mmcsd_host *host, struct rt_mmcsd_req *r
         rthw_sdio_send_command(sdio, &pkg);
     }
 
-    RTHW_SDIO_UNLOCK(sdio);
-
     mmcsd_req_complete(sdio->host);
+
+    rt_mutex_release(mmcsd_mutex);
+}
+
+
+/**
+  * @brief  This function interrupt process function.
+  * @param  host  rt_mmcsd_host
+  * @retval None
+  */
+void rthw_sdio_irq_process(struct rt_mmcsd_host *host)
+{
+    struct rthw_sdio *sdio = host->private_data;
+    struct stm32_sdio *hw_sdio = sdio->sdio_des.hw_sdio;
+    rt_uint32_t intstatus = hw_sdio->sta;
+
+    /* clear irq flag*/
+    hw_sdio->icr = intstatus;
+
+    rt_event_send(&sdio->event, intstatus);
 }
 
 /**
@@ -427,30 +345,13 @@ static void rthw_sdio_request(struct rt_mmcsd_host *host, struct rt_mmcsd_req *r
   */
 static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *io_cfg)
 {
-    rt_uint32_t clkcr, div, clk_src;
+    rt_uint32_t temp, clk_src;
     rt_uint32_t clk = io_cfg->clock;
     struct rthw_sdio *sdio = host->private_data;
-    SD_HandleTypeDef *hsd = &sdio->sdio_des.hw_sdio;
-    SDMMC_InitTypeDef Init;
+    struct stm32_sdio *hw_sdio = sdio->sdio_des.hw_sdio;
 
-    rt_uint32_t sdmmc_clk      = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDMMC);
-    if (sdmmc_clk < 400 * 1000)
-    {
-        LOG_E("The clock rate is too low! rata:%d", sdmmc_clk);
-        return;
-    }
-
-    if (clk > host->freq_max)
-        clk = host->freq_max;
-
-    if (clk > sdmmc_clk)
-    {
-        LOG_W("Setting rate is greater than clock source rate.");
-        clk = sdmmc_clk;
-    }
-
-    LOG_D("clk:%d width:%s%s%s power:%s%s%s",
-          clk,
+    LOG_D("clk:%dK width:%s%s%s power:%s%s%s",
+          clk / 1000,
           io_cfg->bus_width == MMCSD_BUS_WIDTH_8 ? "8" : "",
           io_cfg->bus_width == MMCSD_BUS_WIDTH_4 ? "4" : "",
           io_cfg->bus_width == MMCSD_BUS_WIDTH_1 ? "1" : "",
@@ -459,166 +360,36 @@ static void rthw_sdio_iocfg(struct rt_mmcsd_host *host, struct rt_mmcsd_io_cfg *
           io_cfg->power_mode == MMCSD_POWER_ON ? "ON" : ""
          );
 
-    if (sdmmc_clk != 0U)
+    clk_src = SDIO_CLOCK_FREQ;
+
+    if (clk > 0)
     {
-        hsd->Init.ClockDiv = sdmmc_clk / (2U * SD_INIT_FREQ);
-        /* Configure the SDMMC peripheral */
-        Init.ClockEdge           = hsd->Init.ClockEdge;
-        Init.ClockPowerSave      = hsd->Init.ClockPowerSave;
-        if (io_cfg->bus_width == MMCSD_BUS_WIDTH_4)
-        {
-            Init.BusWide             = SDMMC_BUS_WIDE_4B;
-        }
-        else if (io_cfg->bus_width == MMCSD_BUS_WIDTH_8)
-        {
-            Init.BusWide             = SDMMC_BUS_WIDE_8B;
-        }
-        else
-        {
-            Init.BusWide             = SDMMC_BUS_WIDE_1B;
-        }
-        Init.HardwareFlowControl = hsd->Init.HardwareFlowControl;
-        /* Check if user Clock div < Normal speed 25Mhz, no change in Clockdiv */
-        if (hsd->Init.ClockDiv >= (sdmmc_clk / (2U * SD_NORMAL_SPEED_FREQ)))
-        {
-            Init.ClockDiv = hsd->Init.ClockDiv;
-        }
-        //CARD_ULTRA_HIGH_SPEED :UHS-I SD Card <50Mo/s for SDR50, DDR5 Cards and <104Mo/s for SDR104, Spec version 3.01
-        else if (MMCSD_TIMING_UHS_SDR50 <= io_cfg->timing && io_cfg->timing <= MMCSD_TIMING_UHS_DDR50)
-        {
-            /* UltraHigh speed SD card,user Clock div */
-            Init.ClockDiv = hsd->Init.ClockDiv;
-        }
-        //CARD_HIGH_SPEED: High Speed Card <25Mo/s , Spec version 2.00
-        else if (io_cfg->timing == MMCSD_TIMING_SD_HS)
-        {
-            /* High speed SD card, Max Frequency = 50Mhz */
-            if (hsd->Init.ClockDiv == 0U)
-            {
-                if (sdmmc_clk > SD_HIGH_SPEED_FREQ)
-                {
-                    Init.ClockDiv = sdmmc_clk / (2U * SD_HIGH_SPEED_FREQ);
-                }
-                else
-                {
-                    Init.ClockDiv = hsd->Init.ClockDiv;
-                }
-            }
-            else
-            {
-                if ((sdmmc_clk/(2U * hsd->Init.ClockDiv)) > SD_HIGH_SPEED_FREQ)
-                {
-                    Init.ClockDiv = sdmmc_clk / (2U * SD_HIGH_SPEED_FREQ);
-                }
-                else
-                {
-                    Init.ClockDiv = hsd->Init.ClockDiv;
-                }
-            }
-        }
-        //CARD_NORMAL_SPEED: Normal Speed Card <12.5Mo/s , Spec Version 1.01
-        else if (io_cfg->timing == MMCSD_TIMING_LEGACY)
-        {
-            /* No High speed SD card, Max Frequency = 25Mhz */
-            if (hsd->Init.ClockDiv == 0U)
-            {
-                if (sdmmc_clk > SD_NORMAL_SPEED_FREQ)
-                {
-                    Init.ClockDiv = sdmmc_clk / (2U * SD_NORMAL_SPEED_FREQ);
-                }
-                else
-                {
-                    Init.ClockDiv = hsd->Init.ClockDiv;
-                }
-            }
-            else
-            {
-                if ((sdmmc_clk/(2U * hsd->Init.ClockDiv)) > SD_NORMAL_SPEED_FREQ)
-                {
-                    Init.ClockDiv = sdmmc_clk / (2U * SD_NORMAL_SPEED_FREQ);
-                }
-                else
-                {
-                    Init.ClockDiv = hsd->Init.ClockDiv;
-                }
-            }
-        }
-        (void)SDMMC_Init(hsd->Instance, Init);
+        if (clk > host->freq_max)
+            clk = host->freq_max;
+
+        temp = DIV_ROUND_UP(clk_src, 2 * clk);
+
+        if (temp > 0x3FF)
+            temp = 0x3FF;
     }
-    switch ((io_cfg->power_mode)&0X03)
-    {
-    case MMCSD_POWER_OFF:
-        /* Set Power State to OFF */
-        (void)SDMMC_PowerState_OFF(hsd->Instance);
-        break;
-    case MMCSD_POWER_UP:
-        /* In  F4 series chips, 0X01 is reserved bit and has no practical effect.
-           For F7 series chips, 0X01 is power-on after power-off,The SDMMC disables the function and the card clock stops.
-           For H7 series chips, 0X03 is the power-on function.
-        */
-    case MMCSD_POWER_ON:
-        /* Set Power State to ON */
-        (void)SDMMC_PowerState_ON(hsd->Instance);
-        break;
-    default:
-        LOG_W("unknown power mode %d", io_cfg->power_mode);
-        break;
-    }
+
+    if (io_cfg->bus_width == MMCSD_BUS_WIDTH_4)
+        temp |= SDMMC_CLKCR_WIDBUS_0;
+    else if (io_cfg->bus_width == MMCSD_BUS_WIDTH_8)
+        temp |= SDMMC_CLKCR_WIDBUS_1;
+
+    hw_sdio->clkcr = temp;
+
+    if (io_cfg->power_mode == MMCSD_POWER_ON)
+        hw_sdio->power |= SDMMC_POWER_PWRCTRL;
 }
 
-/**
-  * @brief  This function update sdio interrupt.
-  * @param  host    rt_mmcsd_host
-  * @param  enable
-  * @retval None
-  */
-void rthw_sdio_irq_update(struct rt_mmcsd_host *host, rt_int32_t enable)
-{
-    struct rthw_sdio *sdio = host->private_data;
-
-    if (enable)
-    {
-        LOG_D("enable sdio irq");
-        __HAL_SD_ENABLE_IT(&sdio->sdio_des.hw_sdio, SDMMC_IT_SDIOIT);
-    }
-    else
-    {
-        LOG_D("disable sdio irq");
-        __HAL_SD_ENABLE_IT(&sdio->sdio_des.hw_sdio, SDMMC_IT_SDIOIT);
-    }
-}
-
-/**
-  * @brief  This function detect sdcard.
-  * @param  host    rt_mmcsd_host
-  * @retval 0x01
-  */
-static rt_int32_t rthw_sd_detect(struct rt_mmcsd_host *host)
-{
-    LOG_D("try to detect device");
-    return 0x01;
-}
-
-/**
-  * @brief  This function interrupt process function.
-  * @param  host  rt_mmcsd_host
-  * @retval None
-  */
-void rthw_sdio_irq_process(struct rt_mmcsd_host *host)
-{
-    struct rthw_sdio *sdio = host->private_data;
-    rt_uint32_t intstatus = sdio->sdio_des.hw_sdio.Instance->STA;
-
-    /* clear irq flag*/
-    __HAL_SD_CLEAR_FLAG(&sdio->sdio_des.hw_sdio, intstatus);
-    rt_event_send(&sdio->event, intstatus);
-}
 static const struct rt_mmcsd_host_ops ops =
 {
     rthw_sdio_request,
     rthw_sdio_iocfg,
-    rthw_sd_detect,
-    rthw_sdio_irq_update,
+    RT_NULL,
+    RT_NULL,
 };
 
 /**
@@ -633,7 +404,6 @@ struct rt_mmcsd_host *sdio_host_create(struct stm32_sdio_des *sdio_des)
 
     if (sdio_des == RT_NULL)
     {
-        LOG_E("L:%d F:%s",(sdio_des == RT_NULL ? "sdio_des is NULL" : ""));
         return RT_NULL;
     }
 
@@ -641,46 +411,40 @@ struct rt_mmcsd_host *sdio_host_create(struct stm32_sdio_des *sdio_des)
 
     if (sdio == RT_NULL)
     {
-        LOG_E("L:%d F:%s malloc rthw_sdio fail");
+        LOG_E("malloc rthw_sdio fail");
         return RT_NULL;
     }
+
     rt_memset(sdio, 0, sizeof(struct rthw_sdio));
 
     host = mmcsd_alloc_host();
+
     if (host == RT_NULL)
     {
-        LOG_E("L:%d F:%s mmcsd alloc host fail");
-        rt_free(sdio);
-        return RT_NULL;
+        LOG_E("alloc host fail");
+        goto err;
     }
 
     rt_memcpy(&sdio->sdio_des, sdio_des, sizeof(struct stm32_sdio_des));
-#ifdef BSP_USING_SDIO1
-    if(sdio_des->hw_sdio.Instance == SDCARD1_INSTANCE)
+
+    if(sdio_des->hsd.Instance == SDMMC1)
     {
-        rt_event_init(&sdio->event, "sdio1", RT_IPC_FLAG_FIFO);
-        rt_mutex_init(&sdio->mutex, "sdio1", RT_IPC_FLAG_PRIO);
+        sdio->sdio_des.hw_sdio = (struct stm32_sdio *)SDIO1_BASE_ADDRESS;
+        rt_event_init(&sdio->event, "sdio", RT_IPC_FLAG_FIFO);
     }
-#endif /* BSP_USING_SDIO1 */
-#ifdef BSP_USING_SDIO2
-    if(sdio_des->hw_sdio == SDCARD2_INSTANCE)
+
+    if(sdio_des->hsd.Instance == SDMMC2)
     {
+        sdio->sdio_des.hw_sdio = (struct stm32_sdio *)SDIO2_BASE_ADDRESS;
         rt_event_init(&sdio->event, "sdio2", RT_IPC_FLAG_FIFO);
-        rt_mutex_init(&sdio->mutex, "sdio2", RT_IPC_FLAG_PRIO);
     }
-#endif /* BSP_USING_SDIO2 */
 
     /* set host default attributes */
     host->ops = &ops;
     host->freq_min = 400 * 1000;
     host->freq_max = SDIO_MAX_FREQ;
-    host->valid_ocr = 0X00FFFF80;/* The voltage range supported is 1.65v-3.6v */
-
-#ifndef SDIO_USING_1_BIT
+    host->valid_ocr = VDD_32_33 | VDD_33_34;/* The voltage range supported is 3.2v-3.4v */
     host->flags = MMCSD_BUSWIDTH_4 | MMCSD_MUTBLKWRITE | MMCSD_SUP_HIGHSPEED;
-#else
-    host->flags = MMCSD_MUTBLKWRITE | MMCSD_SUP_SDIO_IRQ;
-#endif
     host->max_seg_size = SDIO_BUFF_SIZE;
     host->max_dma_segs = 1;
     host->max_blk_size = 512;
@@ -690,31 +454,13 @@ struct rt_mmcsd_host *sdio_host_create(struct stm32_sdio_des *sdio_des)
     sdio->host = host;
     host->private_data = sdio;
 
-    rthw_sdio_irq_update(host, 1);
-
-    /* ready to change */
-    mmcsd_change(host);
-
     return host;
-}
-/**
-  * @brief  This function get stm32 sdio clock.
-  * @param  hw_sdio: stm32_sdio
-  * @retval PCLK2Freq
-  */
-static rt_uint32_t stm32_sdio_clock_get(SD_HandleTypeDef *hw_sdio)
-{
-    return HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDCARD);
-}
 
-void SDIO_IRQHandler(void)
-{
-    /* enter interrupt */
-    rt_interrupt_enter();
-    /* Process All SDIO Interrupt Sources */
-    rthw_sdio_irq_process(host1);
-    /* leave interrupt */
-    rt_interrupt_leave();
+err:
+
+    if (sdio) rt_free(sdio);
+
+    return RT_NULL;
 }
 
 void SDMMC1_IRQHandler(void)
@@ -739,54 +485,53 @@ void SDMMC2_IRQHandler(void)
 
 int rt_hw_sdio_init(void)
 {
-#ifdef BSP_USING_SDIO1
-    struct stm32_sdio_des sdio_des1 = {0};
-    rt_memset(&sdio_des1, 0, sizeof(sdio_des1));
-    sdio_des1.hw_sdio.Instance = SDCARD1_INSTANCE;
-
-    HAL_SD_MspInit(&sdio_des1.hw_sdio);
-    HAL_NVIC_SetPriority(SDCARD1_IRQn, 2, 0);
-    HAL_NVIC_EnableIRQ(SDCARD1_IRQn);
-
-    sdio_des1.clk_get  = stm32_sdio_clock_get;
+    #ifdef BSP_USING_SDIO1
+    struct stm32_sdio_des sdio_des1;
+    sdio_des1.hsd.Instance = SDMMC1;
+    HAL_SD_MspInit(&sdio_des1.hsd);
 
     host1 = sdio_host_create(&sdio_des1);
 
     if (host1 == RT_NULL)
     {
-        LOG_E("host1 create fail");
-        return -RT_ERROR;
+        LOG_E("host create fail");
+        return RT_NULL;
     }
-#endif /* BSP_USING_SDIO1 */
 
-#ifdef BSP_USING_SDIO2
-    struct stm32_sdio_des sdio_des2 = {0};
-    sdio_des2.hsd.Instance = SDCARD2_INSTANCE;
+    #endif
 
+    #ifdef BSP_USING_SDIO2
+    //sdmmc2 wifi
+    struct stm32_sdio_des sdio_des2;
+    sdio_des2.hsd.Instance = SDMMC2;
     HAL_SD_MspInit(&sdio_des2.hsd);
-    HAL_NVIC_SetPriority(SDCARD2_IRQn, 2, 0);
-    HAL_NVIC_EnableIRQ(SDCARD2_IRQn);
-
-    sdio_des2.clk_get  = stm32_sdio_clock_get;
 
     host2 = sdio_host_create(&sdio_des2);
 
     if (host2 == RT_NULL)
     {
         LOG_E("host2 create fail");
+        return RT_NULL;
+    }
+
+    /* wifi auto change */
+    mmcsd_change(host2);
+    #endif
+    mmcsd_mutex = rt_mutex_create("mmutex", RT_IPC_FLAG_PRIO);
+
+    if (mmcsd_mutex == RT_NULL)
+    {
+        rt_kprintf("create mmcsd mutex failed.\n");
         return -1;
     }
-#endif /* BSP_USING_SDIO2 */
+
     return 0;
 }
 INIT_DEVICE_EXPORT(rt_hw_sdio_init);
 
-void stm32_mmcsd_change(void)
+void sdcard_change(void)
 {
     mmcsd_change(host1);
-#ifdef BSP_USING_SDIO2
-    mmcsd_change(host2);
-#endif /* BSP_USING_SDIO2 */
 }
 
 #endif /* RT_USING_SDIO */

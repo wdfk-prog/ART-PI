@@ -20,28 +20,16 @@
 #include <drivers/mmcsd_core.h>
 #include <drivers/sdio.h>
 
-#define SDCARD_INSTANCE_TYPE              SD_TypeDef
-
-#if defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F2) || defined(SOC_SERIES_STM32F4)
-#define SDCARD1_INSTANCE                   SDIO
-#define SDCARD1_IRQn                       SDIO_IRQn
-#define SDIO1_BASE_ADDRESS                (SDIO_BASE)
-#define RCC_PERIPHCLK_SDCARD               RCC_PERIPHCLK_SDIO
-#elif defined(SOC_SERIES_STM32L4) || defined(SOC_SERIES_STM32F7) || defined(SOC_SERIES_STM32H7)
-#define SDCARD1_INSTANCE                   SDMMC1
-#define SDCARD1_IRQn                       SDMMC1_IRQn
-#define SDIO1_BASE_ADDRESS                (SDMMC1_BASE)
-#define RCC_PERIPHCLK_SDCARD               RCC_PERIPHCLK_SDMMC
-#endif /*  defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F4) */
-
-#ifdef BSP_USING_SDIO2
-#define SDCARD2_INSTANCE                   SDMMC2
-#define SDCARD2_IRQn                       SDMMC2_IRQn
-#define SDIO2_BASE_ADDRESS                (SDMMC2_BASE)
-#endif /* BSP_USING_SDIO2 */
-
 #define SDIO_BUFF_SIZE       4096
 #define SDIO_ALIGN_LEN       32
+
+#ifndef SDIO1_BASE_ADDRESS
+#define SDIO1_BASE_ADDRESS    (0x52007000)
+#endif
+
+#ifndef SDIO2_BASE_ADDRESS
+#define SDIO2_BASE_ADDRESS    (0x48022400)
+#endif
 
 #ifndef SDIO_CLOCK_FREQ
 #define SDIO_CLOCK_FREQ      (200U * 1000 * 1000)
@@ -59,59 +47,56 @@
 #define SDIO_MAX_FREQ        (25 * 1000 * 1000)
 #endif
 
-/* Frequencies used in the driver for clock divider calculation */
-#define SD_INIT_FREQ                   400000U   /* Initalization phase : 400 kHz max */
-#define SD_NORMAL_SPEED_FREQ           25000000U /* Normal speed phase : 25 MHz max */
-#define SD_HIGH_SPEED_FREQ             50000000U /* High speed phase : 50 MHz max */
+#define DIV_ROUND_UP(n,d) (((n) + (d) - 1) / (d))
 
-#define HW_SDIO_IT_CCRCFAIL                    (0x01U << 0)
-#define HW_SDIO_IT_DCRCFAIL                    (0x01U << 1)
-#define HW_SDIO_IT_CTIMEOUT                    (0x01U << 2)
-#define HW_SDIO_IT_DTIMEOUT                    (0x01U << 3)
-#define HW_SDIO_IT_TXUNDERR                    (0x01U << 4)
-#define HW_SDIO_IT_RXOVERR                     (0x01U << 5)
-#define HW_SDIO_IT_CMDREND                     (0x01U << 6)
-#define HW_SDIO_IT_CMDSENT                     (0x01U << 7)
-#define HW_SDIO_IT_DATAEND                     (0x01U << 8)
-#if defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F2) || defined(SOC_SERIES_STM32F4)
-#define HW_SDIO_IT_STBITERR                    (0x01U << 9)
-#elif defined(SOC_SERIES_STM32L4) || defined(SOC_SERIES_STM32F7) || defined(SOC_SERIES_STM32H7)
-#define HW_SDIO_IT_DHOLD                       (0x01U << 9)
-#endif /*  defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32F4) */
-#define HW_SDIO_IT_DBCKEND                     (0x01U << 10)
-#define HW_SDIO_IT_CMDACT                      (0x01U << 11)
-#define HW_SDIO_IT_TXACT                       (0x01U << 12)
-#define HW_SDIO_IT_RXACT                       (0x01U << 13)
-#define HW_SDIO_IT_TXFIFOHE                    (0x01U << 14)
-#define HW_SDIO_IT_RXFIFOHF                    (0x01U << 15)
-#define HW_SDIO_IT_TXFIFOF                     (0x01U << 16)
-#define HW_SDIO_IT_RXFIFOF                     (0x01U << 17)
-#define HW_SDIO_IT_TXFIFOE                     (0x01U << 18)
-#define HW_SDIO_IT_RXFIFOE                     (0x01U << 19)
-#define HW_SDIO_IT_TXDAVL                      (0x01U << 20)
-#define HW_SDIO_IT_RXDAVL                      (0x01U << 21)
-#define HW_SDIO_IT_SDIOIT                      (0x01U << 22)
-
-#define HW_SDIO_ERRORS \
-    (HW_SDIO_IT_CCRCFAIL | HW_SDIO_IT_CTIMEOUT | \
-     HW_SDIO_IT_DCRCFAIL | HW_SDIO_IT_DTIMEOUT | \
-     HW_SDIO_IT_RXOVERR  | HW_SDIO_IT_TXUNDERR)
+#define SDIO_ERRORS \
+    (SDMMC_STA_IDMATE | SDMMC_STA_ACKTIMEOUT | \
+     SDMMC_STA_RXOVERR | SDMMC_STA_TXUNDERR | \
+     SDMMC_STA_DTIMEOUT | SDMMC_STA_CTIMEOUT | \
+     SDMMC_STA_DCRCFAIL | SDMMC_STA_CCRCFAIL)
 
 #define SDIO_MASKR_ALL \
     (SDMMC_MASK_CCRCFAILIE | SDMMC_MASK_DCRCFAILIE | SDMMC_MASK_CTIMEOUTIE | \
      SDMMC_MASK_TXUNDERRIE | SDMMC_MASK_RXOVERRIE | SDMMC_MASK_CMDRENDIE | \
      SDMMC_MASK_CMDSENTIE | SDMMC_MASK_DATAENDIE | SDMMC_MASK_ACKTIMEOUTIE)
 
-#define HW_SDIO_DATATIMEOUT                    (0xFFFFFFFFU)
+#define HW_SDIO_DATATIMEOUT                 (0xFFFFFFFFU)
 
-typedef rt_err_t (*dma_txconfig)(rt_uint32_t *src, rt_uint32_t *dst, int size);
-typedef rt_err_t (*dma_rxconfig)(rt_uint32_t *src, rt_uint32_t *dst, int size);
-typedef rt_uint32_t (*sdio_clk_get)(SD_HandleTypeDef *hsd);
+struct stm32_sdio
+{
+    volatile rt_uint32_t power;         /* offset 0x00 */
+    volatile rt_uint32_t clkcr;         /* offset 0x04 */
+    volatile rt_uint32_t arg;           /* offset 0x08 */
+    volatile rt_uint32_t cmd;           /* offset 0x0C */
+    volatile rt_uint32_t respcmd;       /* offset 0x10 */
+    volatile rt_uint32_t resp1;         /* offset 0x14 */
+    volatile rt_uint32_t resp2;         /* offset 0x18 */
+    volatile rt_uint32_t resp3;         /* offset 0x1C */
+    volatile rt_uint32_t resp4;         /* offset 0x20 */
+    volatile rt_uint32_t dtimer;        /* offset 0x24 */
+    volatile rt_uint32_t dlen;          /* offset 0x28 */
+    volatile rt_uint32_t dctrl;         /* offset 0x2C */
+    volatile rt_uint32_t dcount;        /* offset 0x30 */
+    volatile rt_uint32_t sta;           /* offset 0x34 */
+    volatile rt_uint32_t icr;           /* offset 0x38 */
+    volatile rt_uint32_t mask;          /* offset 0x3C */
+    volatile rt_uint32_t acktimer;      /* offset 0x40 */
+    volatile rt_uint32_t reserved0[3];  /* offset 0x44 ~ 0x4C */
+    volatile rt_uint32_t idmatrlr;      /* offset 0x50 */
+    volatile rt_uint32_t idmabsizer;    /* offset 0x54 */
+    volatile rt_uint32_t idmabase0r;    /* offset 0x58 */
+    volatile rt_uint32_t idmabase1r;    /* offset 0x5C */
+    volatile rt_uint32_t reserved1[8];  /* offset 0x60 ~ 7C */
+    volatile rt_uint32_t fifo;          /* offset 0x80 */
+};
+
+typedef rt_uint32_t (*sdio_clk_get)(struct stm32_sdio *hw_sdio);
 
 struct stm32_sdio_des
 {
-    SD_HandleTypeDef hw_sdio;
+    struct stm32_sdio *hw_sdio;
     sdio_clk_get clk_get;
+    SD_HandleTypeDef hsd;
 };
 
 /* stm32 sdio dirver class */
@@ -122,6 +107,6 @@ struct stm32_sdio_class
     struct rt_mmcsd_host host;
 };
 
-extern void stm32_mmcsd_change(void);
+extern void sdcard_change(void);
 
 #endif /* __DRV_SDIO_H__ */
