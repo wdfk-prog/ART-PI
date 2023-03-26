@@ -60,6 +60,7 @@
 #define RT_VER_NUM 0x50000
 /* end of RT-Thread Kernel */
 #define RT_USING_CACHE
+#define RT_USING_HW_ATOMIC
 #define RT_USING_CPU_FFS
 #define ARCH_ARM
 #define ARCH_ARM_CORTEX_M
@@ -128,7 +129,7 @@
 #define RT_USING_SDIO
 #define RT_SDIO_STACK_SIZE 512
 #define RT_SDIO_THREAD_PRIORITY 15
-#define RT_MMCSD_STACK_SIZE 2048
+#define RT_MMCSD_STACK_SIZE 1024
 #define RT_MMCSD_THREAD_PREORITY 22
 #define RT_MMCSD_MAX_PARTITION 16
 #define RT_USING_SPI
@@ -248,10 +249,6 @@
 /* u8g2: a monochrome graphic library */
 
 /* end of u8g2: a monochrome graphic library */
-
-/* PainterEngine: A cross-platform graphics application framework written in C language */
-
-/* end of PainterEngine: A cross-platform graphics application framework written in C language */
 /* end of multimedia packages */
 
 /* tools packages */
@@ -262,6 +259,8 @@
 #define PKG_CMBACKTRACE_PRINT_CHINESE_UTF8
 #define PKG_USING_CMBACKTRACE_LATEST_VERSION
 #define PKG_CMBACKTRACE_VER_NUM 0x99999
+#define PKG_USING_CPU_USAGE
+#define PKG_USING_CPU_USAGE_LATEST_VERSION
 /* end of tools packages */
 
 /* system packages */
@@ -400,6 +399,8 @@
 /* end of Device Control */
 
 /* Other */
+
+/* end of Other */
 
 /* Signal IO */
 

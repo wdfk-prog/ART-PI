@@ -5,6 +5,11 @@
   "name": "CMBACKTRACE"
  }, 
  {
+  "path": "/packages/tools/cpu_usage", 
+  "ver": "latest", 
+  "name": "CPU_USAGE"
+ }, 
+ {
   "path": "/packages/system/enhanced-kservice/rt_memcpy_cm", 
   "ver": "latest", 
   "name": "RT_MEMCPY_CM"
