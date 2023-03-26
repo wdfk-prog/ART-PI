@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2022, RT-Thread Development Team
+ * Copyright (c) 2006-2023, RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -182,7 +182,7 @@ static void rthw_sdio_wait_completed(struct rthw_sdio *sdio)
     {
         cmd->err = RT_EOK;
     }
-    
+
     if (status & SDMMC_IT_CTIMEOUT)
     {
         cmd->err = -RT_ETIMEOUT;
