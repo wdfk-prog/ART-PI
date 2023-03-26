@@ -58,7 +58,7 @@ static enum rym_code _rym_recv_begin(
     else
     {
         rt_kprintf("No end character\n");
-        return -RYM_ERR_ACK;
+        return RYM_ERR_ACK;
     }
     rt_strncpy(ret + 1, (const char *)buf, len - 1);
     cctx->fd = open(cctx->fpath, O_CREAT | O_WRONLY | O_TRUNC, 0);
@@ -126,14 +126,14 @@ static enum rym_code _rym_send_begin(
     {
         err = rt_get_errno();
         rt_kprintf("error open file: %d\n", err);
-        return -RYM_ERR_FILE;
+        return RYM_ERR_FILE;
     }
     rt_memset(buf, 0, len);
     err = stat(cctx->fpath, &file_buf);
     if (err != RT_EOK)
     {
         rt_kprintf("error open file.\n");
-        return -RYM_ERR_FILE;
+        return RYM_ERR_FILE;
     }
 
     const char *fdst = _get_path_lastname(cctx->fpath);
@@ -142,7 +142,7 @@ static enum rym_code _rym_send_begin(
         fdst = dfs_normalize_path(RT_NULL, fdst);
         if (fdst == RT_NULL)
         {
-            return -RYM_ERR_FILE;
+            return RYM_ERR_FILE;
         }
     }
 
@@ -199,7 +199,7 @@ static rt_err_t rym_download_file(rt_device_t idev,const char *file_path)
     if (!ctx)
     {
         rt_kprintf("rt_malloc failed\n");
-        return RT_ENOMEM;
+        return -RT_ENOMEM;
     }
     ctx->fd = -1;
     rt_strncpy(ctx->fpath, file_path, DFS_PATH_MAX);
@@ -219,7 +219,7 @@ static rt_err_t rym_upload_file(rt_device_t idev, const char *file_path)
     if (!ctx)
     {
         rt_kprintf("rt_malloc failed\n");
-        return RT_ENOMEM;
+        return -RT_ENOMEM;
     }
     ctx->fd = -1;
     rt_strncpy(ctx->fpath, file_path, DFS_PATH_MAX);
