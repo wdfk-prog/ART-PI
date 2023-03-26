@@ -25,7 +25,7 @@
 #include "dfs_romfs.h"
 #ifdef BSP_USING_SDCARD_FS
 #include <board.h>
-#include "drv_sdio.h"
+#include "drv_sdmmc.h"
 #endif /* BSP_USING_SDCARD_FS */
 #ifdef BSP_USING_SPI_FLASH_FS
 #include "fal.h"
