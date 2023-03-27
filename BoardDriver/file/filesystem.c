@@ -23,6 +23,8 @@
 
 #include <dfs_fs.h>
 #include "dfs_romfs.h"
+#include <dfs_file.h>
+#include <unistd.h>
 #ifdef BSP_USING_SDCARD_FS
 #include <board.h>
 #include "drv_sdmmc.h"
@@ -30,7 +32,6 @@
 #ifdef BSP_USING_SPI_FLASH_FS
 #include "fal.h"
 #endif /* BSP_USING_SPI_FLASH_FS */
-
 #include "ulog_file_be.h"
 
 #define DBG_TAG "app.filesystem"
@@ -143,6 +144,55 @@ static void sd_mount(void *parameter)
     }
 }
 
+#ifdef RT_USING_MSH
+/**
+  * @brief  SDCARDÀŸ∂»≤‚ ‘
+  * @param  None.
+  * @retval None.
+  * @note   None.
+*/
+static void cmd_sdcard_speed_test(uint8_t argc, char **argv)
+{
+    #define PATH_LEN 128
+    const char *dir_path = "/sdcard/test";
+    char file_path[PATH_LEN];
+
+    /* check log file directory  */
+    if (access(dir_path, F_OK) < 0)
+    {
+        mkdir(dir_path, 0);
+    }
+    /* open file */
+    rt_snprintf(file_path, PATH_LEN, "%s/%s.txt", dir_path, "test");
+    int file_fd = open(file_path, O_CREAT | O_RDWR | O_APPEND);
+    if (file_path < 0)
+    {
+        rt_kprintf("test file(%s) open failed.\n", file_path);
+        return;
+    }
+    char test[1024];
+    int last_time = rt_tick_get_millisecond();
+    /* write to the file */
+    if (write(file_fd, test, 1024) != 1024)
+    {
+        rt_kprintf("test file(%s) write failed.\n", file_path);
+        return;
+    }
+    /* flush file cache */
+    fsync(file_fd);
+    int now_time = rt_tick_get_millisecond();
+    rt_kprintf("test file write 1KB time =  %dms.\n", now_time - last_time);
+
+    last_time = rt_tick_get_millisecond();
+    rt_size_t file_size = lseek(file_fd, 0, SEEK_SET);
+    /* read to the file */
+    read(file_fd, test, 1024);
+    now_time = rt_tick_get_millisecond();
+    rt_kprintf("test file read 1KB time = %dms.\n", now_time - last_time);
+    close(file_fd);
+}
+MSH_CMD_EXPORT_ALIAS(cmd_sdcard_speed_test,test_sdcard,test sdcard speed);
+#endif /*RT_USING_MSH*/
 #endif /* BSP_USING_SDCARD_FS */
 
 int mount_init(void)
