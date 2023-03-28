@@ -24,6 +24,7 @@
 #include "adc.h"
 #include "dma.h"
 #include "iwdg.h"
+#include "mdma.h"
 #include "quadspi.h"
 #include "rtc.h"
 #include "sdmmc.h"
@@ -37,7 +38,7 @@
 #endif /*CUBE_ERROR*/
 #include <rtconfig.h>
 #include "main.h"
-#include "gpio.h"
+#include "mdma.h"
 /*ulog include*/
 #define LOG_TAG              "main" 
 #define LOG_LVL              DBG_INFO
@@ -85,6 +86,7 @@ extern int vref_temp_get(void);
  */
 int main(void)
 {
+    MX_MDMA_Init();
     mount_init();
     Version();
     rt_thread_mdelay(500);
@@ -120,10 +122,6 @@ void SystemClock_Config(void)
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE0);
 
   while(!__HAL_PWR_GET_FLAG(PWR_FLAG_VOSRDY)) {}
-
-  /** Macro to configure the PLL clock source
-  */
-  __HAL_RCC_PLL_PLLSOURCE_CONFIG(RCC_PLLSOURCE_HSE);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
