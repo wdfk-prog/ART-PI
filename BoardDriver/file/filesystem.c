@@ -172,23 +172,30 @@ static void cmd_sdcard_speed_test(uint8_t argc, char **argv)
     }
     char test[1024];
     int last_time = rt_tick_get_millisecond();
-    /* write to the file */
-    if (write(file_fd, test, 1024) != 1024)
+    for(rt_uint16_t i = 0; i <1024; i++)
     {
-        rt_kprintf("test file(%s) write failed.\n", file_path);
-        return;
+      /* write to the file */
+      if (write(file_fd, test, 1024) != 1024)
+      {
+          rt_kprintf("test file(%s) write failed.\n", file_path);
+          return;
+      }
+      /* flush file cache */
+      fsync(file_fd);
     }
-    /* flush file cache */
-    fsync(file_fd);
     int now_time = rt_tick_get_millisecond();
-    rt_kprintf("test file write 1KB time =  %dms.\n", now_time - last_time);
+    rt_kprintf("test file write 1MB time =  %dms.\n", now_time - last_time);
 
     last_time = rt_tick_get_millisecond();
     rt_size_t file_size = lseek(file_fd, 0, SEEK_SET);
-    /* read to the file */
-    read(file_fd, test, 1024);
+    for(rt_uint16_t i = 0; i <1024; i++)
+    {
+      /* read to the file */
+      read(file_fd, test, 1024);
+    }
     now_time = rt_tick_get_millisecond();
-    rt_kprintf("test file read 1KB time = %dms.\n", now_time - last_time);
+    rt_kprintf("test file read 1MB time = %dms.\n", now_time - last_time);
+
     close(file_fd);
 }
 MSH_CMD_EXPORT_ALIAS(cmd_sdcard_speed_test,test_sdcard,test sdcard speed);

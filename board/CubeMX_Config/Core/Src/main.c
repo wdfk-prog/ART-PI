@@ -15,7 +15,7 @@
   *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
-  ¼ÓÈë__attribute__((optnone))È¡ÏûÓÅ»¯
+  åŠ å…¥__attribute__((optnone))å–æ¶ˆä¼˜åŒ–
   */
 #ifdef CUBE_ERROR
 /* USER CODE END Header */
@@ -79,14 +79,14 @@ extern int vref_temp_get(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 /**
- * @brief  Ö÷º¯Êı
+ * @brief  ä¸»å‡½æ•°
  * @param  None.
  * @retval int 
  * @note   None.
  */
 int main(void)
 {
-    MX_MDMA_Init();
+    //MX_MDMA_Init();
     mount_init();
     Version();
     rt_thread_mdelay(500);
@@ -286,13 +286,13 @@ void Error_Handler(void)
   /* User can add his own implementation to report the HAL error return state */
 #endif /*CUBE_ERROR*/
 /**
-  * @brief  »ñÈ¡±àÒë°æ±¾
+  * @brief  è·å–ç¼–è¯‘ç‰ˆæœ¬
   * @param  None
   * @retval None
   */
 static int Version(void)
 {
-  /* »ñÈ¡±àÒë°æ±¾*/
+  /* è·å–ç¼–è¯‘ç‰ˆæœ¬*/
   LOG_I(" \\ | /");
   LOG_W("- HLY -    Version FULL V%s",VERSION);
   LOG_E(" / | \\     build %s %s",__DATE__,__TIME__);
