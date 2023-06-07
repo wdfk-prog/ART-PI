@@ -343,33 +343,34 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
 
 #if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
         rt_uint32_t* dma_buf = RT_NULL;
-        if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
+        if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
         {
-            dma_buf = (rt_uint32_t *)rt_malloc_align(send_length,32);
-            if(send_buf)
-            {
-                rt_memcpy(dma_buf, send_buf, send_length);
-            }
-            else
-            {
-                rt_memset(dma_buf, 0xFF, send_length);
-            }
-            rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
-            state = HAL_SPI_TransmitReceive_DMA(spi_handle, (uint8_t *)dma_buf, (uint8_t *)dma_buf, send_length);
+            dma_buf = (rt_uint32_t *)rt_malloc_align(send_length, 32);
         }
-        else
 #endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
         /* start once data exchange in DMA mode */
         if (message->send_buf && message->recv_buf)
         {
             if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
+#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
+                rt_memcpy(dma_buf, send_buf, send_length);
+                rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
+                state = HAL_SPI_TransmitReceive_DMA(spi_handle, (uint8_t *)dma_buf, (uint8_t *)dma_buf, send_length);
+#else
                 state = HAL_SPI_TransmitReceive_DMA(spi_handle, (uint8_t *)send_buf, (uint8_t *)recv_buf, send_length);
+#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
             }
             else if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
+#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
+                rt_memcpy(dma_buf, send_buf, send_length);
+                rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
+                state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)dma_buf, send_length);
+#else
                 /* same as Tx ONLY. It will not receive SPI data any more. */
                 state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)send_buf, send_length);
+#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
             }
             else if ((spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
@@ -386,7 +387,13 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
         {
             if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
+#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
+                rt_memcpy(dma_buf, send_buf, send_length);
+                rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
+                state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)dma_buf, send_length);
+#else
                 state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)send_buf, send_length);
+#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
             }
             else
             {
@@ -404,7 +411,13 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
             rt_memset((uint8_t *)recv_buf, 0xff, send_length);
             if ((spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
+#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
+                rt_memset(dma_buf, 0xFF, send_length);
+                rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
+                state = HAL_SPI_Receive_DMA(spi_handle, (uint8_t *)dma_buf, send_length);
+#else
                 state = HAL_SPI_Receive_DMA(spi_handle, (uint8_t *)recv_buf, send_length);
+#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
             }
             else
             {
