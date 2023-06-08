@@ -281,12 +281,6 @@ static rt_err_t stm32_spi_init(struct stm32_spi *spi_drv, struct rt_spi_configur
     return RT_EOK;
 }
 
-static void dma_cpu_dcache(rt_uint32_t* dma_buf, const rt_uint8_t *send_buf, rt_uint16_t send_length)
-{
-    rt_memcpy(dma_buf, send_buf, send_length);
-    rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
-}
-
 static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *message)
 {
     #define DMA_TRANS_MIN_LEN  10 /* only buffer length >= DMA_TRANS_MIN_LEN will use DMA mode */
