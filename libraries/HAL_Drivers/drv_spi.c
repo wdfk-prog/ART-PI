@@ -281,6 +281,12 @@ static rt_err_t stm32_spi_init(struct stm32_spi *spi_drv, struct rt_spi_configur
     return RT_EOK;
 }
 
+static void dma_cpu_dcache(rt_uint32_t* dma_buf, const rt_uint8_t *send_buf, rt_uint16_t send_length)
+{
+    rt_memcpy(dma_buf, send_buf, send_length);
+    rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
+}
+
 static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *message)
 {
     #define DMA_TRANS_MIN_LEN  10 /* only buffer length >= DMA_TRANS_MIN_LEN will use DMA mode */
@@ -341,36 +347,28 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
             recv_buf = (rt_uint8_t *)message->recv_buf + already_send_length;
         }
 
-#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
         rt_uint32_t* dma_buf = RT_NULL;
         if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
         {
             dma_buf = (rt_uint32_t *)rt_malloc_align(send_length, 32);
-        }
+            rt_memcpy(dma_buf, send_buf, send_length);
+
+#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
+            rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
 #endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
+        }
+
         /* start once data exchange in DMA mode */
         if (message->send_buf && message->recv_buf)
         {
             if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
-#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
-                rt_memcpy(dma_buf, send_buf, send_length);
-                rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
                 state = HAL_SPI_TransmitReceive_DMA(spi_handle, (uint8_t *)dma_buf, (uint8_t *)dma_buf, send_length);
-#else
-                state = HAL_SPI_TransmitReceive_DMA(spi_handle, (uint8_t *)send_buf, (uint8_t *)recv_buf, send_length);
-#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
             }
             else if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
-#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
-                rt_memcpy(dma_buf, send_buf, send_length);
-                rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
-                state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)dma_buf, send_length);
-#else
                 /* same as Tx ONLY. It will not receive SPI data any more. */
-                state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)send_buf, send_length);
-#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
+                state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)dma_buf, send_length);
             }
             else if ((spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
@@ -387,13 +385,7 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
         {
             if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
-#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
-                rt_memcpy(dma_buf, send_buf, send_length);
-                rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
                 state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)dma_buf, send_length);
-#else
-                state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)send_buf, send_length);
-#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
             }
             else
             {
@@ -411,13 +403,7 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
             rt_memset((uint8_t *)recv_buf, 0xff, send_length);
             if ((spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
-#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
-                rt_memset(dma_buf, 0xFF, send_length);
-                rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
                 state = HAL_SPI_Receive_DMA(spi_handle, (uint8_t *)dma_buf, send_length);
-#else
-                state = HAL_SPI_Receive_DMA(spi_handle, (uint8_t *)recv_buf, send_length);
-#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
             }
             else
             {
@@ -462,17 +448,18 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
             while (HAL_SPI_GetState(spi_handle) != HAL_SPI_STATE_READY);
         }
 
-#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
-        if(dma_buf)
+        if(dma_buf != RT_NULL)
         {
-            if(recv_buf)
+            if(recv_buf != RT_NULL)
             {
+#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
                 rt_hw_cpu_dcache_ops(RT_HW_CACHE_INVALIDATE, dma_buf, send_length);
-                rt_memcpy(recv_buf, dma_buf,send_length);
+#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
+
+                rt_memcpy(recv_buf, dma_buf, send_length);
             }
             rt_free_align(dma_buf);
         }
-#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
     }
 
     if (message->cs_release && !(device->config.mode & RT_SPI_NO_CS) && (device->cs_pin != PIN_NONE))
