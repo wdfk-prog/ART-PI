@@ -346,7 +346,7 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
         if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
         {
 #if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
-            if (RT_IS_ALIGN((rt_uint32_t)send_buf, 32)) /* aligned with 32 bytes? */
+            if (RT_IS_ALIGN((rt_uint32_t)send_buf, 32) && send_buf != RT_NULL) /* aligned with 32 bytes? */
             {
                 p_txrx_buffer = (rt_uint32_t *)send_buf; /* send_buf aligns with 32 bytes, no more operations */
             }
@@ -359,7 +359,7 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
             }
             rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_aligned_buffer, send_length);
 #else
-            if (RT_IS_ALIGN((rt_uint32_t)send_buf, 4)) /* aligned with 4 bytes? */
+            if (RT_IS_ALIGN((rt_uint32_t)send_buf, 4) && send_buf != RT_NULL) /* aligned with 4 bytes? */
             {
                 p_txrx_buffer = (rt_uint32_t *)send_buf; /* send_buf aligns with 4 bytes, no more operations */
             }
