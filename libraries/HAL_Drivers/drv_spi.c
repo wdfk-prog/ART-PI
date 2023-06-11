@@ -140,9 +140,8 @@ static rt_err_t stm32_spi_init(struct stm32_spi *spi_drv, struct rt_spi_configur
 
     spi_handle->Init.NSS = SPI_NSS_SOFT;
 
-    static uint32_t SPI_CLOCK;
-
-/* Some series may only have APBPERIPH_BASE, but don't have HAL_RCC_GetPCLK2Freq */
+    uint32_t SPI_CLOCK = 0UL;
+    /* Some series may only have APBPERIPH_BASE, but don't have HAL_RCC_GetPCLK2Freq */
 #if defined(APBPERIPH_BASE)
     SPI_CLOCK = HAL_RCC_GetPCLK1Freq();
 #elif defined(APB1PERIPH_BASE) || defined(APB2PERIPH_BASE)
@@ -341,14 +340,36 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
             recv_buf = (rt_uint8_t *)message->recv_buf + already_send_length;
         }
 
-        rt_uint32_t* dma_buf = RT_NULL;
+        rt_uint32_t* dma_aligned_buffer = RT_NULL;
+        rt_uint32_t* p_txrx_buffer = RT_NULL;
+
         if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
         {
-            dma_buf = (rt_uint32_t *)rt_malloc_align(send_length, 32);
-            rt_memcpy(dma_buf, send_buf, send_length);
-
 #if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
-            rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_buf, send_length);
+            if (RT_IS_ALIGN((rt_uint32_t)send_buf, 32)) /* aligned with 32 bytes? */
+            {
+                p_txrx_buffer = (rt_uint32_t *)send_buf; /* send_buf aligns with 32 bytes, no more operations */
+            }
+            else
+            {
+                /* send_buf doesn't align with 32 bytes, so creat a cache buffer with 32 bytes aligned */
+                dma_aligned_buffer = (rt_uint32_t *)rt_malloc_align(send_length, 32);
+                rt_memcpy(dma_aligned_buffer, send_buf, send_length);
+                p_txrx_buffer = dma_aligned_buffer;
+            }
+            rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_aligned_buffer, send_length);
+#else
+            if (RT_IS_ALIGN((rt_uint32_t)send_buf, 4)) /* aligned with 4 bytes? */
+            {
+                p_txrx_buffer = (rt_uint32_t *)send_buf; /* send_buf aligns with 4 bytes, no more operations */
+            }
+            else
+            {
+                /* send_buf doesn't align with 4 bytes, so creat a cache buffer with 4 bytes aligned */
+                dma_aligned_buffer = (rt_uint32_t *)rt_malloc(send_length); /* aligned with RT_ALIGN_SIZE (8 bytes by default) */
+                rt_memcpy(dma_aligned_buffer, send_buf, send_length);
+                p_txrx_buffer = dma_aligned_buffer;
+            }
 #endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
         }
 
@@ -357,12 +378,12 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
         {
             if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
-                state = HAL_SPI_TransmitReceive_DMA(spi_handle, (uint8_t *)dma_buf, (uint8_t *)dma_buf, send_length);
+                state = HAL_SPI_TransmitReceive_DMA(spi_handle, (uint8_t *)p_txrx_buffer, (uint8_t *)p_txrx_buffer, send_length);
             }
             else if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
                 /* same as Tx ONLY. It will not receive SPI data any more. */
-                state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)dma_buf, send_length);
+                state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)p_txrx_buffer, send_length);
             }
             else if ((spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
@@ -379,7 +400,7 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
         {
             if ((spi_drv->spi_dma_flag & SPI_USING_TX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
-                state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)dma_buf, send_length);
+                state = HAL_SPI_Transmit_DMA(spi_handle, (uint8_t *)p_txrx_buffer, send_length);
             }
             else
             {
@@ -397,7 +418,7 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
             rt_memset((uint8_t *)recv_buf, 0xff, send_length);
             if ((spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
             {
-                state = HAL_SPI_Receive_DMA(spi_handle, (uint8_t *)dma_buf, send_length);
+                state = HAL_SPI_Receive_DMA(spi_handle, (uint8_t *)p_txrx_buffer, send_length);
             }
             else
             {
@@ -442,17 +463,20 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
             while (HAL_SPI_GetState(spi_handle) != HAL_SPI_STATE_READY);
         }
 
-        if(dma_buf != RT_NULL)
+        if(dma_aligned_buffer != RT_NULL) /* re-aligned, so need to copy the data to recv_buf */
         {
             if(recv_buf != RT_NULL)
             {
 #if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
-                rt_hw_cpu_dcache_ops(RT_HW_CACHE_INVALIDATE, dma_buf, send_length);
+                rt_hw_cpu_dcache_ops(RT_HW_CACHE_INVALIDATE, p_txrx_buffer, send_length);
 #endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
-
-                rt_memcpy(recv_buf, dma_buf, send_length);
+                rt_memcpy(recv_buf, p_txrx_buffer, send_length);
             }
-            rt_free_align(dma_buf);
+#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
+            rt_free_align(dma_aligned_buffer);
+#else
+            rt_free(dma_aligned_buffer);
+#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
         }
     }
 
