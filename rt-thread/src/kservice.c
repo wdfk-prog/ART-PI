@@ -1396,14 +1396,14 @@ extern void console_init();
     /* check whether it's a same device */
     if (new_device == old_device) return RT_NULL;
 
+    if (_console_device != RT_NULL)
+    {
+        /* close old console device */
+        rt_device_close(_console_device);
+    }
+
     if (new_device != RT_NULL)
     {
-        if (_console_device != RT_NULL)
-        {
-            /* close old console device */
-            rt_device_close(_console_device);
-        }
-
         /* set new console device */
         rt_device_open(new_device, RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_STREAM);
         _console_device = new_device;

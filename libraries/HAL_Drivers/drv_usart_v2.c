@@ -289,6 +289,7 @@ static rt_err_t stm32_control(struct rt_serial_device *serial, int cmd, void *ar
                 return RT_SERIAL_TX_BLOCKING_BUFFER;
         }
     case RT_DEVICE_CTRL_CLOSE:
+        rt_kprintf("11111\r\n");
         if (HAL_UART_DeInit(&(uart->handle)) != HAL_OK )
         {
             RT_ASSERT(0)
