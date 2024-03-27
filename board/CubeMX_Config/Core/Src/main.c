@@ -39,6 +39,7 @@
 #include <rtconfig.h>
 #include "main.h"
 #include "mdma.h"
+#include "shell.h"
 /*ulog include*/
 #define LOG_TAG              "main" 
 #define LOG_LVL              DBG_INFO
@@ -87,6 +88,7 @@ extern int vref_temp_get(void);
 int main(void)
 {
     //MX_MDMA_Init();
+    finsh_set_prompt("artpi@root");
     mount_init();
     Version();
     rt_thread_mdelay(500);
