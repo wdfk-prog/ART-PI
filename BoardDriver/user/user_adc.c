@@ -75,6 +75,13 @@ static int adc_init(void)
   return RT_EOK;
 }
 INIT_DEVICE_EXPORT(adc_init);
+
+CMD_OPTIONS_NODE_START(vref_temp_get)
+CMD_OPTIONS_NODE(1, write, tx data)
+CMD_OPTIONS_NODE(2, irq, irq list)
+CMD_OPTIONS_NODE(3, speed-test, eth physical speed test)
+CMD_OPTIONS_NODE_END
+
 /**
  * @brief  获取 MCU内部参考电压和温度
  * @param  None
@@ -115,7 +122,7 @@ int vref_temp_get(void)
   return RT_EOK;
 }
 /* 导出到 msh 命令列表中 */
-MSH_CMD_EXPORT(vref_temp_get, get MCU vref and temp);
+MSH_CMD_EXPORT(vref_temp_get, get MCU vref and temp, aa);
 #if (REAL_TIME_REFRESH == 0)
 /**
   * @brief  ADC_DMA 半满回调函数
