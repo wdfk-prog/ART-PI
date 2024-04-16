@@ -41,7 +41,7 @@ typedef enum
 
 /* Private variables ---------------------------------------------------------*/
 extern ADC_HandleTypeDef hadc3;
-rt_uint16_t *adc3_data = RT_NULL;
+rt_uint16_t adc3_data[100] = {0};
 /* Private function prototypes -----------------------------------------------*/
 extern void MX_ADC3_Init(void);
 /**
@@ -64,8 +64,6 @@ static int adc_init(void)
   {
     Error_Handler();
   }
-
-  adc3_data = (rt_uint16_t *)rt_malloc_align(ADC3_BUFFER_LEN, 16);
 
   if (HAL_ADC_Start_DMA(&hadc3, (uint32_t *)adc3_data, ADC3_BUFFER_LEN) != HAL_OK)
   {
