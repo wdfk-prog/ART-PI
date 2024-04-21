@@ -108,8 +108,6 @@ static rt_err_t stm32_spi_init(struct stm32_spi *spi_drv, struct rt_spi_configur
     if (cfg->data_width == 8)
     {
         spi_handle->Init.DataSize = SPI_DATASIZE_8BIT;
-        spi_handle->TxXferSize = 8;
-        spi_handle->RxXferSize = 8;
     }
     else if (cfg->data_width == 16)
     {
@@ -300,9 +298,13 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
     if (message->cs_take && !(device->config.mode & RT_SPI_NO_CS) && (device->cs_pin != PIN_NONE))
     {
         if (device->config.mode & RT_SPI_CS_HIGH)
+        {
             rt_pin_write(device->cs_pin, PIN_HIGH);
+        }
         else
+        {
             rt_pin_write(device->cs_pin, PIN_LOW);
+        }
     }
 
     LOG_D("%s transfer prepare and start", spi_drv->config->bus_name);
@@ -368,6 +370,35 @@ static rt_ssize_t spixfer(struct rt_spi_device *device, struct rt_spi_message *m
                 /* send_buf doesn't align with 4 bytes, so creat a cache buffer with 4 bytes aligned */
                 dma_aligned_buffer = (rt_uint32_t *)rt_malloc(send_length); /* aligned with RT_ALIGN_SIZE (8 bytes by default) */
                 rt_memcpy(dma_aligned_buffer, send_buf, send_length);
+                p_txrx_buffer = dma_aligned_buffer;
+            }
+#endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
+        }
+        else if ((spi_drv->spi_dma_flag & SPI_USING_RX_DMA_FLAG) && (send_length >= DMA_TRANS_MIN_LEN))
+        {
+#if defined(SOC_SERIES_STM32H7) || defined(SOC_SERIES_STM32F7)
+            if (RT_IS_ALIGN((rt_uint32_t)recv_buf, 32) && recv_buf != RT_NULL) /* aligned with 32 bytes? */
+            {
+                p_txrx_buffer = (rt_uint32_t *)recv_buf; /* recv_buf aligns with 32 bytes, no more operations */
+            }
+            else
+            {
+                /* recv_buf doesn't align with 32 bytes, so creat a cache buffer with 32 bytes aligned */
+                dma_aligned_buffer = (rt_uint32_t *)rt_malloc_align(send_length, 32);
+                rt_memcpy(dma_aligned_buffer, recv_buf, send_length);
+                p_txrx_buffer = dma_aligned_buffer;
+            }
+            rt_hw_cpu_dcache_ops(RT_HW_CACHE_FLUSH, dma_aligned_buffer, send_length);
+#else
+            if (RT_IS_ALIGN((rt_uint32_t)recv_buf, 4) && recv_buf != RT_NULL) /* aligned with 4 bytes? */
+            {
+                p_txrx_buffer = (rt_uint32_t *)recv_buf; /* recv_buf aligns with 4 bytes, no more operations */
+            }
+            else
+            {
+                /* recv_buf doesn't align with 4 bytes, so creat a cache buffer with 4 bytes aligned */
+                dma_aligned_buffer = (rt_uint32_t *)rt_malloc(send_length); /* aligned with RT_ALIGN_SIZE (8 bytes by default) */
+                rt_memcpy(dma_aligned_buffer, recv_buf, send_length);
                 p_txrx_buffer = dma_aligned_buffer;
             }
 #endif /* SOC_SERIES_STM32H7 || SOC_SERIES_STM32F7 */
@@ -1041,7 +1072,45 @@ void SPI2_DMA_RX_TX_IRQHandler(void)
     SPI2_DMA_RX_IRQHandler();
 #endif
 }
-#endif  /* SOC_SERIES_STM32F0 */
+#elif defined(SOC_SERIES_STM32G0)
+#if defined(BSP_SPI1_TX_USING_DMA) || defined(BSP_SPI1_RX_USING_DMA)
+void SPI1_DMA_RX_TX_IRQHandler(void)
+{
+#if defined(BSP_SPI1_TX_USING_DMA)
+    SPI1_DMA_TX_IRQHandler();
+#endif
+
+#if defined(BSP_SPI1_RX_USING_DMA)
+    SPI1_DMA_RX_IRQHandler();
+#endif
+}
+#endif /* defined(BSP_SPI1_TX_USING_DMA) || defined(BSP_SPI1_RX_USING_DMA) */
+#if defined(BSP_SPI2_TX_USING_DMA) || defined(BSP_SPI2_RX_USING_DMA)
+void SPI2_DMA_RX_TX_IRQHandler(void)
+{
+#if defined(BSP_SPI2_TX_USING_DMA)
+    SPI2_DMA_TX_IRQHandler();
+#endif
+
+#if defined(BSP_SPI2_RX_USING_DMA)
+    SPI2_DMA_RX_IRQHandler();
+#endif
+}
+#endif /* defined(BSP_SPI1_TX_USING_DMA) || defined(BSP_SPI1_RX_USING_DMA) */
+#if defined(STM32G0B0xx) || defined(STM32G0B1xx) || defined(STM32G0C1xx)
+#if defined(BSP_USING_SPI2) || defined(BSP_USING_SPI3)
+void SPI2_3_IRQHandler(void)
+{
+#if defined(BSP_SPI2_TX_USING_DMA) || defined(BSP_SPI2_RX_USING_DMA)
+    SPI2_IRQHandler();
+#endif
+#if defined(BSP_SPI3_TX_USING_DMA) || defined(BSP_SPI3_RX_USING_DMA)
+    SPI3_IRQHandler();
+#endif
+}
+#endif /* defined(BSP_USING_SPI2) || defined(BSP_USING_SPI3) */
+#endif /* defined(STM32G0B0xx) || defined(STM32G0B1xx) || defined(STM32G0C1xx) */
+#endif /* defined(SOC_SERIES_STM32F0) */
 
 int rt_hw_spi_init(void)
 {
