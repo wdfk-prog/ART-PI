@@ -332,9 +332,9 @@ typedef int (*init_fn_t)(void);
 #define RT_EVENT_LENGTH                 32
 
 /* memory management option */
-#define RT_MM_PAGE_SIZE                 4096
+#define RT_MM_PAGE_SIZE                 256
 #define RT_MM_PAGE_MASK                 (RT_MM_PAGE_SIZE - 1)
-#define RT_MM_PAGE_BITS                 12
+#define RT_MM_PAGE_BITS                 8
 
 /* kernel malloc definitions */
 #ifndef RT_KERNEL_MALLOC
