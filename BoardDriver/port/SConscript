@@ -1,0 +1,14 @@
+import os
+from building import *
+
+cwd = GetCurrentDir()
+
+# add port drivers
+src = Glob('port/*.c')
+
+path = [cwd]
+path += [cwd + '/port']
+
+group = DefineGroup('BoardDriver', src, depend = [''], CPPPATH = path)
+
+Return('group')
