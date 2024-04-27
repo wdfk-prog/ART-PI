@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>7</Optim>
             <oTime>0</oTime>
             <SplitLS>1</SplitLS>
             <OneElfS>1</OneElfS>
@@ -400,9 +400,19 @@
           <GroupName>board</GroupName>
           <Files>
             <File>
-              <FileName>iwdg.c</FileName>
+              <FileName>adc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\iwdg.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\usart.c</FilePath>
             </File>
             <File>
               <FileName>sdmmc.c</FileName>
@@ -410,24 +420,9 @@
               <FilePath>board\CubeMX_Config\Core\Src\sdmmc.c</FilePath>
             </File>
             <File>
-              <FileName>rtc.c</FileName>
+              <FileName>fmc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\rtc.c</FilePath>
-            </File>
-            <File>
-              <FileName>board.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\board.c</FilePath>
-            </File>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_otg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\usb_otg.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\fmc.c</FilePath>
             </File>
             <File>
               <FileName>quadspi.c</FileName>
@@ -435,19 +430,9 @@
               <FilePath>board\CubeMX_Config\Core\Src\quadspi.c</FilePath>
             </File>
             <File>
-              <FileName>stm32h7xx_hal_msp.c</FileName>
+              <FileName>spi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_hal_msp.c</FilePath>
-            </File>
-            <File>
-              <FileName>mdma.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\mdma.c</FilePath>
-            </File>
-            <File>
-              <FileName>usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\usart.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\spi.c</FilePath>
             </File>
             <File>
               <FileName>dma.c</FileName>
@@ -460,19 +445,24 @@
               <FilePath>board\CubeMX_Config\Core\Src\system_stm32h7xx.c</FilePath>
             </File>
             <File>
-              <FileName>adc.c</FileName>
+              <FileName>rtc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\adc.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\rtc.c</FilePath>
             </File>
             <File>
-              <FileName>spi.c</FileName>
+              <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\spi.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\main.c</FilePath>
             </File>
             <File>
-              <FileName>fmc.c</FileName>
+              <FileName>mdma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\fmc.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\mdma.c</FilePath>
+            </File>
+            <File>
+              <FileName>iwdg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\iwdg.c</FilePath>
             </File>
             <File>
               <FileName>gpio.c</FileName>
@@ -480,9 +470,19 @@
               <FilePath>board\CubeMX_Config\Core\Src\gpio.c</FilePath>
             </File>
             <File>
-              <FileName>stm32h7xx_it.c</FileName>
+              <FileName>usb_otg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\usb_otg.c</FilePath>
+            </File>
+            <File>
+              <FileName>board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\board.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_msp.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_hal_msp.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -530,11 +530,6 @@
           <GroupName>cm_backtrace</GroupName>
           <Files>
             <File>
-              <FileName>cm_backtrace.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>packages\CmBacktrace-latest\cm_backtrace.c</FilePath>
-            </File>
-            <File>
               <FileName>cmb_flash_log.c</FileName>
               <FileType>1</FileType>
               <FilePath>packages\CmBacktrace-latest\cmb_flash_log.c</FilePath>
@@ -543,6 +538,11 @@
               <FileName>cmb_port.c</FileName>
               <FileType>1</FileType>
               <FilePath>packages\CmBacktrace-latest\cmb_port.c</FilePath>
+            </File>
+            <File>
+              <FileName>cm_backtrace.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\CmBacktrace-latest\cm_backtrace.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -630,14 +630,14 @@
           <GroupName>cpu_usage</GroupName>
           <Files>
             <File>
-              <FileName>cpu_usage_cmd.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>packages\cpu_usage-latest\cpu_usage_cmd.c</FilePath>
-            </File>
-            <File>
               <FileName>cpu_usage.c</FileName>
               <FileType>1</FileType>
               <FilePath>packages\cpu_usage-latest\cpu_usage.c</FilePath>
+            </File>
+            <File>
+              <FileName>cpu_usage_cmd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\cpu_usage-latest\cpu_usage_cmd.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -1988,6 +1988,11 @@
           <GroupName>Fal</GroupName>
           <Files>
             <File>
+              <FileName>fal_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\fal\src\fal_flash.c</FilePath>
+            </File>
+            <File>
               <FileName>fal_rtt.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\components\fal\src\fal_rtt.c</FilePath>
@@ -2006,11 +2011,6 @@
               <FileName>fal_partition.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\components\fal\src\fal_partition.c</FilePath>
-            </File>
-            <File>
-              <FileName>fal_flash.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\components\fal\src\fal_flash.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2203,9 +2203,9 @@
               <FilePath>packages\littlefs-latest\dfs_lfs.c</FilePath>
             </File>
             <File>
-              <FileName>lfs.c</FileName>
+              <FileName>lfs_util.c</FileName>
               <FileType>1</FileType>
-              <FilePath>packages\littlefs-latest\lfs.c</FilePath>
+              <FilePath>packages\littlefs-latest\lfs_util.c</FilePath>
             </File>
             <File>
               <FileName>lfs_crc.c</FileName>
@@ -2213,9 +2213,9 @@
               <FilePath>packages\littlefs-latest\lfs_crc.c</FilePath>
             </File>
             <File>
-              <FileName>lfs_util.c</FileName>
+              <FileName>lfs.c</FileName>
               <FileType>1</FileType>
-              <FilePath>packages\littlefs-latest\lfs_util.c</FilePath>
+              <FilePath>packages\littlefs-latest\lfs.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -2486,6 +2486,11 @@
               <FileName>slab_tc.c</FileName>
               <FileType>1</FileType>
               <FilePath>testcases\slab_tc.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer_tc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>testcases\timer_tc.c</FilePath>
             </File>
           </Files>
         </Group>

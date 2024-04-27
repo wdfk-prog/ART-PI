@@ -562,7 +562,7 @@ struct rt_object_information
 #define RT_TIMER_CTRL_SET_PARM          0x9             /**< get timer parameter  */
 
 #ifndef RT_TIMER_SKIP_LIST_LEVEL
-#define RT_TIMER_SKIP_LIST_LEVEL          1
+#define RT_TIMER_SKIP_LIST_LEVEL          3
 #endif
 
 /* 1 or 3 */
