@@ -54,7 +54,7 @@
 
 #include <rthw.h>
 #include <rtthread.h>
-#define RT_USING_SLAB
+
 #ifdef RT_USING_SLAB
 
 #define DBG_TAG           "kernel.slab"
@@ -62,63 +62,63 @@
 #include <rtdbg.h>
 
 /*
-slab allocator implementation
-
-A slab allocator reserves a ZONE for each chunk size, then lays the
-chunks out in an array within the zone.  Allocation and deallocation
-is nearly instantanious, and fragmentation/overhead losses are limited
-to a fixed worst-case amount.
-
-The downside of this slab implementation is in the chunk size
-multiplied by the number of zones.  ~80 zones * 128K = 10MB of VM per cpu.
-In a kernel implementation all this memory will be physical so
-the zone size is adjusted downward on machines with less physical
-memory.  The upside is that overhead is bounded... this is the *worst*
-case overhead.
-
-Slab management is done on a per-cpu basis and no locking or mutexes
-are required, only a critical section.  When one cpu frees memory
-belonging to another cpu's slab manager an asynchronous IPI message
-will be queued to execute the operation.   In addition, both the
-high level slab allocator and the low level zone allocator optimize
-M_ZERO requests, and the slab allocator does not have to pre initialize
-the linked list of chunks.
-
-XXX Balancing is needed between cpus.  Balance will be handled through
-asynchronous IPIs primarily by reassigning the z_Cpu ownership of chunks.
-
-XXX If we have to allocate a new zone and M_USE_RESERVE is set, use of
-the new zone should be restricted to M_USE_RESERVE requests only.
-
- Alloc Size  Chunking        Number of zones
- 0-127       8               16
- 128-255     16              8
- 256-511     32              8
- 512-1023    64              8
- 1024-2047   128             8
- 2048-4095   256             8
- 4096-8191   512             8
- 8192-16383  1024            8
- 16384-32767 2048            8
- (if RT_MM_PAGE_SIZE is 4K the maximum zone allocation is 16383)
-
- Allocations >= zone_limit go directly to kmem.
-
-         API REQUIREMENTS AND SIDE EFFECTS
-
-   To operate as a drop-in replacement to the FreeBSD-4.x malloc() we
-   have remained compatible with the following API requirements:
-
-   + small power-of-2 sized allocations are power-of-2 aligned (kern_tty)
-   + all power-of-2 sized allocations are power-of-2 aligned (twe)
-   + malloc(0) is allowed and returns non-RT_NULL (ahc driver)
-   + ability to allocate arbitrarily large chunks of memory
+ * slab allocator implementation
+ *
+ * A slab allocator reserves a ZONE for each chunk size, then lays the
+ * chunks out in an array within the zone.  Allocation and deallocation
+ * is nearly instantanious, and fragmentation/overhead losses are limited
+ * to a fixed worst-case amount.
+ *
+ * The downside of this slab implementation is in the chunk size
+ * multiplied by the number of zones.  ~80 zones * 128K = 10MB of VM per cpu.
+ * In a kernel implementation all this memory will be physical so
+ * the zone size is adjusted downward on machines with less physical
+ * memory.  The upside is that overhead is bounded... this is the *worst*
+ * case overhead.
+ *
+ * Slab management is done on a per-cpu basis and no locking or mutexes
+ * are required, only a critical section.  When one cpu frees memory
+ * belonging to another cpu's slab manager an asynchronous IPI message
+ * will be queued to execute the operation.   In addition, both the
+ * high level slab allocator and the low level zone allocator optimize
+ * M_ZERO requests, and the slab allocator does not have to pre initialize
+ * the linked list of chunks.
+ *
+ * XXX Balancing is needed between cpus.  Balance will be handled through
+ * asynchronous IPIs primarily by reassigning the z_Cpu ownership of chunks.
+ *
+ * XXX If we have to allocate a new zone and M_USE_RESERVE is set, use of
+ * the new zone should be restricted to M_USE_RESERVE requests only.
+ *
+ *  Alloc Size  Chunking        Number of zones
+ *  0-127       8               16
+ *  128-255     16              8
+ *  256-511     32              8
+ *  512-1023    64              8
+ *  1024-2047   128             8
+ *  2048-4095   256             8
+ *  4096-8191   512             8
+ *  8192-16383  1024            8
+ *  16384-32767 2048            8
+ *  (if RT_MM_PAGE_SIZE is 4K the maximum zone allocation is 16383)
+ *
+ *  Allocations >= zone_limit go directly to kmem.
+ *
+ *          API REQUIREMENTS AND SIDE EFFECTS
+ *
+ *    To operate as a drop-in replacement to the FreeBSD-4.x malloc() we
+ *    have remained compatible with the following API requirements:
+ *
+ *    + small power-of-2 sized allocations are power-of-2 aligned (kern_tty)
+ *    + all power-of-2 sized allocations are power-of-2 aligned (twe)
+ *    + malloc(0) is allowed and returns non-RT_NULL (ahc driver)
+ *    + ability to allocate arbitrarily large chunks of memory
  */
 
 #define ZALLOC_SLAB_MAGIC       0x51ab51ab
-#define ZALLOC_ZONE_LIMIT       (16  * (RT_MM_PAGE_SIZE / 4))     /* max slab-managed alloc */
-#define ZALLOC_MIN_ZONE_SIZE    (32  * (RT_MM_PAGE_SIZE / 4))     /* minimum zone size */
-#define ZALLOC_MAX_ZONE_SIZE    (128 * (RT_MM_PAGE_SIZE / 4))    /* maximum zone size */
+#define ZALLOC_ZONE_LIMIT       (16 * 1024)     /* max slab-managed alloc */
+#define ZALLOC_MIN_ZONE_SIZE    (32 * 1024)     /* minimum zone size */
+#define ZALLOC_MAX_ZONE_SIZE    (128 * 1024)    /* maximum zone size */
 #define ZONE_RELEASE_THRESH     2               /* threshold number of zones */
 
 /*
