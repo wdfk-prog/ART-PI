@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2021, RT-Thread Development Team
+ * Copyright (c) 2006-2023, RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -11,6 +11,7 @@
 #include <rthw.h>
 #include <rtthread.h>
 #include <cpuport.h>
+#include <rtdevice.h>
 
 #ifdef RT_USING_VIRTIO_GPU
 
@@ -448,7 +449,7 @@ static rt_err_t virtio_gpu_init(rt_device_t dev)
     return status;
 }
 
-static rt_size_t virtio_gpu_read(rt_device_t dev, rt_off_t pos, void *buffer, rt_size_t size)
+static rt_ssize_t virtio_gpu_read(rt_device_t dev, rt_off_t pos, void *buffer, rt_size_t size)
 {
     struct virtio_gpu_device *virtio_gpu_dev = (struct virtio_gpu_device *)dev;
 
@@ -466,7 +467,7 @@ static rt_size_t virtio_gpu_read(rt_device_t dev, rt_off_t pos, void *buffer, rt
     return size;
 }
 
-static rt_size_t virtio_gpu_write(rt_device_t dev, rt_off_t pos, const void *buffer, rt_size_t size)
+static rt_ssize_t virtio_gpu_write(rt_device_t dev, rt_off_t pos, const void *buffer, rt_size_t size)
 {
     struct virtio_gpu_device *virtio_gpu_dev = (struct virtio_gpu_device *)dev;
 

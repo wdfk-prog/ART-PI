@@ -7,10 +7,14 @@
  * Date           Author       Notes
  * 2022-11-14     WangXiaoyao  the first version
  */
-#ifndef __MM_INTERN_H__
-#define __MM_INTERN_H__
+#ifndef __MM_PRIVATE_H__
+#define __MM_PRIVATE_H__
 
 #include "mm_aspace.h"
+#include "mm_fault.h"
+#include "mm_flag.h"
+#include "mm_page.h"
+
 #include <rtdef.h>
 #include <stddef.h>
 
@@ -29,6 +33,17 @@
  * where both start and end are inclusive.
  */
 
+#define VAREA_NOT_STATIC(varea) (!((varea)->flag & MMF_STATIC_ALLOC))
+#define VAREA_NAME(varea)                                                      \
+  ((!varea->mem_obj || !varea->mem_obj->get_name)                              \
+       ? "unknow"                                                              \
+       : varea->mem_obj->get_name(varea))
+#define VAREA_IS_WRITABLE(varea)                                               \
+  (rt_hw_mmu_attr_test_perm(varea->attr,                                       \
+                            RT_HW_MMU_PROT_USER | RT_HW_MMU_PROT_WRITE))
+#define VAREA_VA_TO_OFFSET(varea, va)                                          \
+    ((varea)->offset + MM_PA_TO_OFF((long)(va) - (long)(varea)->start))
+
 struct _mm_range
 {
     void *start;
@@ -44,7 +59,7 @@ struct _mm_range
 rt_err_t _aspace_bst_init(struct rt_aspace *aspace);
 
 /**
- * @brief
+ * @brief Retrieve any varea if start in [varea->start, varea->end]
  *
  * @param aspace
  * @param start
@@ -53,8 +68,7 @@ rt_err_t _aspace_bst_init(struct rt_aspace *aspace);
 struct rt_varea *_aspace_bst_search(struct rt_aspace *aspace, void *start);
 
 /**
- * @brief Retrieve lowest varea satisfies
- * ((varea->start >= start) || (varea->end >= start))
+ * @brief Retrieve lowest varea satisfies (varea->start >= start)
  *
  * @param aspace
  * @param length
@@ -91,4 +105,29 @@ void _aspace_bst_insert(struct rt_aspace *aspace, struct rt_varea *varea);
  */
 void _aspace_bst_remove(struct rt_aspace *aspace, struct rt_varea *varea);
 
-#endif /* __MM_INTERN_H__ */
+int rt_varea_fix_private_locked(rt_varea_t ex_varea, void *pa,
+                                struct rt_aspace_fault_msg *msg,
+                                rt_bool_t dont_copy);
+
+int rt_varea_map_with_msg(rt_varea_t varea, struct rt_aspace_fault_msg *msg);
+
+void _varea_uninstall_locked(rt_varea_t varea);
+
+int _mm_aspace_map(rt_aspace_t aspace, rt_varea_t *pvarea, void **addr,
+                   rt_size_t length, rt_size_t attr, mm_flag_t flags,
+                   rt_mem_obj_t mem_obj, rt_size_t offset);
+
+rt_inline rt_bool_t rt_varea_is_private_locked(rt_varea_t varea)
+{
+    rt_base_t flags = varea->flag;
+    return !!(
+        (flags & (MMF_MAP_PRIVATE | MMF_MAP_PRIVATE_DONT_SYNC))
+        && (varea->aspace->private_object != varea->mem_obj)
+    );
+}
+
+rt_err_t rt_aspace_anon_ref_dec(rt_mem_obj_t aobj);
+rt_err_t rt_aspace_page_get_phy(rt_aspace_t aspace, void *page_va, void *buffer);
+rt_err_t rt_aspace_page_put_phy(rt_aspace_t aspace, void *page_va, void *buffer);
+
+#endif /* __MM_PRIVATE_H__ */

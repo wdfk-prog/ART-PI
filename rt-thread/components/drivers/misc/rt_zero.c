@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2020, Shanghai Real-Thread Electronic Technology Co.,Ltd
+ * Copyright (c) 2011-2023, Shanghai Real-Thread Electronic Technology Co.,Ltd
  *
  * Change Logs:
  * Date           Author       Notes
@@ -12,13 +12,13 @@
 
 static struct rt_device zero_dev;
 
-static rt_size_t zero_read    (rt_device_t dev, rt_off_t pos, void *buffer, rt_size_t size)
+static rt_ssize_t zero_read    (rt_device_t dev, rt_off_t pos, void *buffer, rt_size_t size)
 {
     rt_memset(buffer, 0, size);
     return size;
 }
 
-static rt_size_t zero_write   (rt_device_t dev, rt_off_t pos, const void *buffer, rt_size_t size)
+static rt_ssize_t zero_write   (rt_device_t dev, rt_off_t pos, const void *buffer, rt_size_t size)
 {
     return size;
 }

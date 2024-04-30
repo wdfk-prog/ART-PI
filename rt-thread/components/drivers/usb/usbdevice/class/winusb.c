@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2021, RT-Thread Development Team
+ * Copyright (c) 2006-2023, RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -227,7 +227,7 @@ static rt_err_t _winusb_descriptor_config(winusb_desc_t winusb, rt_uint8_t cintf
     return RT_EOK;
 }
 
-static rt_size_t win_usb_read(rt_device_t dev, rt_off_t pos, void *buffer, rt_size_t size)
+static rt_ssize_t win_usb_read(rt_device_t dev, rt_off_t pos, void *buffer, rt_size_t size)
 {
     if(((ufunction_t)dev->user_data)->device->state != USB_STATE_CONFIGURED)
     {
@@ -241,7 +241,7 @@ static rt_size_t win_usb_read(rt_device_t dev, rt_off_t pos, void *buffer, rt_si
     rt_usbd_io_request(((ufunction_t)dev->user_data)->device,winusb_device->ep_out,&winusb_device->ep_out->request);
     return size;
 }
-static rt_size_t win_usb_write(rt_device_t dev, rt_off_t pos, const void *buffer, rt_size_t size)
+static rt_ssize_t win_usb_write(rt_device_t dev, rt_off_t pos, const void *buffer, rt_size_t size)
 {
     if(((ufunction_t)dev->user_data)->device->state != USB_STATE_CONFIGURED)
     {
@@ -324,6 +324,8 @@ ufunction_t rt_usbd_function_winusb_create(udevice_t device)
 
     /* allocate memory for cdc vcom data */
     winusb_device = (winusb_device_t)rt_malloc(sizeof(struct winusb_device));
+    if (winusb_device == NULL)
+        return RT_NULL;
     rt_memset((void *)winusb_device, 0, sizeof(struct winusb_device));
     func->user_data = (void*)winusb_device;
     /* create an interface object */

@@ -10,6 +10,10 @@
 
 #include <rtthread.h>
 
+#if defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
+#include <intrinsics.h>
+#include <iccarm_builtin.h>
+#endif
 /**
  \brief   LDR Exclusive (32 bit)
  \details Executes a exclusive LDR instruction for 32 bit values.
@@ -25,9 +29,9 @@
 #define __LDREXW(ptr)          _Pragma("push") _Pragma("diag_suppress 3731") ((rt_atomic_t ) __ldrex(ptr))  _Pragma("pop")
 #endif
 #elif defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
-_Pragma("inline=forced") __intrinsic rt_atomic_t __LDREXW(volatile rt_atomic_t volatile *ptr)
+_Pragma("inline=forced") __intrinsic rt_atomic_t __LDREXW(volatile rt_atomic_t *ptr)
 {
-    return __LDREX((unsigned long *)ptr);
+    return __iar_builtin_LDREX((volatile unsigned int *)ptr);
 }
 #elif defined (__GNUC__)                /* GNU GCC Compiler */
 __attribute__((always_inline))     static inline rt_atomic_t __LDREXW(volatile rt_atomic_t *addr)
@@ -58,7 +62,7 @@ __attribute__((always_inline))     static inline rt_atomic_t __LDREXW(volatile r
 #elif defined (__IAR_SYSTEMS_ICC__)     /* for IAR Compiler */
 _Pragma("inline=forced") __intrinsic rt_atomic_t __STREXW(rt_atomic_t value, volatile rt_atomic_t *ptr)
 {
-    return __STREX(value, (unsigned long *)ptr);
+    return __STREX(value, (unsigned int *)ptr);
 }
 #elif defined (__GNUC__)                /* GNU GCC Compiler */
 __attribute__((always_inline))     static inline rt_atomic_t __STREXW(volatile rt_atomic_t value, volatile rt_atomic_t *addr)
@@ -77,7 +81,7 @@ rt_atomic_t rt_hw_atomic_load(volatile rt_atomic_t *ptr)
     {
         oldval = __LDREXW(ptr);
     } while ((__STREXW(oldval, ptr)) != 0U);
-    return *ptr;
+    return oldval;
 }
 
 void rt_hw_atomic_store(volatile rt_atomic_t *ptr, rt_atomic_t val)

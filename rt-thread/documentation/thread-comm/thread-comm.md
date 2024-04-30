@@ -20,7 +20,7 @@ The sending process of the non-blocking mode mails can be safely used in ISR. It
 
 When a thread sends a message to a mailbox, if the mailbox is not full, the message will be copied to the mailbox. If the mailbox is full, the thread sending the message can set a timeout, and choose to wait and suspend or return directly - RT_EFULL. If the thread sending the message chooses to suspend and wait, then when the mails in the mailbox are received and space is left open again, the thread sending the message will be awaken and will continue to send.
 
-When a thread receives a message from a mailbox, if the mailbox is empty, the thread receiving the message can choose whether to set a timeout or wait and suspend until a new message is received to be awaken. When the set timeout is up and the mailbox still hasn't received the message, the thread that chose to wait till timeout will be awaken and return - RT_ETIMEOUT. If there are messages in the mailbox, then the thread receiving the message will copy the 4-byte message in the mailbox to the receiving cache.
+When a thread receives a message from a mailbox, if the mailbox is empty, the thread receiving the message can choose whether to set a timeout or wait and suspend until a new message is received to be awaken. When the set timeout is up and the mailbox still hasn't received the message, the thread that chose to wait till timeout will be awaken and return -RT_ETIMEOUT. If there are messages in the mailbox, then the thread receiving the message will copy the 4-byte message in the mailbox to the receiving cache.
 
 ### Mailbox Control Block
 
@@ -595,7 +595,7 @@ static void thread1_entry(void *parameter)
     while (1)
     {
         /* Receive messages from the message queue */
-        if (rt_mq_recv(&mq, &buf, sizeof(buf), RT_WAITING_FOREVER) == RT_EOK)
+        if (rt_mq_recv(&mq, &buf, sizeof(buf), RT_WAITING_FOREVER) >= 0)
         {
             rt_kprintf("thread1: recv msg from msg queue, the content:%c\n", buf);
             if (cnt == 19)
@@ -784,7 +784,7 @@ void message_handler()
     struct msg msg_ptr; /* Local variable used to place the message */
 
     /* Receive messages from the message queue into msg_ptr */
-    if (rt_mq_recv(mq, (void*)&msg_ptr, sizeof(struct msg)) == RT_EOK)
+    if (rt_mq_recv(mq, (void*)&msg_ptr, sizeof(struct msg)) >= 0)
     {
         /* Successfully received the message, corresponding data processing is performed */
     }

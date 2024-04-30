@@ -186,7 +186,10 @@ static enum rym_code _rym_send_end(
     rt_uint8_t *buf,
     rt_size_t len)
 {
+    struct custom_ctx *cctx = (struct custom_ctx *)ctx;
     rt_memset(buf, 0, len);
+    close(cctx->fd);
+    cctx->fd = -1;
 
     return RYM_CODE_SOH;
 }
@@ -246,32 +249,17 @@ static rt_err_t ry(uint8_t argc, char **argv)
         rt_kprintf("invalid file path.\n");
         return -RT_ERROR;
     }
-
     if (argc > 2)
-    {
         dev = rt_device_find(argv[2]);
-    }
     else
-    {
         dev = rt_console_get_device();
-    }
-
     if (!dev)
     {
         rt_kprintf("could not find device.\n");
         return -RT_ERROR;
     }
-    else
-    {
-        rt_console_set_device(NULL);
-    }
     file_path = argv[1];
     res = rym_download_file(dev,file_path);
-
-    if (argc == 2)
-    {
-        rt_console_set_device(dev->parent.name);
-    }
 
     return res;
 }
@@ -291,31 +279,16 @@ static rt_err_t sy(uint8_t argc, char **argv)
     }
 
     if (argc > 2)
-    {
         dev = rt_device_find(argv[2]);
-    }
     else
-    {
         dev = rt_console_get_device();
-    }
-
     if (!dev)
     {
         rt_kprintf("could not find device.\n");
         return -RT_ERROR;
     }
-    else
-    {
-        rt_console_set_device(NULL);
-    }
-
     file_path = argv[1];
     res = rym_upload_file(dev, file_path);
-
-    if (argc == 2)
-    {
-        rt_console_set_device(dev->parent.name);
-    }
 
     return res;
 }

@@ -107,7 +107,7 @@ static void syswatch_thread_except_resolve_kill(rt_thread_t thread)
         rt_thread_delete(thread);
     }
     
-    LOG_E("%.*s thread exception, priority = %d, successfully killed", RT_NAME_MAX, thread->name, thread->current_priority);
+    LOG_E("%.*s thread exception, priority = %d, successfully killed", RT_NAME_MAX, thread->parent.name, thread->current_priority);
 }
 #endif
 

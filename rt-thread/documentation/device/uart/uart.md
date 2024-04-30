@@ -482,7 +482,7 @@ static int uart_sample(int argc, char *argv[])
     if (!serial)
     {
         rt_kprintf("find %s failed!\n", uart_name);
-        return RT_ERROR;
+        return -RT_ERROR;
     }
 
     /* Initialize the semaphore */
@@ -503,7 +503,7 @@ static int uart_sample(int argc, char *argv[])
     }
     else
     {
-        ret = RT_ERROR;
+        ret = -RT_ERROR;
     }
 
     return ret;
@@ -575,7 +575,7 @@ static void serial_thread_entry(void *parameter)
         rt_memset(&msg, 0, sizeof(msg));
         /* Read messages from the message queue*/
         result = rt_mq_recv(&rx_mq, &msg, sizeof(msg), RT_WAITING_FOREVER);
-        if (result == RT_EOK)
+        if (result >= 0)
         {
             /*Read data from the serial port*/
             rx_length = rt_device_read(msg.dev, 0, rx_buffer, msg.size);
@@ -609,7 +609,7 @@ static int uart_dma_sample(int argc, char *argv[])
     if (!serial)
     {
         rt_kprintf("find %s failed!\n", uart_name);
-        return RT_ERROR;
+        return -RT_ERROR;
     }
 
     /* Initialize message queue */
@@ -635,7 +635,7 @@ static int uart_dma_sample(int argc, char *argv[])
     }
     else
     {
-        ret = RT_ERROR;
+        ret = -RT_ERROR;
     }
 
     return ret;

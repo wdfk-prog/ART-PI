@@ -539,7 +539,7 @@ static int _dfs_lfs_rename(struct dfs_filesystem* dfs, const char* from, const c
 /******************************************************************************
  * file operations
  ******************************************************************************/
-static int _dfs_lfs_open(struct dfs_fd* file)
+static int _dfs_lfs_open(struct dfs_file* file)
 {
     struct dfs_filesystem* dfs;
     dfs_lfs_t* dfs_lfs;
@@ -547,9 +547,21 @@ static int _dfs_lfs_open(struct dfs_fd* file)
     int flags = 0;
 
     RT_ASSERT(file != RT_NULL);
-    RT_ASSERT(file->vnode->fs != RT_NULL);
 
     dfs = (struct dfs_filesystem*)file->vnode->fs;
+
+    RT_ASSERT(file->vnode->ref_count > 0);
+    if (file->vnode->ref_count > 1)
+    {
+        if (file->vnode->type == FT_DIRECTORY
+                && !(file->flags & O_DIRECTORY))
+        {
+            return -ENOENT;
+        }
+        file->pos = 0;
+        return 0;
+    }
+
     dfs_lfs = (dfs_lfs_t*)dfs->data;
 
     if (file->flags & O_DIRECTORY)
@@ -648,12 +660,18 @@ static int _dfs_lfs_open(struct dfs_fd* file)
     }
 }
 
-static int _dfs_lfs_close(struct dfs_fd* file)
+static int _dfs_lfs_close(struct dfs_file* file)
 {
     int result;
     dfs_lfs_fd_t* dfs_lfs_fd;
     RT_ASSERT(file != RT_NULL);
     RT_ASSERT(file->data != RT_NULL);
+
+    RT_ASSERT(file->vnode->ref_count > 0);
+    if (file->vnode->ref_count > 1)
+    {
+        return 0;
+    }
 
     dfs_lfs_fd = (dfs_lfs_fd_t*)file->data;
 
@@ -671,12 +689,12 @@ static int _dfs_lfs_close(struct dfs_fd* file)
     return _lfs_result_to_dfs(result);
 }
 
-static int _dfs_lfs_ioctl(struct dfs_fd* file, int cmd, void* args)
+static int _dfs_lfs_ioctl(struct dfs_file* file, int cmd, void* args)
 {
     return -ENOSYS;
 }
 
-static int _dfs_lfs_read(struct dfs_fd* file, void* buf, size_t len)
+static ssize_t _dfs_lfs_read(struct dfs_file* file, void* buf, size_t len)
 {
     lfs_ssize_t ssize;
     dfs_lfs_fd_t* dfs_lfs_fd;
@@ -715,7 +733,7 @@ static int _dfs_lfs_read(struct dfs_fd* file, void* buf, size_t len)
 }
 
 #ifndef LFS_READONLY
-static int _dfs_lfs_write(struct dfs_fd* file, const void* buf, size_t len)
+static ssize_t _dfs_lfs_write(struct dfs_file* file, const void* buf, size_t len)
 {
     lfs_ssize_t ssize;
     dfs_lfs_fd_t* dfs_lfs_fd;
@@ -754,7 +772,7 @@ static int _dfs_lfs_write(struct dfs_fd* file, const void* buf, size_t len)
 }
 #endif
 
-static int _dfs_lfs_flush(struct dfs_fd* file)
+static int _dfs_lfs_flush(struct dfs_file* file)
 {
     int result;
     dfs_lfs_fd_t* dfs_lfs_fd;
@@ -768,7 +786,7 @@ static int _dfs_lfs_flush(struct dfs_fd* file)
     return _lfs_result_to_dfs(result);
 }
 
-static int _dfs_lfs_lseek(struct dfs_fd* file, rt_off_t offset)
+static off_t _dfs_lfs_lseek(struct dfs_file* file, rt_off_t offset)
 {
     dfs_lfs_fd_t* dfs_lfs_fd;
 
@@ -801,7 +819,7 @@ static int _dfs_lfs_lseek(struct dfs_fd* file, rt_off_t offset)
     return (file->pos);
 }
 
-static int _dfs_lfs_getdents(struct dfs_fd* file, struct dirent* dirp, uint32_t count)
+static int _dfs_lfs_getdents(struct dfs_file* file, struct dirent* dirp, uint32_t count)
 {
     dfs_lfs_fd_t* dfs_lfs_fd;
     int result;

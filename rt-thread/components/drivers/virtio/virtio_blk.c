@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2021, RT-Thread Development Team
+ * Copyright (c) 2006-2023, RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -12,6 +12,7 @@
 #include <rthw.h>
 #include <rtthread.h>
 #include <cpuport.h>
+#include <rtdevice.h>
 
 #ifdef RT_USING_VIRTIO_BLK
 
@@ -82,14 +83,14 @@ static void virtio_blk_rw(struct virtio_blk_device *virtio_blk_dev, rt_off_t pos
 #endif
 }
 
-static rt_size_t virtio_blk_read(rt_device_t dev, rt_off_t pos, void *buffer, rt_size_t count)
+static rt_ssize_t virtio_blk_read(rt_device_t dev, rt_off_t pos, void *buffer, rt_size_t count)
 {
     virtio_blk_rw((struct virtio_blk_device *)dev, pos, buffer, count, VIRTIO_BLK_T_IN);
 
     return count;
 }
 
-static rt_size_t virtio_blk_write(rt_device_t dev, rt_off_t pos, const void *buffer, rt_size_t count)
+static rt_ssize_t virtio_blk_write(rt_device_t dev, rt_off_t pos, const void *buffer, rt_size_t count)
 {
     virtio_blk_rw((struct virtio_blk_device *)dev, pos, (void *)buffer, count, VIRTIO_BLK_T_OUT);
 

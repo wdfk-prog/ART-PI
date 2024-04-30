@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2022, RT-Thread Development Team
+ * Copyright (c) 2006-2023, RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -265,7 +265,6 @@ static int adc(int argc, char **argv)
                 if(argc == 3)
                 {
                     voltage = rt_adc_voltage(adc_device, atoi(argv[2]));
-                    result_str = (result == RT_EOK) ? "success" : "failure";
                     rt_kprintf("%s channel %d voltage is %d.%03dV \n", adc_device->parent.parent.name, (rt_base_t)atoi(argv[2]), voltage / 1000, voltage % 1000);
                 }
                 else

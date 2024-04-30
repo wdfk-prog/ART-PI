@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2021, RT-Thread Development Team
+ * Copyright (c) 2006-2023, RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -9,18 +9,22 @@
  */
 
 #include "drv_common.h"
-#include "board.h"
+#include <board.h>
+
+#ifdef RT_USING_PIN
+#include <drv_gpio.h>
+#endif
 
 #ifdef RT_USING_SERIAL
 #ifdef RT_USING_SERIAL_V2
-#include "drv_usart_v2.h"
+#include <drv_usart_v2.h>
 #else
-#include "drv_usart.h"
+#include <drv_usart.h>
 #endif /* RT_USING_SERIAL */
 #endif /* RT_USING_SERIAL_V2 */
 
-#define DBG_TAG    "drv_common"
-#define DBG_LVL    DBG_INFO
+#define DBG_TAG "drv_common"
+#define DBG_LVL DBG_INFO
 #include <rtdbg.h>
 
 #ifdef RT_USING_FINSH
@@ -38,12 +42,15 @@ static uint32_t _systick_ms = 1;
 /* SysTick configuration */
 void rt_hw_systick_init(void)
 {
+    // Updates the variable SystemCoreClock
+    SystemCoreClockUpdate();
+
     HAL_SYSTICK_Config(SystemCoreClock / RT_TICK_PER_SECOND);
 
     NVIC_SetPriority(SysTick_IRQn, 0xFF);
 
     _systick_ms = 1000u / RT_TICK_PER_SECOND;
-    if(_systick_ms == 0)
+    if (_systick_ms == 0)
         _systick_ms = 1;
 }
 
@@ -56,7 +63,7 @@ void SysTick_Handler(void)
     /* enter interrupt */
     rt_interrupt_enter();
 
-    if(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
+    if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
         HAL_IncTick();
 
     rt_tick_increase();
@@ -67,7 +74,7 @@ void SysTick_Handler(void)
 
 uint32_t HAL_GetTick(void)
 {
-    if(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
+    if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
         HAL_IncTick();
 
     return uwTick;
@@ -111,10 +118,10 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 }
 
 /**
-  * @brief  This function is executed in case of error occurrence.
-  * @param  None
-  * @retval None
-  */
+ * @brief  This function is executed in case of error occurrence.
+ * @param  None
+ * @retval None
+ */
 void _Error_Handler(char *s, int num)
 {
     /* USER CODE BEGIN Error_Handler */
@@ -182,40 +189,31 @@ rt_weak void rt_hw_board_init(void)
     /* System clock initialization */
     SystemClock_Config();
 
-extern void PeriphCommonClock_Config(void);
-    /* Configure the peripherals common clocks */
-    PeriphCommonClock_Config();
-
-    /* Heap initialization */
 #if defined(RT_USING_HEAP)
+    /* Heap initialization */
     rt_system_heap_init((void *)HEAP_BEGIN, (void *)HEAP_END);
 #endif
-    extern void MX_GPIO_Init(void);
-    MX_GPIO_Init();
-    /* Pin driver initialization is open by default */
+
 #ifdef RT_USING_PIN
     rt_hw_pin_init();
 #endif
 
-    /* USART driver initialization is open by default */
 #ifdef RT_USING_SERIAL
     rt_hw_usart_init();
 #endif
 
-    /* Set the shell console output device */
 #if defined(RT_USING_CONSOLE) && defined(RT_USING_DEVICE)
+    /* Set the shell console output device */
     rt_console_set_device(RT_CONSOLE_DEVICE_NAME);
 #endif
 
-    /* Board underlying hardware initialization */
+#if defined(RT_USING_CONSOLE) && defined(RT_USING_NANO)
+    extern void rt_hw_console_init(void);
+    rt_hw_console_init();
+#endif
+
 #ifdef RT_USING_COMPONENTS_INIT
+    /* Board underlying hardware initialization */
     rt_components_board_init();
 #endif
-/* 硬件 BSP 初始化*/
-/***********************调试模式下禁用独立看门狗IWDG**********************************/
-  __HAL_DBGMCU_FREEZE_IWDG1();	  //调试模式下，冻结看门狗计数器时钟
-  __HAL_DBGMCU_FREEZE_WWDG1();
-  __HAL_DBGMCU_FREEZE_FDCAN();
-/*********************调试模式下使能独立看门狗IWDG**********************************/
-//__HAL_DBGMCU_UNFREEZE_IWDG();	  //调试模式下，使能看门狗计数器时钟
 }
