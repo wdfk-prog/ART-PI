@@ -374,59 +374,82 @@ menu "Hardware Drivers Config"
             default n
     
         menuconfig BSP_USING_I2C
-            bool "Enable I2C BUS (software simulation)"
-            select RT_USING_I2C
-            select RT_USING_I2C_BITOPS
-            select RT_USING_PIN
+            bool "Enable I2C"
             default n
+            select RT_USING_I2C
             if BSP_USING_I2C
-                menuconfig BSP_USING_I2C1
-                    bool "Enable I2C1 BUS (software simulation)"
-                    default n
-                    select RT_USING_I2C
-                    select RT_USING_I2C_BITOPS
-                    select RT_USING_PIN
-                    if BSP_USING_I2C1
-                        comment "Notice: PB6 --> 22; PB7 --> 23" 
-                        config BSP_I2C1_SCL_PIN
-                            int "I2C1 scl pin number"
-                            range 0 175
-                            default 22
-                        config BSP_I2C1_SDA_PIN
-                            int "I2C1 sda pin number"
-                            range 0 175
-                            default 23
-                    endif
-                menuconfig BSP_USING_I2C2
-                    bool "Enable I2C2 BUS (software simulation)"
-                    default n
-                    if BSP_USING_I2C2
-                        comment "Notice: PH13 --> 125; PH15 --> 127"
-                        config BSP_I2C2_SCL_PIN
-                            int "i2c2 scl pin number"
-                            range 1 176
-                            default 127
-                        config BSP_I2C2_SDA_PIN
-                            int "I2C2 sda pin number"
-                            range 0 175
-                            default 125
-                    endif
-                menuconfig BSP_USING_I2C3
-                    bool "Enable I2C3 BUS (software simulation)"
-                    default n
-                    if BSP_USING_I2C3
-                        comment "Notice: PH12 --> 124; PH11 --> 123"
-                        config BSP_I2C3_SCL_PIN
-                            int "i2c3 scl pin number"
-                            range 0 175
-                            default 123
-                        config BSP_I2C3_SDA_PIN
-                            int "I2C3 sda pin number"
-                            range 0 175
-                            default 124
-                    endif
+                choice
+                    prompt "Choice I2C mode"
+                    default BSP_SOFTWARE_I2C
+                    config BSP_SOFTWARE_I2C
+                        bool "Enable I2C BUS (software simulation)"
+                        select RT_USING_I2C_BITOPS
+                        select RT_USING_PIN
+                        default n
+                    config BSP_HARDWARE_I2C
+                        bool "Enable I2C BUS (hardware)"
+                endchoice
+                if BSP_SOFTWARE_I2C
+                    menuconfig BSP_USING_I2C1
+                        bool "Enable I2C1 BUS (software simulation)"
+                        default n
+                        if BSP_USING_I2C1
+                            comment "Notice: PB6 --> 22; PB7 --> 23" 
+                            config BSP_I2C1_SCL_PIN
+                                int "I2C1 scl pin number"
+                                range 0 175
+                                default 22
+                            config BSP_I2C1_SDA_PIN
+                                int "I2C1 sda pin number"
+                                range 0 175
+                                default 23
+                        endif
+                    menuconfig BSP_USING_I2C2
+                        bool "Enable I2C2 BUS (software simulation)"
+                        default n
+                        if BSP_USING_I2C2
+                            comment "Notice: PH13 --> 125; PH15 --> 127"
+                            config BSP_I2C2_SCL_PIN
+                                int "i2c2 scl pin number"
+                                range 1 176
+                                default 127
+                            config BSP_I2C2_SDA_PIN
+                                int "I2C2 sda pin number"
+                                range 0 175
+                                default 125
+                        endif
+                    menuconfig BSP_USING_I2C3
+                        bool "Enable I2C3 BUS (software simulation)"
+                        default n
+                        if BSP_USING_I2C3
+                            comment "Notice: PH12 --> 124; PH11 --> 123"
+                            config BSP_I2C3_SCL_PIN
+                                int "i2c3 scl pin number"
+                                range 0 175
+                                default 123
+                            config BSP_I2C3_SDA_PIN
+                                int "I2C3 sda pin number"
+                                range 0 175
+                                default 124
+                        endif
+                endif
+
+                if BSP_HARDWARE_I2C
+                    menuconfig BSP_USING_HARD_I2C1
+                        bool "Enable I2C1 BUS (hardware)"
+                        default n
+                    menuconfig BSP_USING_HARD_I2C2
+                        bool "Enable I2C2 BUS (hardware)"
+                        default n
+                    menuconfig BSP_USING_HARD_I2C3
+                        bool "Enable I2C3 BUS (hardware)"
+                        default n
+                    menuconfig BSP_USING_HARD_I2C4
+                        bool "Enable I2C4 BUS (hardware)"
+                        default n
+                endif
             endif
-            
+
         menuconfig BSP_USING_SDIO
             bool "Enable SDIO"
             default n

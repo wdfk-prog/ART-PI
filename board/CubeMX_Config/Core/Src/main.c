@@ -23,6 +23,7 @@
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
+#include "i2c.h"
 #include "iwdg.h"
 #include "mdma.h"
 #include "quadspi.h"
@@ -206,7 +207,7 @@ void PeriphCommonClock_Config(void)
 #ifdef CUBE_ERROR
 /* USER CODE END 4 */
 
-/* MPU Configuration */
+ /* MPU Configuration */
 
 void MPU_Config(void)
 {
