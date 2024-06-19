@@ -314,7 +314,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>7</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>1</SplitLS>
             <OneElfS>1</OneElfS>
@@ -340,7 +340,7 @@
               <MiscControls>-Wno-pointer-bool-conversion -Wno-tautological-pointer-compare -Wno-invalid-source-encoding -Wno-logical-not-parentheses</MiscControls>
               <Define>__STDC_LIMIT_MACROS, LFS_CONFIG=lfs_config.h, sprintf=rt_sprintf, USE_HAL_DRIVER, RT_USING_LIBC, printf=rt_kprintf, __CLK_TCK=RT_TICK_PER_SECOND, __RTTHREAD__, RT_USING_ARMLIBC, snprintf=rt_snprintf</Define>
               <Undefine></Undefine>
-              <IncludePath>packages\cpu_usage-latest;rt-thread\components\libc\compilers\common\extension\fcntl\octal;rt-thread\components\libc\posix\io\epoll;rt-thread\components\dfs\dfs_v1\filesystems\romfs;rt-thread\components\libc\posix\io\poll;.;rt-thread\components\drivers\spi;rt-thread\components\drivers\include;board\port;rt-thread\components\fal\inc;libraries\HAL_Drivers\CMSIS\Include;rt-thread\include;rt-thread\components\drivers\include;rt-thread\components\dfs\dfs_v1\include;rt-thread\components\utilities\ymodem;rt-thread\components\drivers\include;rt-thread\libcpu\arm\common;packages\get_irq_priority-latest;rt-thread\components\drivers\include;testcases;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\libcpu\arm\cortex-m7;rt-thread\components\libc\compilers\common\include;BoardDriver\file;rt-thread\components\drivers\spi\sfud\inc;libraries\HAL_Drivers;libraries\HAL_Drivers\drivers;rt-thread\components\utilities\utest;packages\MFBD-latest;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\utilities\ulog\backend;rt-thread\components\utilities\ulog;libraries\HAL_Drivers\drivers\config;packages\littlefs-latest;rt-thread\components\finsh;rt-thread\components\dfs\dfs_v1\filesystems\elmfat;libraries\STM32H7xx_HAL\CMSIS\Include;BoardDriver\port;packages\syswatch-latest\inc;BoardDriver\port\port;BoardDriver\user;libraries\STM32H7xx_HAL\CMSIS\Device\ST\STM32H7xx\Include;board\CubeMX_Config\Core\Inc;rt-thread\components\drivers\usb\usbdevice;rt-thread\components\libc\posix\ipc;rt-thread\components\drivers\include;packages\CmBacktrace-latest;rt-thread\components\libc\posix\io\eventfd;BoardDriver\drivers;libraries\samples;board;rt-thread\components\libc\compilers\common\extension;applications;rt-thread\components\dfs\dfs_v1\filesystems\devfs;libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Inc</IncludePath>
+              <IncludePath>packages\cpu_usage-latest;rt-thread\components\libc\compilers\common\extension\fcntl\octal;rt-thread\components\libc\posix\io\epoll;rt-thread\components\dfs\dfs_v1\filesystems\romfs;rt-thread\components\libc\posix\io\poll;.;rt-thread\components\drivers\spi;rt-thread\components\drivers\include;board\port;rt-thread\components\fal\inc;libraries\HAL_Drivers\CMSIS\Include;rt-thread\include;rt-thread\components\drivers\include;rt-thread\components\dfs\dfs_v1\include;rt-thread\components\utilities\ymodem;rt-thread\components\drivers\include;rt-thread\libcpu\arm\common;packages\get_irq_priority-latest;rt-thread\components\drivers\include;testcases;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\libcpu\arm\cortex-m7;rt-thread\components\libc\compilers\common\include;BoardDriver\file;rt-thread\components\drivers\spi\sfud\inc;libraries\HAL_Drivers;libraries\HAL_Drivers\drivers;rt-thread\components\utilities\utest;rt-thread\components\drivers\include;packages\MFBD-latest;rt-thread\components\drivers\include;rt-thread\components\drivers\include;rt-thread\components\utilities\ulog\backend;rt-thread\components\utilities\ulog;libraries\HAL_Drivers\drivers\config;packages\littlefs-latest;rt-thread\components\finsh;rt-thread\components\dfs\dfs_v1\filesystems\elmfat;libraries\STM32H7xx_HAL\CMSIS\Include;BoardDriver\port;packages\syswatch-latest\inc;BoardDriver\port\port;BoardDriver\user;libraries\STM32H7xx_HAL\CMSIS\Device\ST\STM32H7xx\Include;board\CubeMX_Config\Core\Inc;rt-thread\components\drivers\usb\usbdevice;rt-thread\components\libc\posix\ipc;rt-thread\components\drivers\include;packages\CmBacktrace-latest;rt-thread\components\libc\posix\io\eventfd;BoardDriver\drivers;libraries\samples;board;rt-thread\components\libc\compilers\common\extension;applications;rt-thread\components\dfs\dfs_v1\filesystems\devfs;libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -400,39 +400,24 @@
           <GroupName>board</GroupName>
           <Files>
             <File>
-              <FileName>usart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\usart.c</FilePath>
-            </File>
-            <File>
-              <FileName>usb_otg.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\usb_otg.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32h7xx_it.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</FilePath>
-            </File>
-            <File>
               <FileName>adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>board\CubeMX_Config\Core\Src\adc.c</FilePath>
             </File>
             <File>
-              <FileName>dma.c</FileName>
+              <FileName>iwdg.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\dma.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\iwdg.c</FilePath>
             </File>
             <File>
-              <FileName>quadspi.c</FileName>
+              <FileName>rtc.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\quadspi.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\rtc.c</FilePath>
             </File>
             <File>
-              <FileName>board.c</FileName>
+              <FileName>spi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\board.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\spi.c</FilePath>
             </File>
             <File>
               <FileName>gpio.c</FileName>
@@ -450,9 +435,24 @@
               <FilePath>board\CubeMX_Config\Core\Src\mdma.c</FilePath>
             </File>
             <File>
-              <FileName>iwdg.c</FileName>
+              <FileName>usart.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\iwdg.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_it.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_it.c</FilePath>
+            </File>
+            <File>
+              <FileName>i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>usb_otg.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\usb_otg.c</FilePath>
             </File>
             <File>
               <FileName>sdmmc.c</FileName>
@@ -460,14 +460,19 @@
               <FilePath>board\CubeMX_Config\Core\Src\sdmmc.c</FilePath>
             </File>
             <File>
-              <FileName>rtc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\rtc.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32h7xx_hal_msp.c</FileName>
               <FileType>1</FileType>
               <FilePath>board\CubeMX_Config\Core\Src\stm32h7xx_hal_msp.c</FilePath>
+            </File>
+            <File>
+              <FileName>quadspi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\CubeMX_Config\Core\Src\quadspi.c</FilePath>
+            </File>
+            <File>
+              <FileName>board.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>board\board.c</FilePath>
             </File>
             <File>
               <FileName>main.c</FileName>
@@ -475,9 +480,9 @@
               <FilePath>board\CubeMX_Config\Core\Src\main.c</FilePath>
             </File>
             <File>
-              <FileName>spi.c</FileName>
+              <FileName>dma.c</FileName>
               <FileType>1</FileType>
-              <FilePath>board\CubeMX_Config\Core\Src\spi.c</FilePath>
+              <FilePath>board\CubeMX_Config\Core\Src\dma.c</FilePath>
             </File>
             <File>
               <FileName>fmc.c</FileName>
@@ -515,6 +520,16 @@
               <FilePath>BoardDriver\file\ulog_file_be.c</FilePath>
             </File>
             <File>
+              <FileName>sensor_sht3x.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>BoardDriver\user\sensor_sht3x.c</FilePath>
+            </File>
+            <File>
+              <FileName>sht3x.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>BoardDriver\user\sht3x.c</FilePath>
+            </File>
+            <File>
               <FileName>user_adc.c</FileName>
               <FileType>1</FileType>
               <FilePath>BoardDriver\user\user_adc.c</FilePath>
@@ -530,9 +545,9 @@
           <GroupName>cm_backtrace</GroupName>
           <Files>
             <File>
-              <FileName>cm_backtrace.c</FileName>
+              <FileName>cmb_flash_log.c</FileName>
               <FileType>1</FileType>
-              <FilePath>packages\CmBacktrace-latest\cm_backtrace.c</FilePath>
+              <FilePath>packages\CmBacktrace-latest\cmb_flash_log.c</FilePath>
             </File>
             <File>
               <FileName>cmb_port.c</FileName>
@@ -540,9 +555,9 @@
               <FilePath>packages\CmBacktrace-latest\cmb_port.c</FilePath>
             </File>
             <File>
-              <FileName>cmb_flash_log.c</FileName>
+              <FileName>cm_backtrace.c</FileName>
               <FileType>1</FileType>
-              <FilePath>packages\CmBacktrace-latest\cmb_flash_log.c</FilePath>
+              <FilePath>packages\CmBacktrace-latest\cm_backtrace.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -613,6 +628,118 @@
               <FileName>device.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\components\drivers\core\device.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>1</IncludeInBuild>
+                  <AlwaysBuild>0</AlwaysBuild>
+                  <GenerateAssemblyFile>0</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>0</AssembleAssemblyFile>
+                  <PublicsOnly>0</PublicsOnly>
+                  <StopOnExitCode>3</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>0</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <uGnu>2</uGnu>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>2</vShortEn>
+                    <vShortWch>2</vShortWch>
+                    <v6Lto>2</v6Lto>
+                    <v6WtE>2</v6WtE>
+                    <v6Rtti>2</v6Rtti>
+                    <VariousControls>
+                      <MiscControls>  -std=c99</MiscControls>
+                      <Define>__RT_IPC_SOURCE__</Define>
+                      <Undefine> </Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
+            </File>
+            <File>
+              <FileName>i2c_core.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\drivers\i2c\i2c_core.c</FilePath>
+              <FileOption>
+                <CommonProperty>
+                  <UseCPPCompiler>2</UseCPPCompiler>
+                  <RVCTCodeConst>0</RVCTCodeConst>
+                  <RVCTZI>0</RVCTZI>
+                  <RVCTOtherData>0</RVCTOtherData>
+                  <ModuleSelection>0</ModuleSelection>
+                  <IncludeInBuild>1</IncludeInBuild>
+                  <AlwaysBuild>0</AlwaysBuild>
+                  <GenerateAssemblyFile>0</GenerateAssemblyFile>
+                  <AssembleAssemblyFile>0</AssembleAssemblyFile>
+                  <PublicsOnly>0</PublicsOnly>
+                  <StopOnExitCode>3</StopOnExitCode>
+                  <CustomArgument></CustomArgument>
+                  <IncludeLibraryModules></IncludeLibraryModules>
+                  <ComprImg>1</ComprImg>
+                </CommonProperty>
+                <FileArmAds>
+                  <Cads>
+                    <interw>2</interw>
+                    <Optim>0</Optim>
+                    <oTime>2</oTime>
+                    <SplitLS>2</SplitLS>
+                    <OneElfS>2</OneElfS>
+                    <Strict>2</Strict>
+                    <EnumInt>2</EnumInt>
+                    <PlainCh>2</PlainCh>
+                    <Ropi>2</Ropi>
+                    <Rwpi>2</Rwpi>
+                    <wLevel>0</wLevel>
+                    <uThumb>2</uThumb>
+                    <uSurpInc>2</uSurpInc>
+                    <uC99>2</uC99>
+                    <uGnu>2</uGnu>
+                    <useXO>2</useXO>
+                    <v6Lang>0</v6Lang>
+                    <v6LangP>0</v6LangP>
+                    <vShortEn>2</vShortEn>
+                    <vShortWch>2</vShortWch>
+                    <v6Lto>2</v6Lto>
+                    <v6WtE>2</v6WtE>
+                    <v6Rtti>2</v6Rtti>
+                    <VariousControls>
+                      <MiscControls>  -std=c99</MiscControls>
+                      <Define>__RT_IPC_SOURCE__</Define>
+                      <Undefine> </Undefine>
+                      <IncludePath></IncludePath>
+                    </VariousControls>
+                  </Cads>
+                </FileArmAds>
+              </FileOption>
+            </File>
+            <File>
+              <FileName>i2c_dev.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\drivers\i2c\i2c_dev.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -2020,6 +2147,11 @@
               <FilePath>libraries\HAL_Drivers\drivers\drv_gpio.c</FilePath>
             </File>
             <File>
+              <FileName>drv_hard_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\HAL_Drivers\drivers\drv_hard_i2c.c</FilePath>
+            </File>
+            <File>
               <FileName>drv_rtc.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\HAL_Drivers\drivers\drv_rtc.c</FilePath>
@@ -2065,19 +2197,14 @@
           <GroupName>Fal</GroupName>
           <Files>
             <File>
-              <FileName>fal_rtt.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\components\fal\src\fal_rtt.c</FilePath>
-            </File>
-            <File>
               <FileName>fal_partition.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\components\fal\src\fal_partition.c</FilePath>
             </File>
             <File>
-              <FileName>fal.c</FileName>
+              <FileName>fal_flash.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\fal\src\fal.c</FilePath>
+              <FilePath>rt-thread\components\fal\src\fal_flash.c</FilePath>
             </File>
             <File>
               <FileName>fal_flash_sfud_port.c</FileName>
@@ -2085,9 +2212,14 @@
               <FilePath>rt-thread\components\fal\samples\porting\fal_flash_sfud_port.c</FilePath>
             </File>
             <File>
-              <FileName>fal_flash.c</FileName>
+              <FileName>fal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>rt-thread\components\fal\src\fal_flash.c</FilePath>
+              <FilePath>rt-thread\components\fal\src\fal.c</FilePath>
+            </File>
+            <File>
+              <FileName>fal_rtt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\fal\src\fal_rtt.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3276,11 +3408,6 @@
               <FilePath>packages\littlefs-latest\lfs_util.c</FilePath>
             </File>
             <File>
-              <FileName>lfs_crc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>packages\littlefs-latest\lfs_crc.c</FilePath>
-            </File>
-            <File>
               <FileName>dfs_lfs.c</FileName>
               <FileType>1</FileType>
               <FilePath>packages\littlefs-latest\dfs_lfs.c</FilePath>
@@ -3289,6 +3416,11 @@
               <FileName>lfs.c</FileName>
               <FileType>1</FileType>
               <FilePath>packages\littlefs-latest\lfs.c</FilePath>
+            </File>
+            <File>
+              <FileName>lfs_crc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>packages\littlefs-latest\lfs_crc.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3321,14 +3453,14 @@
           <GroupName>rt_usbd</GroupName>
           <Files>
             <File>
-              <FileName>mstorage.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>rt-thread\components\drivers\usb\usbdevice\class\mstorage.c</FilePath>
-            </File>
-            <File>
               <FileName>usbdevice_core.c</FileName>
               <FileType>1</FileType>
               <FilePath>rt-thread\components\drivers\usb\usbdevice\core\usbdevice_core.c</FilePath>
+            </File>
+            <File>
+              <FileName>mstorage.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>rt-thread\components\drivers\usb\usbdevice\class\mstorage.c</FilePath>
             </File>
             <File>
               <FileName>usbdevice.c</FileName>
@@ -3396,6 +3528,11 @@
               <FilePath>libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_cortex.c</FilePath>
             </File>
             <File>
+              <FileName>stm32h7xx_hal_i2c_ex.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c_ex.c</FilePath>
+            </File>
+            <File>
               <FileName>stm32h7xx_hal_hcd.c</FileName>
               <FileType>1</FileType>
               <FilePath>libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_hcd.c</FilePath>
@@ -3429,6 +3566,11 @@
               <FileName>startup_stm32h750xx.s</FileName>
               <FileType>2</FileType>
               <FilePath>libraries\STM32H7xx_HAL\CMSIS\Device\ST\STM32H7xx\Source\Templates\arm\startup_stm32h750xx.s</FilePath>
+            </File>
+            <File>
+              <FileName>stm32h7xx_hal_i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>libraries\STM32H7xx_HAL\STM32H7xx_HAL_Driver\Src\stm32h7xx_hal_i2c.c</FilePath>
             </File>
             <File>
               <FileName>stm32h7xx_hal_cryp.c</FileName>
