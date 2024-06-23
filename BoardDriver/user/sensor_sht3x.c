@@ -14,6 +14,7 @@
 #include "sensor_sht3x.h"
 /* Private includes ----------------------------------------------------------*/
 #include "i2c.h"
+#include "drv_hard_i2c.h"
 /*ulog include*/
 #define LOG_TAG              "sht3x"
 #define LOG_LVL              DBG_INFO
@@ -21,7 +22,7 @@
 /* Private typedef -----------------------------------------------------------*/
 
 /* Private define ------------------------------------------------------------*/
-
+#define I2C_BUS_NAME  "hwi2c4"    /* 传感器连接的I2C总线设备名称 */
 /* Private macro -------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
@@ -53,6 +54,8 @@ sht3x_device_t sht3x[SHT3X_MAX_NUM] =
         .cfg = &sht3x_cfg[SHT3X_0], //配置信息
     },
 };
+
+struct rt_i2c_bus_device *i2c_bus;   /* I2C总线设备句柄 */
 /* Private function prototypes -----------------------------------------------*/
 
 /* Private user code ---------------------------------------------------------*/
@@ -78,11 +81,21 @@ static void sht3x_reset(I2C_HandleTypeDef *hi2c, sht3x_power_t *power)
  **************************************************/
 static bool sht3x_i2c_read(I2C_HandleTypeDef *hi2c, uint8_t *data, uint16_t datasize)
 {
-    HAL_StatusTypeDef status = HAL_I2C_Master_Receive(hi2c, (0x44<<1 | 1), data, datasize, 100);
-    if (status != HAL_OK) {
-        LOG_E("[sht3x]:read failed 0x%02x", status);
+    // HAL_StatusTypeDef status = HAL_I2C_Master_Receive(hi2c, (0x44<<1 | 1), data, datasize, 100);
+    // if (status != HAL_OK) {
+    //     LOG_E("[sht3x]:read failed 0x%02x", status);
+    //     return false;
+    // } else {
+    //     return true;
+    // }
+    rt_ssize_t size = rt_i2c_master_recv(i2c_bus, 0x44, RT_I2C_WR, data, datasize);
+    if(size != datasize)
+    {
+        LOG_E("[sht3x]:read failed 0x%02x", size);
         return false;
-    } else {
+    }
+    else
+    {
         return true;
     }
 }
@@ -91,11 +104,21 @@ static bool sht3x_i2c_read(I2C_HandleTypeDef *hi2c, uint8_t *data, uint16_t data
  **************************************************/
 static bool sht3x_i2c_write(I2C_HandleTypeDef *hi2c, uint8_t *data, uint16_t datasize)
 {
-    HAL_StatusTypeDef status = HAL_I2C_Master_Transmit(hi2c, (0x44<<1 | 0), data, datasize, 100);
-    if (status != HAL_OK) {
-        LOG_E("[sht3x]:write failed 0x%02x", status);
+    // HAL_StatusTypeDef status = HAL_I2C_Master_Transmit(hi2c, (0x44<<1 | 0), data, datasize, 100);
+    // if (status != HAL_OK) {
+    //     LOG_E("[sht3x]:write failed 0x%02x", status);
+    //     return false;
+    // } else {
+    //     return true;
+    // }
+    rt_ssize_t size = rt_i2c_master_send(i2c_bus, 0x44, RT_I2C_WR, data, datasize);
+    if(size != datasize)
+    {
+        LOG_E("[sht3x]:write failed 0x%02x", size);
         return false;
-    } else {
+    }
+    else
+    {
         return true;
     }
 }
@@ -110,18 +133,27 @@ int sht3x_get(void)
 {
     sht3x_driver_cfg_t *config = &sht3x_cfg[0];
     sht3x_device_t *dev = &sht3x[0];
-    MX_I2C4_Init();
+
+    /* 查找I2C总线设备，获取I2C总线设备句柄 */
+    i2c_bus = (struct rt_i2c_bus_device *)rt_device_find(I2C_BUS_NAME);
+    if(i2c_bus == RT_NULL)
+    {
+        return -RT_ERROR;
+    }
+    rt_uint32_t timing = 0x307075B1;
+    rt_i2c_control(i2c_bus, BSP_I2C_CTRL_SET_TIMING, &timing);
     sht3x_init(&config->device);
 
     if(sht3x_collect_process(&config->device) == false) {
+        return -RT_ERROR;
     } else {
         sht3x_get_current_temp(&config->device, &config->raw[SHT3X_DATA_TEMPERATURE]);
         sht3x_get_current_humi(&config->device, &config->raw[SHT3X_DATA_HUMIDITY]);
         LOG_I("temp raw:%f", config->raw[SHT3X_DATA_TEMPERATURE]);
         LOG_I("humi raw:%f", config->raw[SHT3X_DATA_HUMIDITY]);
+        return RT_EOK;
     }
-
-    return RT_EOK;
 }
+
 /* 导出到 msh 命令列表中 */
 MSH_CMD_EXPORT(sht3x_get, get sht3x);

@@ -10,6 +10,7 @@
 
 #include "drv_common.h"
 #include <board.h>
+#include "gpio.h"
 
 #ifdef RT_USING_PIN
 #include <drv_gpio.h>
@@ -194,6 +195,8 @@ rt_weak void rt_hw_board_init(void)
     rt_system_heap_init((void *)HEAP_BEGIN, (void *)HEAP_END);
 #endif
 
+    MX_GPIO_Init();
+
 #ifdef RT_USING_PIN
     rt_hw_pin_init();
 #endif
@@ -216,4 +219,8 @@ rt_weak void rt_hw_board_init(void)
     /* Board underlying hardware initialization */
     rt_components_board_init();
 #endif
+/***********************调试模式下禁用独立看门狗IWDG**********************************/
+    __HAL_DBGMCU_FREEZE_IWDG1();	  //调试模式下，冻结看门狗计数器时钟
+/*********************调试模式下使能独立看门狗IWDG**********************************/
+//  __HAL_DBGMCU_UnFreeze_WWDG1();	  //调试模式下，使能看门狗计数器时钟
 }

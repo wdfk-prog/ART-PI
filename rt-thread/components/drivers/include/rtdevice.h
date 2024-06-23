@@ -92,7 +92,7 @@ extern "C" {
 #endif /* RT_USING_SERIAL */
 
 #ifdef RT_USING_I2C
-#include "drivers/i2c.h"
+#include "drivers/i2c_core.h"
 #include "drivers/i2c_dev.h"
 
 #ifdef RT_USING_I2C_BITOPS

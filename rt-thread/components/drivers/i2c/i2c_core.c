@@ -101,16 +101,37 @@ rt_err_t rt_i2c_control(struct rt_i2c_bus_device *bus,
 {
     rt_err_t ret;
 
-    if(bus->ops->i2c_bus_control)
+    switch (cmd)
     {
-        ret = bus->ops->i2c_bus_control(bus, cmd, args);
-        return ret;
+        case RT_I2C_CTRL_SET_MAX_HZ:
+        {
+            rt_uint32_t max_hz = (rt_uint32_t)args;
+            if(max_hz > 0)
+            {
+                bus->config.max_hz = max_hz;
+            }
+            else
+            {
+                return -RT_ERROR;
+            }
+            break;
+        }
+        default:
+        {
+            if(bus->ops->i2c_bus_control)
+            {
+                ret = bus->ops->i2c_bus_control(bus, cmd, args);
+                return ret;
+            }
+            else
+            {
+                LOG_E("I2C bus operation not supported");
+                return -RT_EINVAL;
+            }
+            break;
+        }
     }
-    else
-    {
-        LOG_E("I2C bus operation not supported");
-        return -RT_EINVAL;
-    }
+    return -RT_EINVAL;
 }
 
 rt_ssize_t rt_i2c_master_send(struct rt_i2c_bus_device *bus,

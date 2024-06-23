@@ -330,7 +330,7 @@ static rt_err_t stm32_control(struct rt_serial_device *serial, int cmd, void *ar
         }
         else
         {
-            return RT_ERROR;
+            return -RT_ERROR;
         }
         break;
     }

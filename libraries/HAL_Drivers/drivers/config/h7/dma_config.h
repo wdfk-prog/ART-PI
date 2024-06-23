@@ -98,6 +98,13 @@ extern "C" {
 #endif
 
 /* DMA1 stream6 */
+#if defined(BSP_I2C1_RX_USING_DMA) && !defined(I2C_RX_DMA_INSTANCE)
+#define I2C1_DMA_RX_IRQHandler           DMA1_Stream6_IRQHandler
+#define I2C1_RX_DMA_RCC                  RCC_AHB1ENR_DMA1EN
+#define I2C1_RX_DMA_INSTANCE             DMA1_Stream6
+#define I2C1_RX_DMA_REQUEST              DMA_REQUEST_I2C1_RX
+#define I2C1_RX_DMA_IRQ                  DMA1_Stream6_IRQn
+#endif
 
 /* DMA1 stream7 */
 #if defined(BSP_SPI3_TX_USING_DMA) && !defined(SPI3_TX_DMA_INSTANCE)
@@ -105,6 +112,13 @@ extern "C" {
 #define SPI3_TX_DMA_RCC                  RCC_AHB1ENR_DMA1EN
 #define SPI3_TX_DMA_INSTANCE             DMA1_Stream7
 #define SPI3_TX_DMA_IRQ                  DMA1_Stream7_IRQn
+#endif
+#if defined(BSP_I2C1_TX_USING_DMA) && !defined(I2C1_TX_DMA_INSTANCE)
+#define I2C1_DMA_TX_IRQHandler           DMA1_Stream7_IRQHandler
+#define I2C1_TX_DMA_RCC                  RCC_AHB1ENR_DMA1EN
+#define I2C1_TX_DMA_INSTANCE             DMA1_Stream7
+#define I2C1_TX_DMA_REQUEST              DMA_REQUEST_I2C1_TX
+#define I2C1_TX_DMA_IRQ                  DMA1_Stream7_IRQn
 #endif
 
 /* DMA2 stream0 */

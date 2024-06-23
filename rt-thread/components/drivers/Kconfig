@@ -114,6 +114,17 @@ if RT_USING_I2C
         bool "Use I2C debug message"
         default n
 
+    choice
+        prompt "Choice I2C mode"
+        default RT_I2C_USING_POLL
+        config RT_I2C_USING_POLL
+            bool "RT_I2C_USING_POLL"
+        config RT_I2C_USING_INT
+            bool "RT_I2C_USING_INT"
+        config RT_I2C_USING_DMA
+            bool "RT_I2C_USING_DMA"
+    endchoice
+
     config RT_USING_I2C_BITOPS
         bool "Use GPIO to simulate I2C"
         default y

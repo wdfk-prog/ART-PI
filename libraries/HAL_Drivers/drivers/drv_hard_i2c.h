@@ -26,6 +26,8 @@ extern "C"
 {
 #endif
 
+#define BSP_I2C_CTRL_SET_TIMING 0x40
+
 struct stm32_i2c_config
 {
     const char              *name;
@@ -47,8 +49,10 @@ struct stm32_i2c
     struct stm32_i2c_config     *config;
     struct rt_i2c_bus_device    i2c_bus;
     rt_uint16_t                 i2c_dma_flag;
-#ifdef RT_I2C_USING_DMA
+#if defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA)
     struct rt_completion        completion;
+#endif /* defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA) */
+#ifdef RT_I2C_USING_DMA
     struct
     {
         DMA_HandleTypeDef handle_rx;
