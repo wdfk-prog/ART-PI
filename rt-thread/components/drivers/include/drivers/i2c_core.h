@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2023, RT-Thread Development Team
+ * Copyright (c) 2006-2024, RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -7,6 +7,7 @@
  * Date           Author        Notes
  * 2012-04-25     weety         first version
  * 2021-04-20     RiceChen      added support for bus control api
+ * 2024-06-23     wdfk-prog     Add the config struct
  */
 
 #ifndef __I2C_CORE_H__

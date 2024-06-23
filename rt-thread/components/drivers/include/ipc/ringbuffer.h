@@ -11,8 +11,8 @@
 #define RINGBUFFER_H__
 
 #include <rtdef.h>
-#include <rtthread.h>
 #include <rtconfig.h>
+#include <rtthread.h>
 
 #ifdef __cplusplus
 extern "C" {

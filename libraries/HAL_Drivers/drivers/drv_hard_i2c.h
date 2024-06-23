@@ -5,7 +5,8 @@
  *
  * Change Logs:
  * Date           Author       Notes
- * 2024-02-17     Dyyt587   first version
+ * 2024-02-17     Dyyt587      first version
+ * 2024-06-23     wdfk-prog    Add timing Settings
  */
 
 #ifndef __DRV_HARD_I2C_H__

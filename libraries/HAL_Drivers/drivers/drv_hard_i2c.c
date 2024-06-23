@@ -5,8 +5,9 @@
  *
  * Change Logs:
  * Date           Author       Notes
- * 2024-02-17     Dyyt587   first version
- * 2024-04-23     Zeidan    fix bugs, test on STM32F429IGTx
+ * 2024-02-17     Dyyt587      first version
+ * 2024-04-23     Zeidan       fix bugs, test on STM32F429IGTx
+ * 2024-06-23     wdfk-prog    Add blocking modes and distinguish POLL,INT,DMA modes
  */
 
 #include <rtthread.h>
@@ -15,7 +16,6 @@
 #include "drv_hard_i2c.h"
 #include "drv_config.h"
 #include <string.h>
-#include "main.h"
 
 #if defined(BSP_HARDWARE_I2C)
 

@@ -278,9 +278,7 @@ rt_inline int _serial_poll_tx(struct rt_serial_device *serial, const rt_uint8_t 
             serial->ops->putc(serial, '\r');
         }
 
-        if(serial->ops->putc(serial, *data) == -1) {
-            break;
-        }
+        serial->ops->putc(serial, *data);
 
         ++ data;
         -- length;
@@ -1176,7 +1174,6 @@ static rt_err_t rt_serial_control(struct rt_device *dev,
                 if (tio == RT_NULL) return -RT_EINVAL;
 
                 config = serial->config;
-
                 baudrate = _get_baudrate(cfgetospeed(tio));
                 config.baud_rate = baudrate;
 

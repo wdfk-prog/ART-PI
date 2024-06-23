@@ -7,6 +7,7 @@
  * Date           Author       Notes
  * 2024-02-06     Dyyt587   first version
  * 2024-04-23     Zeidan    Add I2Cx_xx_DMA_CONFIG
+ * 2024-06-23     wdfk-prog Removes timing
  */
 #ifndef __I2C_HARD_CONFIG_H__
 #define __I2C_HARD_CONFIG_H__
