@@ -108,7 +108,7 @@ static rt_err_t stm32_i2c_init(struct stm32_i2c *i2c_drv)
         return -RT_EFAULT;
     }
 #endif /* defined(SOC_SERIES_STM32H7) */
-#if defined(RT_I2C_USING_DMA)
+#if defined(BSP_I2C_RX_USING_DMA)
     /* I2C2 DMA Init */
     if (i2c_drv->i2c_dma_flag & RT_DEVICE_FLAG_DMA_RX)
     {
@@ -120,7 +120,8 @@ static rt_err_t stm32_i2c_init(struct stm32_i2c *i2c_drv)
         HAL_NVIC_SetPriority(i2c_drv->config->dma_rx->dma_irq, 0, 0);
         HAL_NVIC_EnableIRQ(i2c_drv->config->dma_rx->dma_irq);
     }
-
+#endif /* defined(BSP_I2C_RX_USING_DMA) */
+#if defined(BSP_I2C_TX_USING_DMA)
     if (i2c_drv->i2c_dma_flag & RT_DEVICE_FLAG_DMA_TX)
     {
         HAL_DMA_Init(&i2c_drv->dma.handle_tx);
@@ -131,15 +132,15 @@ static rt_err_t stm32_i2c_init(struct stm32_i2c *i2c_drv)
         HAL_NVIC_SetPriority(i2c_drv->config->dma_tx->dma_irq, 1, 0);
         HAL_NVIC_EnableIRQ(i2c_drv->config->dma_tx->dma_irq);
     }
-#endif /* defined(RT_I2C_USING_DMA) */
-#if defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA)
+#endif /* defined(BSP_I2C_TX_USING_DMA) */
+#if defined(BSP_I2C_USING_IRQ)
     if ((i2c_drv->i2c_dma_flag & RT_DEVICE_FLAG_DMA_TX || i2c_drv->i2c_dma_flag & RT_DEVICE_FLAG_DMA_RX)
     || (i2c_drv->i2c_dma_flag & RT_DEVICE_FLAG_INT_TX || i2c_drv->i2c_dma_flag & RT_DEVICE_FLAG_INT_RX))
     {
         HAL_NVIC_SetPriority(i2c_drv->config->evirq_type, 2, 0);
         HAL_NVIC_EnableIRQ(i2c_drv->config->evirq_type);
     }
-#endif /* defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA) */
+#endif /* defined(BSP_I2C_USING_IRQ) */
 
     return RT_EOK;
 }
@@ -178,10 +179,10 @@ static rt_ssize_t stm32_i2c_master_xfer(struct rt_i2c_bus_device *bus,
         return 0;
     }
 
-#if defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA)
+#if defined(BSP_I2C_USING_IRQ)
     struct rt_completion *completion;
     completion = &i2c_obj->completion;
-#endif /* defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA) */
+#endif /* defined(BSP_I2C_USING_IRQ) */
     RT_ASSERT((msgs != RT_NULL) && (bus != RT_NULL));
     i2c_obj = rt_container_of(bus, struct stm32_i2c, i2c_bus);
     RT_ASSERT(i2c_obj != RT_NULL);
@@ -220,76 +221,74 @@ static rt_ssize_t stm32_i2c_master_xfer(struct rt_i2c_bus_device *bus,
             LOG_D("xfer  rec  msgs[%d] hal mode = %s", i, mode == I2C_FIRST_AND_NEXT_FRAME ? "I2C_FIRST_AND_NEXT_FRAME" : mode == I2C_LAST_FRAME_NO_STOP ? "I2C_FIRST_FRAME/I2C_LAST_FRAME_NO_STOP"
                                                                                                                       : mode == I2C_LAST_FRAME           ? "I2C_LAST_FRAME"
                                                                                                                                                          : "nuknown mode");
-#if defined(RT_I2C_USING_DMA)
+#if defined(BSP_I2C_RX_USING_DMA)
             if ((i2c_obj->i2c_dma_flag & RT_DEVICE_FLAG_DMA_RX) && (msg->len >= DMA_TRANS_MIN_LEN))
             {
                 ret = HAL_I2C_Master_Seq_Receive_DMA(handle, (msg->addr<<1), msg->buf, msg->len, mode);
             }
             else
-#endif /* defined(RT_I2C_USING_DMA) */
-#if defined(RT_I2C_USING_INT)
+#endif /* defined(BSP_I2C_RX_USING_DMA) */
+#if defined(BSP_I2C_RX_USING_INT)
             if(i2c_obj->i2c_dma_flag & RT_DEVICE_FLAG_INT_RX)
             {
                 ret = HAL_I2C_Master_Seq_Receive_IT(handle, (msg->addr<<1), msg->buf, msg->len, mode);
             }
             else
-#endif /* defined(RT_I2C_USING_INT) */
-#if defined(RT_I2C_USING_POLL)
+#endif /* defined(BSP_I2C_RX_USING_INT) */
+#if defined(BSP_I2C_RX_USING_POLL)
             {
                 ret = HAL_I2C_Master_Receive(handle, (msg->addr<<1), msg->buf, msg->len, timeout);
             }
-#endif /* defined(RT_I2C_USING_POLL) */
+#endif /* defined(BSP_I2C_RX_USING_POLL) */
             if (ret != RT_EOK)
             {
                 LOG_E("[%s:%d]I2C Read error(%d)!\n", __func__, __LINE__, ret);
                 goto out;
             }
-#if defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA)
+#if defined(BSP_I2C_USING_IRQ)
             if (rt_completion_wait(completion, timeout) != RT_EOK)
             {
                 LOG_D("receive time out");
                                 goto out;
-
             }
-#endif /* defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA) */
+#endif /* defined(BSP_I2C_USING_IRQ) */
         }
         else
         {
             LOG_D("xfer trans msgs[%d] hal mode = %s", i, mode == I2C_FIRST_AND_NEXT_FRAME ? "I2C_FIRST_AND_NEXT_FRAME" : mode == I2C_LAST_FRAME_NO_STOP ? "I2C_FIRST_FRAME/I2C_LAST_FRAME_NO_STOP"
                                                                                                                       : mode == I2C_LAST_FRAME           ? "I2C_LAST_FRAME"
                                                                                                                                                          : "nuknown mode");
-#if defined(RT_I2C_USING_DMA)
+#if defined(BSP_I2C_TX_USING_DMA)
             if ((i2c_obj->i2c_dma_flag & RT_DEVICE_FLAG_DMA_TX) && (msg->len >= DMA_TRANS_MIN_LEN))
             {
                 ret = HAL_I2C_Master_Seq_Transmit_DMA(handle, (msg->addr<<1), msg->buf, msg->len, mode);
             }
             else
-#endif /* defined(RT_I2C_USING_DMA) */
-#if defined(RT_I2C_USING_INT)
+#endif /* defined(BSP_I2C_TX_USING_DMA) */
+#if defined(BSP_I2C_TX_UISNG_INT)
             if(i2c_obj->i2c_dma_flag & RT_DEVICE_FLAG_INT_TX)
             {
                 ret = HAL_I2C_Master_Seq_Transmit_IT(handle, (msg->addr<<1), msg->buf, msg->len, mode);
             }
             else
-#endif /* defined(RT_I2C_USING_INT) */
-#if defined(RT_I2C_USING_POLL)
+#endif /* defined(BSP_I2C_TX_UISNG_INT) */
+#if defined(BSP_I2C_TX_USING_POLL)
             {
                 ret = HAL_I2C_Master_Transmit(handle, (msg->addr<<1), msg->buf, msg->len, timeout);
             }
-#endif /* defined(RT_I2C_USING_POLL) */
+#endif /* defined(BSP_I2C_TX_USING_POLL) */
             if (ret != RT_EOK)
             {
                 LOG_D("[%s:%d]I2C Write error(%d)!\n", __func__, __LINE__, ret);
                 goto out;
             }
-#if defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA)
+#if defined(BSP_I2C_USING_IRQ)
             if (rt_completion_wait(completion, timeout) != RT_EOK)
             {
                 LOG_D("transmit time out");
                                 goto out;
-
             }
-#endif /* defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA) */
+#endif /* defined(BSP_I2C_USING_IRQ) */
         }
         LOG_D("xfer  next msgs[%d] addr=0x%2x buf= 0x%x len= 0x%x flags = 0x%x\r\n", i + 1, next_msg->addr, next_msg->buf, next_msg->len, next_msg->flags);
     }
@@ -307,76 +306,74 @@ static rt_ssize_t stm32_i2c_master_xfer(struct rt_i2c_bus_device *bus,
         LOG_D("xfer  rec  msgs[%d] hal mode=%s", i, mode == I2C_FIRST_AND_NEXT_FRAME ? "I2C_FIRST_AND_NEXT_FRAME" : mode == I2C_LAST_FRAME_NO_STOP ? "I2C_FIRST_FRAME/I2C_LAST_FRAME_NO_STOP"
                                                                                                                 : mode == I2C_LAST_FRAME           ? "I2C_LAST_FRAME"
                                                                                                                                                    : "nuknown mode");
-#if defined(RT_I2C_USING_DMA)
+#if defined(BSP_I2C_RX_USING_DMA)
         if ((i2c_obj->i2c_dma_flag & RT_DEVICE_FLAG_DMA_RX) && (msg->len >= DMA_TRANS_MIN_LEN))
         {
             ret = HAL_I2C_Master_Seq_Receive_DMA(handle, (msg->addr<<1), msg->buf, msg->len, mode);
         }
         else 
-#endif /* defined(RT_I2C_USING_DMA) */
-#if defined(RT_I2C_USING_INT)
+#endif /* defined(BSP_I2C_RX_USING_DMA) */
+#if defined(BSP_I2C_RX_USING_INT)
         if(i2c_obj->i2c_dma_flag & RT_DEVICE_FLAG_INT_RX)
         {
-            HAL_GPIO_WritePin(GPIOA, DEBUG_IO_Pin, GPIO_PIN_SET);
             ret = HAL_I2C_Master_Seq_Receive_IT(handle,(msg->addr<<1), msg->buf, msg->len, mode);
         }
         else
-#endif /* defined(RT_I2C_USING_INT) */
-#if defined(RT_I2C_USING_POLL)
+#endif /* defined(BSP_I2C_RX_USING_INT) */
+#if defined(BSP_I2C_RX_USING_POLL)
         {
             ret = HAL_I2C_Master_Receive(handle, (msg->addr<<1), msg->buf, msg->len, timeout);
         }
-#endif /* defined(RT_I2C_USING_POLL) */
+#endif /* defined(BSP_I2C_RX_USING_POLL) */
         if (ret != RT_EOK)
         {
             LOG_D("[%s:%d]I2C Read error(%d)!\n", __func__, __LINE__, ret);
             goto out;
         }
-#if defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA)
+#if defined(BSP_I2C_USING_IRQ)
         if (rt_completion_wait(completion, timeout) != RT_EOK)
         {
             LOG_D("receive time out");
             goto out;
         }
-#endif /* defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA) */
+#endif /* defined(BSP_I2C_USING_IRQ) */
     }
     else
     {
         LOG_D("xfer trans msgs[%d] hal mode = %s", i, mode == I2C_FIRST_AND_NEXT_FRAME ? "I2C_FIRST_AND_NEXT_FRAME" : mode == I2C_LAST_FRAME       ? "I2C_LAST_FRAME"
                                                                                                                   : mode == I2C_LAST_FRAME_NO_STOP ? "I2C_FIRST_FRAME/I2C_LAST_FRAME_NO_STOP"
                                                                                                                                                    : "nuknown mode");
-#if defined(RT_I2C_USING_DMA)
+#if defined(BSP_I2C_TX_USING_DMA)
         if ((i2c_obj->i2c_dma_flag & RT_DEVICE_FLAG_DMA_TX) && (msg->len >= DMA_TRANS_MIN_LEN))
         {
             ret = HAL_I2C_Master_Seq_Transmit_DMA(handle, (msg->addr<<1), msg->buf, msg->len, mode);
         }
         else
-#endif /* defined(RT_I2C_USING_DMA) */
-#if defined(RT_I2C_USING_INT)
+#endif /* defined(BSP_I2C_TX_USING_DMA) */
+#if defined(BSP_I2C_TX_USING_INT)
         if(i2c_obj->i2c_dma_flag & RT_DEVICE_FLAG_INT_TX)
         {
             ret = HAL_I2C_Master_Seq_Transmit_IT(handle, (msg->addr<<1), msg->buf, msg->len, mode);
         }
         else
-#endif /* defined(RT_I2C_USING_INT) */
-#if defined(RT_I2C_USING_POLL)
+#endif /* defined(BSP_I2C_TX_USING_INT) */
+#if defined(BSP_I2C_TX_USING_POLL)
         {
             ret = HAL_I2C_Master_Transmit(handle, (msg->addr<<1), msg->buf, msg->len, timeout);
         }
-#endif /* defined(RT_I2C_USING_POLL) */
+#endif /* defined(BSP_I2C_TX_USING_POLL) */
         if (ret != RT_EOK)
         {
             LOG_D("[%s:%d]I2C Write error(%d)!\n", __func__, __LINE__, ret);
             goto out;
         }
-#if defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA)
+#if defined(BSP_I2C_USING_IRQ)
         if (rt_completion_wait(completion, timeout) != RT_EOK)
         {
             LOG_D("transmit time out");
             goto out;
-
         }
-#endif /* defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA) */
+#endif /* defined(BSP_I2C_USING_IRQ) */
     }
     ret = num;
     LOG_D("xfer  end  %d mags\r\n", num);
@@ -456,8 +453,7 @@ int RT_hw_i2c_bus_init(void)
         i2c_objs[i].i2c_bus.timeout = i2c_config[i].timeout;
         i2c_objs[i].i2c_bus.config.max_hz = DEFAULT_BAUD_RATE;
         i2c_objs[i].i2c_bus.config.usage_freq = DEFAULT_BAUD_RATE;
-
-#ifdef RT_I2C_USING_DMA
+#ifdef BSP_I2C_USING_DMA
         if (i2c_objs[i].i2c_dma_flag & RT_DEVICE_FLAG_DMA_TX)
         {
             i2c_objs[i].dma.handle_tx.Instance = i2c_config[i].dma_tx->Instance;
@@ -525,10 +521,10 @@ int RT_hw_i2c_bus_init(void)
 #endif /* defined(SOC_SERIES_STM32F1) || defined(SOC_SERIES_STM32G0) || defined(SOC_SERIES_STM32F0) */
             UNUSED(tmpreg); /* To avoid compiler warnings */
         }
-#endif /* RT_I2C_USING_DMA */
-#if defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA)
+#endif /* BSP_I2C_USING_DMA */
+#if defined(BSP_I2C_USING_IRQ)
         rt_completion_init(&i2c_objs[i].completion);
-#endif /* defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA) */
+#endif /* defined(BSP_I2C_USING_IRQ) */
         stm32_i2c_configure(&i2c_objs[i].i2c_bus);
         ret = rt_i2c_bus_device_register(&i2c_objs[i].i2c_bus, i2c_objs[i].config->name);
         if(ret != RT_EOK)
@@ -543,67 +539,90 @@ int RT_hw_i2c_bus_init(void)
     return ret;
 }
 
-
 static void stm32_get_info(void)
 {
-#ifdef RT_I2C_USING_POLL
-    LOG_D("I2C using poll mode");
-#elif defined (RT_I2C_USING_INT)
-    for(i2c_index_t i = 0; i < sizeof(i2c_objs) / sizeof(i2c_objs[0]); i++)
-    {
-        i2c_objs[i].i2c_dma_flag |= RT_DEVICE_FLAG_INT_RX;
-        i2c_objs[i].i2c_dma_flag |= RT_DEVICE_FLAG_INT_TX;
-    }
-    LOG_D("I2C using interrupt mode");
-#elif defined (RT_I2C_USING_DMA)
-    LOG_D("I2C using DMA mode");
-#ifdef BSP_I2C1_RX_USING_DMA
-    i2c_objs[I2C1_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_DMA_RX;
-    static struct dma_config I2C1_dma_rx = I2C1_RX_DMA_CONFIG;
-    i2c_config[I2C1_INDEX].dma_rx = &I2C1_dma_rx;
-#endif /* BSP_I2C1_RX_USING_DMA */
-#ifdef BSP_I2C1_TX_USING_DMA
+#if defined(BSP_USING_HARD_I2C1)
+    i2c_objs[I2C1_INDEX].i2c_dma_flag = 0;
+
+#if defined (BSP_I2C1_TX_USING_INT)
+    i2c_objs[I2C1_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_INT_TX;
+#elif defined(BSP_I2C1_TX_USING_DMA)
     i2c_objs[I2C1_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_DMA_TX;
-    static struct dma_config I2C1_dma_tx = I2C1_TX_DMA_CONFIG;
-    i2c_config[I2C1_INDEX].dma_tx = &I2C1_dma_tx;
-#endif /* BSP_I2C1_TX_USING_DMA */
+#endif /* defined (BSP_I2C1_TX_USING_INT) */
 
-#ifdef BSP_I2C2_RX_USING_DMA
-    i2c_objs[I2C2_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_DMA_RX;
-    static struct dma_config I2C2_dma_rx = I2C2_RX_DMA_CONFIG;
-    i2c_config[I2C2_INDEX].dma_rx = &I2C2_dma_rx;
-#endif /* BSP_I2C2_RX_USING_DMA */
-#ifdef BSP_I2C2_TX_USING_DMA
+#if defined (BSP_I2C1_RX_USING_INT)
+    i2c_objs[I2C1_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_INT_RX;
+#elif defined(BSP_I2C1_RX_USING_DMA)
+    i2c_objs[I2C1_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_DMA_RX;
+#endif /* defined (BSP_I2C1_RX_USING_INT) */
+
+#endif /* defined(BSP_USING_HARD_I2C1) */
+
+#if defined(BSP_USING_HARD_I2C2)
+    i2c_objs[I2C2_INDEX].i2c_dma_flag = 0;
+
+#if defined (BSP_I2C2_TX_USING_INT)
+    i2c_objs[I2C2_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_INT_TX;
+#elif defined(BSP_I2C2_TX_USING_DMA)
     i2c_objs[I2C2_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_DMA_TX;
-    static struct dma_config I2C2_dma_tx = I2C2_TX_DMA_CONFIG;
-    i2c_config[I2C2_INDEX].dma_tx = &I2C2_dma_tx;
-#endif /* BSP_I2C2_TX_USING_DMA */
+#endif /* defined (BSP_I2C2_TX_USING_INT) */
 
-#ifdef BSP_I2C3_RX_USING_DMA
-    i2c_objs[I2C3_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_DMA_RX;
-    static struct dma_config I2C3_dma_rx = I2C3_RX_DMA_CONFIG;
-    i2c_config[I2C3_INDEX].dma_rx = &I2C3_dma_rx;
-#endif /* BSP_I2C3_RX_USING_DMA */
-#ifdef BSP_I2C3_TX_USING_DMA
+#if defined (BSP_I2C2_RX_USING_INT)
+    i2c_objs[I2C2_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_INT_RX;
+#elif defined(BSP_I2C2_RX_USING_DMA)
+    i2c_objs[I2C2_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_DMA_RX;
+#endif /* defined (BSP_I2C2_RX_USING_INT) */
+
+#endif /* defined(BSP_USING_HARD_I2C2) */
+
+#if defined(BSP_USING_HARD_I2C3)
+    i2c_objs[I2C3_INDEX].i2c_dma_flag = 0;
+
+#if defined (BSP_I2C3_TX_USING_INT)
+    i2c_objs[I2C3_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_INT_TX;
+#elif defined(BSP_I2C3_TX_USING_DMA)
     i2c_objs[I2C3_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_DMA_TX;
-    static struct dma_config I2C3_dma_tx = I2C3_TX_DMA_CONFIG;
-    i2c_config[I2C3_INDEX].dma_tx = &I2C3_dma_tx;
-#endif /* BSP_I2C3_TX_USING_DMA */
-#endif /* RT_I2C_USING_POLL */
+#endif /* defined (BSP_I2C3_TX_USING_INT) */
+
+#if defined (BSP_I2C3_RX_USING_INT)
+    i2c_objs[I2C3_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_INT_RX;
+#elif defined(BSP_I2C3_RX_USING_DMA)
+    i2c_objs[I2C3_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_DMA_RX;
+#endif /* defined (BSP_I2C3_RX_USING_INT) */
+
+#endif /* defined(BSP_USING_HARD_I2C3) */
+
+#if defined(BSP_USING_HARD_I2C4)
+    i2c_objs[I2C4_INDEX].i2c_dma_flag = 0;
+
+#if defined (BSP_I2C4_TX_USING_INT)
+    i2c_objs[I2C4_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_INT_TX;
+#elif defined(BSP_I2C4_TX_USING_DMA)
+    i2c_objs[I2C4_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_DMA_TX;
+#endif /* defined (BSP_I2C4_TX_USING_INT) */
+
+#if defined (BSP_I2C4_RX_USING_INT)
+    i2c_objs[I2C4_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_INT_RX;
+#elif defined(BSP_I2C4_RX_USING_DMA)
+    i2c_objs[I2C4_INDEX].i2c_dma_flag |= RT_DEVICE_FLAG_DMA_RX;
+#endif /* defined (BSP_I2C4_RX_USING_INT) */
+
+#endif /* defined(BSP_USING_HARD_I2C4) */
 }
 
-#if defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA)
+#ifdef BSP_I2C_USING_IRQ
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
     struct stm32_i2c *i2c_drv = rt_container_of(hi2c, struct stm32_i2c, handle);
     rt_completion_done(&i2c_drv->completion);
 }
+
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c)
 {
-    HAL_GPIO_WritePin(GPIOA, DEBUG_IO_Pin, GPIO_PIN_RESET);
     struct stm32_i2c *i2c_drv = rt_container_of(hi2c, struct stm32_i2c, handle);
     rt_completion_done(&i2c_drv->completion);
 }
+
 void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
 {
 #if defined(SOC_SERIES_STM32H7)
@@ -620,9 +639,7 @@ void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
     }
 #endif /* defined(SOC_SERIES_STM32H7) */
 }
-#endif /* defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA) */
 
-#if defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA)
 #ifdef BSP_USING_HARD_I2C1
 /**
  * @brief This function handles I2C1 event interrupt.
@@ -758,8 +775,9 @@ void I2C4_ER_IRQHandler(void)
     /* USER CODE END I2C4_ER_IRQn 1 */
 }
 #endif /* BSP_USING_HARD_I2C4 */
-#endif /* defined(RT_I2C_USING_INT) || defined(RT_I2C_USING_DMA) */
+#endif /* BSP_I2C_USING_IRQ */
 
+#ifdef BSP_I2C_USING_DMA
 #if defined(BSP_USING_HARD_I2C1) && defined(BSP_I2C1_RX_USING_DMA)
 /**
  * @brief  This function handles DMA Rx interrupt request.
@@ -903,6 +921,7 @@ void I2C4_DMA_TX_IRQHandler(void)
     rt_interrupt_leave();
 }
 #endif /* defined(BSP_USING_HARD_I2C4) && defined(BSP_I2C4_TX_USING_DMA) */
+#endif /* BSP_I2C_USING_DMA */
 
 int rt_hw_hw_i2c_init(void)
 {
