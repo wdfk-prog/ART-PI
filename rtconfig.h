@@ -140,6 +140,8 @@
 #define RT_MMCSD_THREAD_PREORITY 22
 #define RT_MMCSD_MAX_PARTITION 16
 #define RT_USING_SPI
+#define RT_USING_SPI_BITOPS
+#define RT_SPI_BITOPS_DEBUG
 #define RT_USING_SFUD
 #define RT_SFUD_USING_SFDP
 #define RT_SFUD_USING_FLASH_INFO_TABLE
@@ -362,6 +364,21 @@
 
 /* peripheral libraries and drivers */
 
+/* HAL & SDK Drivers */
+
+/* STM32 HAL & SDK Drivers */
+
+/* end of STM32 HAL & SDK Drivers */
+
+/* Infineon HAL Packages */
+
+/* end of Infineon HAL Packages */
+
+/* Kendryte SDK */
+
+/* end of Kendryte SDK */
+/* end of HAL & SDK Drivers */
+
 /* sensors drivers */
 
 /* end of sensors drivers */
@@ -369,10 +386,6 @@
 /* touch drivers */
 
 /* end of touch drivers */
-
-/* Kendryte SDK */
-
-/* end of Kendryte SDK */
 /* end of peripheral libraries and drivers */
 
 /* AI packages */
@@ -493,6 +506,11 @@
 #define BSP_UART4_RX_USING_DMA
 #define BSP_UART4_RX_BUFSIZE 256
 #define BSP_UART4_TX_BUFSIZE 0
+#define BSP_USING_SOFT_SPI
+#define BSP_USING_SOFT_SPI1
+#define BSP_S_SPI1_SCK_PIN 101
+#define BSP_S_SPI1_MISO_PIN 99
+#define BSP_S_SPI1_MOSI_PIN 97
 #define BSP_USING_SPI
 #define BSP_USING_SPI1
 #define BSP_SPI1_TX_USING_DMA
