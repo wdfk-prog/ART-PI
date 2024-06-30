@@ -12,7 +12,7 @@
 #include <stdint.h>
 
 #include <rtthread.h>
-#include <drivers/spi.h>
+#include <drivers/spi_core.h>
 #include <netif/ethernetif.h>
 
 // ENC28J60 Control Registers

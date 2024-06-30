@@ -13,7 +13,7 @@
  * 2012-09-28     aozima       fixed rt_spi_release_bus assert error.
  */
 
-#include <drivers/spi.h>
+#include <drivers/spi_core.h>
 
 #define DBG_TAG    "spi.core"
 #define DBG_LVL    DBG_INFO

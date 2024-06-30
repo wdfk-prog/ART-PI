@@ -13,7 +13,7 @@
 
 #include <stdint.h>
 #include <rtdevice.h>
-#include <drivers/spi.h>
+#include <drivers/spi_core.h>
 
 /* SD command (SPI mode) */
 #define GO_IDLE_STATE                       0   /* CMD0  R1  */

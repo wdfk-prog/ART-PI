@@ -11,7 +11,7 @@
  */
 
 #include <rtthread.h>
-#include <drivers/spi.h>
+#include <drivers/spi_core.h>
 
 #include <netif/ethernetif.h>
 #include <netif/etharp.h>

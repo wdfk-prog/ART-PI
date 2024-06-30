@@ -8,7 +8,7 @@
  */
 
 #include <rtthread.h>
-#include <drivers/spi.h>
+#include <drivers/spi_core.h>
 
 /* SPI bus device interface, compatible with RT-Thread 0.3.x/1.0.x */
 static rt_ssize_t _spi_bus_device_read(rt_device_t dev,

@@ -8,7 +8,7 @@
  * 2018-11-16     zylx      first version.
  */
 
-#include <drivers/spi.h>
+#include <drivers/spi_core.h>
 
 rt_err_t rt_qspi_configure(struct rt_qspi_device *device, struct rt_qspi_configuration *cfg)
 {

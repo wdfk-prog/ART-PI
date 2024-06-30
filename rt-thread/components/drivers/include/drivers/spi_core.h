@@ -10,8 +10,8 @@
  * 2022-09-01     liYony       fix api rt_spi_sendrecv16 about MSB and LSB bug
  */
 
-#ifndef __SPI_H__
-#define __SPI_H__
+#ifndef __SPI_CORE_H__
+#define __SPI_CORE_H__
 
 #include <stdlib.h>
 #include <rtthread.h>
