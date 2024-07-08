@@ -26,7 +26,7 @@ menu "Hardware Drivers Config"
         bool
 
     menu "Board extended module"
-    
+
         menuconfig ART_PI_USING_MEDIA_IO
             bool "Media-IO"
             default n
@@ -35,7 +35,7 @@ menu "Hardware Drivers Config"
                     bool
                 config PKG_USING_PERSIMMON_SRC
                     bool
-    
+
                 config MEDIA_IO_USING_SCREEN
                     select BSP_USING_SPI
                     select BSP_USING_SPI2
@@ -68,7 +68,7 @@ menu "Hardware Drivers Config"
                         default y
                     endif
             endif
-    
+
         menuconfig ART_PI_USING_INDUSTRY_IO
             bool "Industry-IO"
             default n
@@ -79,7 +79,7 @@ menu "Hardware Drivers Config"
                     bool "Enable Ethernet"
                     default y
             endif
-    
+
         menuconfig ART_PI_USING_LORA_SHIELD_LRS007
             bool "LoRa Shield"
             default n
@@ -97,15 +97,15 @@ menu "Hardware Drivers Config"
             endif
             
     endmenu
-    
+
     menu "Onboard Peripheral"
-    
+
         config BSP_USING_USB_TO_USART
             bool "Enable Debuger USART (uart4)"
             select BSP_USING_UART
             select BSP_USING_UART4
             default n
-    
+
         config BSP_USING_SPI_FLASH
             bool "Enable SPI FLASH (spi1)"
             select BSP_USING_SPI
@@ -114,7 +114,7 @@ menu "Hardware Drivers Config"
             select FAL_USING_SFUD_PORT
             select RT_USING_SFUD
             default n
-            
+
         config BSP_USING_QSPI_FLASH
             bool "Enable QSPI FLASH (w25q64 qspi)"
             select BSP_USING_QSPI
@@ -122,7 +122,7 @@ menu "Hardware Drivers Config"
             select RT_USING_SFUD
             select RT_SFUD_USING_QSPI
             default n
-    
+
         config BSP_USING_WIFI
             bool "Enable wifi (AP6212)"
             select ART_PI_USING_WIFI_6212_LIB
@@ -131,21 +131,21 @@ menu "Hardware Drivers Config"
             select RT_USING_WIFI
             select RT_USING_SAL
             default n
-    
+
         config BSP_USING_OV2640
             bool "Enable camera (ov2640)"
             select BSP_USING_DCMI
             select BSP_USING_I2C
             select BSP_USING_I2C2
             default n
-    
+
         config BSP_USING_GC0328C
             bool "Enable camera (gc0328)"
             select BSP_USING_DCMI
             select BSP_USING_I2C
             select BSP_USING_I2C2
             default n
-    
+
         menuconfig BSP_USING_FS
             bool "Enable filesystem"
             select RT_USING_DFS
@@ -167,14 +167,14 @@ menu "Hardware Drivers Config"
             endif
     
     endmenu
-    
+
     menu "On-chip Peripheral"
     
-        config BSP_USING_GPIO
+        menuconfig BSP_USING_GPIO
             bool "Enable GPIO"
             select RT_USING_PIN
             default y
-    
+
         menuconfig BSP_USING_UART
             bool "Enable UART"
             default y
@@ -316,49 +316,49 @@ menu "Hardware Drivers Config"
                         endif
             endif
 
-    menuconfig BSP_USING_SOFT_SPI
-        bool "Enable soft SPI BUS"
-        default n
-        select RT_USING_SPI
-        select RT_USING_SPI_BITOPS
-        select RT_USING_PIN
-        if BSP_USING_SOFT_SPI
-            menuconfig BSP_USING_SOFT_SPI1
-                bool "Enable soft SPI1 BUS (software simulation)"
-                default n
-                if BSP_USING_SOFT_SPI1
-                    config BSP_S_SPI1_SCK_PIN
-                        int "soft spi1 sck pin number(G,5)"
-                        range 0 143
-                        default 101
-                    config BSP_S_SPI1_MISO_PIN
-                        int "soft spi1 miso pin numbe(G,3)"
-                        range 0 143
-                        default 99
-                    config BSP_S_SPI1_MOSI_PIN
-                        int "soft spi1 mosi pin number(G,1)"
-                        range 0 143
-                        default 97
-                endif
+        menuconfig BSP_USING_SOFT_SPI
+            bool "Enable soft SPI BUS"
+            default n
+            select RT_USING_SPI
+            select RT_USING_SPI_BITOPS
+            select RT_USING_PIN
+            if BSP_USING_SOFT_SPI
+                menuconfig BSP_USING_SOFT_SPI1
+                    bool "Enable soft SPI1 BUS (software simulation)"
+                    default n
+                    if BSP_USING_SOFT_SPI1
+                        config BSP_S_SPI1_SCK_PIN
+                            int "soft spi1 sck pin number(G,5)"
+                            range 0 143
+                            default 101
+                        config BSP_S_SPI1_MISO_PIN
+                            int "soft spi1 miso pin numbe(G,3)"
+                            range 0 143
+                            default 99
+                        config BSP_S_SPI1_MOSI_PIN
+                            int "soft spi1 mosi pin number(G,1)"
+                            range 0 143
+                            default 97
+                    endif
 
-            menuconfig BSP_USING_SOFT_SPI2
-                bool "Enable soft SPI2 BUS (software simulation)"
-                default n
-                if BSP_USING_SOFT_SPI2
-                    config BSP_S_SPI2_SCK_PIN
-                        int "soft spi2 sck pin number"
-                        range 0 143
-                        default 19
-                    config BSP_S_SPI2_MISO_PIN
-                        int "soft spi2 miso pin number"
-                        range 0 143
-                        default 20
-                    config BSP_S_SPI2_MOSI_PIN
-                        int "soft spi2 mosi pin number"
-                        range 0 143
-                        default 21
-                endif
-        endif
+                menuconfig BSP_USING_SOFT_SPI2
+                    bool "Enable soft SPI2 BUS (software simulation)"
+                    default n
+                    if BSP_USING_SOFT_SPI2
+                        config BSP_S_SPI2_SCK_PIN
+                            int "soft spi2 sck pin number"
+                            range 0 143
+                            default 19
+                        config BSP_S_SPI2_MISO_PIN
+                            int "soft spi2 miso pin number"
+                            range 0 143
+                            default 20
+                        config BSP_S_SPI2_MOSI_PIN
+                            int "soft spi2 mosi pin number"
+                            range 0 143
+                            default 21
+                    endif
+            endif
 
         menuconfig BSP_USING_SPI
             bool "Enable SPI BUS"
@@ -411,12 +411,13 @@ menu "Hardware Drivers Config"
                             default n
                     endif      
             endif    
-        config BSP_USING_QSPI
+
+        menuconfig BSP_USING_QSPI
             bool "Enable QSPI BUS"
             select RT_USING_QSPI
             select RT_USING_SPI
             default n
-    
+
         menuconfig BSP_USING_I2C
             bool "Enable I2C"
             default n
@@ -595,11 +596,11 @@ menu "Hardware Drivers Config"
                     bool "Enable SDIO2"
                     default n
             endif
-    
-        config BSP_USING_SDRAM
+
+        menuconfig BSP_USING_SDRAM
             bool "Enable SDRAM"
             default n
-    
+
         menuconfig BSP_USING_ETH
             bool "Enable Ethernet"
             default n        
@@ -618,18 +619,18 @@ menu "Hardware Drivers Config"
                         default n
                 endchoice
             endif
-    
-        config BSP_USING_LCD
+
+        menuconfig BSP_USING_LCD
             bool "Enable LCD"
             select BSP_USING_GPIO
             select BSP_USING_SDRAM
             select RT_USING_MEMHEAP
             default n
-    
-        config BSP_USING_DCMI
+
+        menuconfig BSP_USING_DCMI
             bool "Enable DCMI"
             default n
-            
+
         menuconfig BSP_USING_FDCAN
             bool "Enable FDCAN"
             default n
@@ -639,12 +640,12 @@ menu "Hardware Drivers Config"
                     bool "USING FDCAN1"
                     default n
             endif
-            
-        config BSP_USING_USBD
+
+        menuconfig BSP_USING_USBD
             bool "Enable USB Device"
             select RT_USING_USB_DEVICE
             default n
-            
+
         menuconfig BSP_USING_USBH
             bool "Enable USB Host"
             select RT_USING_USB_HOST
@@ -661,7 +662,7 @@ menu "Hardware Drivers Config"
                             default "/"
                     endif
             endif
-            
+
         menuconfig BSP_USING_TIM
             bool "Enable timer"
             default n
@@ -671,7 +672,7 @@ menu "Hardware Drivers Config"
                     bool "Enable TIM13"
                     default n
             endif
-    
+
         menuconfig BSP_USING_PWM
             bool "Enable PWM"
             default n
@@ -689,11 +690,23 @@ menu "Hardware Drivers Config"
                 bool "SAMPLE PWM5 channel1"
                 default n
             endif
-    
-        config BSP_USING_ONCHIP_RTC
+
+        menuconfig BSP_USING_ONCHIP_RTC
             bool "Enable Onchip RTC"
             select RT_USING_RTC
             default n
+            if BSP_USING_ONCHIP_RTC
+                choice
+                    prompt "Select clock source"
+                    default BSP_RTC_USING_LSE
+
+                    config BSP_RTC_USING_LSE
+                        bool "RTC USING LSE"
+
+                    config BSP_RTC_USING_LSI
+                        bool "RTC USING LSI"
+                endchoice
+            endif
 
         menuconfig BSP_USING_ADC
             bool "Enable ADC"
@@ -714,15 +727,14 @@ menu "Hardware Drivers Config"
                     bool "Enable ADC3"
                     default n
             endif
-            
-        config BSP_USING_WDT
+
+        menuconfig BSP_USING_WDT
             bool "Enable Watchdog Timer"
             select RT_USING_WDT
             default n
+
     endmenu
-    
-    endmenu
-    
+
     menu "External Libraries"
     
         config ART_PI_USING_WIFI_6212_LIB
@@ -755,4 +767,4 @@ menu "Hardware Drivers Config"
             default n
     
     endmenu
-    
+endmenu

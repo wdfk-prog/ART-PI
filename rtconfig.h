@@ -133,6 +133,7 @@
 #define RT_USING_I2C
 #define RT_USING_MTD_NOR
 #define RT_USING_RTC
+#define RT_USING_ALARM
 #define RT_USING_SDIO
 #define RT_SDIO_STACK_SIZE 512
 #define RT_SDIO_THREAD_PRIORITY 15
@@ -195,9 +196,6 @@
 
 /* Utilities */
 
-#define RT_USING_RYM
-#define YMODEM_USING_CRC_TABLE
-#define YMODEM_USING_FILE_TRANSFER
 #define RT_USING_ULOG
 #define ULOG_OUTPUT_LVL_D
 #define ULOG_OUTPUT_LVL 7
@@ -222,9 +220,6 @@
 #define ULOG_BACKEND_USING_CONSOLE
 #define ULOG_BACKEND_USING_FILE
 #define ULOG_USING_FILTER
-#define RT_USING_UTEST
-#define UTEST_THR_STACK_SIZE 4096
-#define UTEST_THR_PRIORITY 20
 /* end of Utilities */
 /* end of RT-Thread Components */
 
@@ -518,13 +513,14 @@
 #define BSP_USING_SDRAM
 #define BSP_USING_USBD
 #define BSP_USING_ONCHIP_RTC
+#define BSP_RTC_USING_LSE
 #define BSP_USING_WDT
 /* end of On-chip Peripheral */
-/* end of Hardware Drivers Config */
 
 /* External Libraries */
 
 /* end of External Libraries */
+/* end of Hardware Drivers Config */
 
 /* User Driver Config */
 

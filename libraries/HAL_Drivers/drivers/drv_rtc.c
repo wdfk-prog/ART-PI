@@ -22,7 +22,7 @@
 #define RTC_BKP_DR1 RT_NULL
 #endif
 
-//#define DRV_DEBUG
+// #define DRV_DEBUG
 #define LOG_TAG             "drv.rtc"
 #include <drv_log.h>
 
