@@ -7,6 +7,7 @@
 #include <rtthread.h>
 #include <rt-thread\components\drivers\include\drivers\rtc.h>
 #include <rt-thread\components\drivers\include\drivers\alarm.h>
+#ifdef USER_USING_ALARM
 
 void user_alarm_callback(rt_alarm_t alarm, time_t timestamp)
 {
@@ -45,3 +46,5 @@ void alarm_sample(void)
 }
 /* export msh cmd */
 MSH_CMD_EXPORT(alarm_sample,alarm sample);
+
+#endif // USER_USING_ALARM

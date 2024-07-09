@@ -424,5 +424,5 @@ static int rt_hw_rtc_init(void)
 
     return RT_EOK;
 }
-INIT_DEVICE_EXPORT(rt_hw_rtc_init);
+INIT_BOARD_EXPORT(rt_hw_rtc_init);
 #endif /* BSP_USING_ONCHIP_RTC */

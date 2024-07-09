@@ -320,7 +320,14 @@ static rt_err_t rt_hwtimer_control(struct rt_device *dev, int cmd, void *args)
     break;
     default:
     {
-        result = -RT_ENOSYS;
+        if (timer->ops->control != RT_NULL)
+        {
+            result = timer->ops->control(timer, cmd, args);
+        }
+        else
+        {
+            result = -RT_ENOSYS;
+        }
     }
     break;
     }

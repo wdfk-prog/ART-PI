@@ -100,6 +100,7 @@ void rt_object_put_sethook(void (*hook)(struct rt_object *object));
 rt_tick_t rt_tick_get(void);
 void rt_tick_set(rt_tick_t tick);
 void rt_tick_increase(void);
+void rt_tick_increase_tick(rt_tick_t tick);
 rt_tick_t  rt_tick_from_millisecond(rt_int32_t ms);
 rt_tick_t rt_tick_get_millisecond(void);
 #ifdef RT_USING_HOOK

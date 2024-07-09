@@ -25,6 +25,7 @@
 #include "dma.h"
 #include "i2c.h"
 #include "iwdg.h"
+#include "lptim.h"
 #include "mdma.h"
 #include "quadspi.h"
 #include "rtc.h"
@@ -72,6 +73,7 @@
 void SystemClock_Config(void);
 void PeriphCommonClock_Config(void);
 static void MPU_Config(void);
+static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
 extern int mount_init(void);
 static int Version(void);
@@ -200,6 +202,17 @@ void PeriphCommonClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief NVIC Configuration.
+  * @retval None
+  */
+static void MX_NVIC_Init(void)
+{
+  /* LPTIM1_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(LPTIM1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(LPTIM1_IRQn);
 }
 
 /* USER CODE BEGIN 4 */
