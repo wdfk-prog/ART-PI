@@ -109,6 +109,48 @@ void HAL_Delay(__IO uint32_t Delay)
     }
 }
 
+void printf_Reset_Status(void)
+{
+    enum
+    {
+        CPURSTF     = 17,   //CPU 复位标志
+        D1RSTF      = 19,   //D1 域电源开关复位标志
+        D2RSTF      = 20,   //D2 域电源开关复位标志
+        BORRSTF     = 21,   //BOR 复位标志
+        PINRSTF     = 22,   //引脚复位标志
+        PORRSTF     = 23,   //POR/PDR 复位标志
+        SFTRSTF     = 24,   //通过 CPU 实现系统复位的复位标志
+        IWDG1RSTF   = 26,   //独立看门狗复位标志
+        WWDG1RSTF   = 28,   //窗口看门狗复位标志
+        LPWRRSTF    = 30,   //因非法 D1 DStandby 或 CPU CStop 标志而复位
+    };
+
+    const char *status[] = 
+    {
+        [CPURSTF]   = "CPU reset flag",
+        [D1RSTF]    = "D1 Domain power switch reset flag",
+        [D2RSTF]    = "D2 Domain power switch reset flag",
+        [BORRSTF]   = "BOR RST",
+        [PINRSTF]   = "Pin reset flag",
+        [PORRSTF]   = "POR/PDR RST",
+        [SFTRSTF]   = "Reset flag for system reset through CPU",
+        [IWDG1RSTF] = "Independent watchdog reset flag",
+        [WWDG1RSTF] = "Window watchdog reset flag",
+        [LPWRRSTF]  = "Reset due to invalid D1 DStandby or CPU CStop flag. Procedure",
+    };
+
+    rt_uint32_t rcc_rsr = READ_REG(RCC->RSR);
+    rt_uint8_t i = 0;
+    for(i = 0; i < LPWRRSTF; i++)
+    {
+        if((rcc_rsr << i) & 0x80000000)
+        {
+            break;
+        }
+    }
+    rt_kprintf("rcc_rsr = 0x%08lx(%s)\r\n", rcc_rsr, status[31-i]);
+}
+
 /* re-implement tick interface for STM32 HAL */
 HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 {
@@ -215,12 +257,15 @@ rt_weak void rt_hw_board_init(void)
     rt_hw_console_init();
 #endif
 
+    printf_Reset_Status();
+
 #ifdef RT_USING_COMPONENTS_INIT
     /* Board underlying hardware initialization */
     rt_components_board_init();
 #endif
 /***********************调试模式下禁用独立看门狗IWDG**********************************/
     __HAL_DBGMCU_FREEZE_IWDG1();	  //调试模式下，冻结看门狗计数器时钟
+    __HAL_DBGMCU_FREEZE_LPTIM1();
 /*********************调试模式下使能独立看门狗IWDG**********************************/
 //  __HAL_DBGMCU_UnFreeze_WWDG1();	  //调试模式下，使能看门狗计数器时钟
 }

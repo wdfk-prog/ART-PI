@@ -267,12 +267,12 @@ int drv_pm_hw_init(void)
 
     if(timer == RT_NULL)
     {
-        rt_kprintf("Can't find PM timer device\n");
+        LOG_E("Can't find PM timer device");
         return -RT_ERROR;
     }
     else
     {
-        return RT_EOK;
+        return rt_device_init(timer);
     }
 }
 

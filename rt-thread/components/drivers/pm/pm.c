@@ -117,7 +117,7 @@ static rt_err_t _pm_device_suspend(rt_uint8_t mode)
     for (node = rt_slist_first(&_pm.device_list); node; node = rt_slist_next(node))
     {
         device_pm = rt_slist_entry(node, struct rt_device_pm, list);
-        if (device_pm->ops->suspend != RT_NULL)
+        if (device_pm->ops != RT_NULL && device_pm->ops->suspend != RT_NULL)
         {
             ret = device_pm->ops->suspend(device_pm->device, mode);
             if(ret != RT_EOK)
@@ -141,7 +141,7 @@ static void _pm_device_resume(rt_uint8_t mode)
     for (node = rt_slist_first(&_pm.device_list); node; node = rt_slist_next(node))
     {
         device_pm = rt_slist_entry(node, struct rt_device_pm, list);
-        if (device_pm->ops->resume != RT_NULL)
+        if (device_pm->ops != RT_NULL && device_pm->ops->resume != RT_NULL)
         {
             device_pm->ops->resume(device_pm->device, mode);
         }
@@ -446,7 +446,9 @@ static void _pm_change_sleep_mode(struct rt_pm *pm)
             pm_lptimer_stop(pm);
             if (delta_tick)
             {
+                rt_interrupt_enter();
                 rt_tick_increase_tick(delta_tick);
+                rt_interrupt_leave();
             }
         }
 

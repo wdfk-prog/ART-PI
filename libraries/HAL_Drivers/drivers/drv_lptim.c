@@ -188,80 +188,8 @@ static void timer_stop(rt_hwtimer_t *timer)
 
 static rt_uint32_t timer_get_freq(LPTIM_HandleTypeDef *tim)
 {
-    rt_uint32_t freq = 0;
-    rt_uint32_t periph_clk = 0U;
-
-    switch ((rt_uint32_t)&tim->Instance)
-    {
-        case (rt_uint32_t)LPTIM1:
-            periph_clk = RCC_PERIPHCLK_LPTIM1;
-            break;
-        case (rt_uint32_t)LPTIM2:
-            periph_clk = RCC_PERIPHCLK_LPTIM2;
-            break;
-        case (rt_uint32_t)LPTIM3:
-            periph_clk = RCC_PERIPHCLK_LPTIM3;
-            break;
-        default:
-            break;
-    }
-
-    if(periph_clk == 0U)
-    {
-        freq = 0;
-    }
-    else
-    {
-        freq = HAL_RCCEx_GetPeriphCLKFreq(periph_clk);
-        switch (tim->Init.Clock.Prescaler)
-        {
-            case LPTIM_PRESCALER_DIV1:
-            {
-                break;
-            }
-            case LPTIM_PRESCALER_DIV2:
-            {
-                freq = freq / 2;
-                break;
-            }
-            case LPTIM_PRESCALER_DIV4:
-            {
-                freq = freq / 4;
-                break;
-            }
-            case LPTIM_PRESCALER_DIV8:
-            {
-                freq = freq / 8;
-                break;
-            }
-            case LPTIM_PRESCALER_DIV16:
-            {
-                freq = freq / 16;
-                break;
-            }
-            case LPTIM_PRESCALER_DIV32:
-            {
-                freq = freq / 32;
-                break;
-            }
-            case LPTIM_PRESCALER_DIV64:
-            {
-                freq = freq / 64;
-                break;
-            }
-            case LPTIM_PRESCALER_DIV128:
-            {
-                freq = freq / 128;
-                break;
-            }
-            default:
-            {
-                freq = 0;
-                break;
-            }
-        }
-    }
-    return freq;
+    //No calculation is performed. The default initial configuration is 1000hz
+    return 1000;
 }
 
 
@@ -293,13 +221,12 @@ static rt_err_t timer_ctrl(rt_hwtimer_t *timer, rt_uint32_t cmd, void *arg)
         return -RT_EINVAL;
     }
 
-    rt_err_t result = -RT_ERROR;
+    rt_err_t result = RT_EOK;
     switch (cmd)
     {
         case DRV_HW_LPTIMER_CTRL_GET_TICK_MAX:
         {
             *(rt_uint32_t *)arg = LPTIM_REG_MAX_VALUE;
-            result = RT_EOK;
             break;
         }
         case DRV_HW_LPTIMER_CTRL_GET_FREQ:
@@ -330,21 +257,27 @@ static rt_err_t timer_ctrl(rt_hwtimer_t *timer, rt_uint32_t cmd, void *arg)
 #ifdef BSP_USING_LPTIM1
 void LPTIM1_IRQHandler(void)
 {
+    rt_interrupt_enter();
     HAL_LPTIM_IRQHandler(&stm32_hw_lptimer_obj[LPTIM1_INDEX].tim_handle);
+    rt_interrupt_leave();
 }
 #endif
 
 #ifdef BSP_USING_LPTIM2
 void LPTIM2_IRQHandler(void)
 {
+    rt_interrupt_enter();
     HAL_LPTIM_IRQHandler(&stm32_hw_lptimer_obj[LPTIM2_INDEX].tim_handle);
+    rt_interrupt_leave();
 }
 #endif
 
 #ifdef BSP_USING_LPTIM3
 void LPTIM3_IRQHandler(void)
 {
+    rt_interrupt_enter();
     HAL_LPTIM_IRQHandler(&stm32_hw_lptimer_obj[LPTIM3_INDEX].tim_handle);
+    rt_interrupt_leave();
 }
 #endif
 
