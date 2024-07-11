@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2023, RT-Thread Development Team
+ * Copyright (c) 2006-2024 RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -13,7 +13,7 @@
 #include <drv_lptim.h>
 #include <rtdevice.h>
 
-//#define DRV_DEBUG
+/*#define DRV_DEBUG*/
 #define LOG_TAG             "drv.pm"
 #include <drv_log.h>
 
@@ -40,12 +40,12 @@ static rt_device_t timer = RT_NULL;
 /* Re-configure the system clock */
 rt_weak void SystemClock_ReConfig(int run_mode)
 {
-    //todo add your code here
+    /*todo add your code here*/
 }
 
 rt_weak void stm32_pm_device_run(struct rt_pm *pm, uint8_t mode)
 {
-    //todo add your code here
+    /*todo add your code here*/
 }
 
 /**

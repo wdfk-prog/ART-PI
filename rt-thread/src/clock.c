@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2021, RT-Thread Development Team
+ * Copyright (c) 2006-2024 RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -217,7 +217,7 @@ RTM_EXPORT(rt_tick_from_millisecond);
  */
 rt_weak rt_tick_t rt_tick_get_millisecond(void)
 {
-#if RT_TICK_PER_SECOND == 0 // make cppcheck happy
+#if RT_TICK_PER_SECOND == 0 /* make cppcheck happy*/
 #error "RT_TICK_PER_SECOND must be greater than zero"
 #endif
 

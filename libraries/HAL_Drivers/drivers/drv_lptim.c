@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2023, RT-Thread Development Team
+ * Copyright (c) 2006-2024 RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -14,7 +14,7 @@
 #include <rtdevice.h>
 #include "drv_config.h"
 
-//#define DRV_DEBUG
+/*#define DRV_DEBUG*/
 #define LOG_TAG             "drv.lptim"
 #include <drv_log.h>
 
@@ -188,7 +188,7 @@ static void timer_stop(rt_hwtimer_t *timer)
 
 static rt_uint32_t timer_get_freq(LPTIM_HandleTypeDef *tim)
 {
-    //No calculation is performed. The default initial configuration is 1000hz
+    /*No calculation is performed. The default initial configuration is 1000hz*/
     return 1000;
 }
 
