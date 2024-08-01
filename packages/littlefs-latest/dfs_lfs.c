@@ -9,6 +9,14 @@
 #include <stdio.h>
 #include <string.h>
 
+#if defined(RT_VERSION_CHECK) && (RTTHREAD_VERSION >= RT_VERSION_CHECK(5, 0, 2))
+#define DFS_LFS_RETURN_TYPE ssize_t
+#define DFS_LFS_MKFS(dev_id, fs_name) _dfs_lfs_mkfs(dev_id, fs_name)
+#else
+#define DFS_LFS_RETURN_TYPE int
+#define DFS_LFS_MKFS(dev_id, fs_name) _dfs_lfs_mkfs(dev_id)
+#endif
+
 #ifndef RT_DEF_LFS_DRIVERS
     #define RT_DEF_LFS_DRIVERS 1
 #endif
@@ -40,6 +48,8 @@
 #ifndef LFS_LOOKAHEAD_MAX
     #define LFS_LOOKAHEAD_MAX 128
 #endif
+
+#define ATTR_TIMESTAMP 0x74
 
 typedef struct _dfs_lfs_s
 {
@@ -360,7 +370,7 @@ static int _dfs_lfs_unmount(struct dfs_filesystem* dfs)
 }
 
 #ifndef LFS_READONLY
-static int _dfs_lfs_mkfs(rt_device_t dev_id, const char *fs_name)
+static int DFS_LFS_MKFS(rt_device_t dev_id, const char *fs_name)
 {
     int result;
     int index;
@@ -478,7 +488,7 @@ static int _dfs_lfs_unlink(struct dfs_filesystem* dfs, const char* path)
 }
 #endif
 
-static void _dfs_lfs_tostat(struct stat* st, struct lfs_info* info)
+static void _dfs_lfs_tostat(struct stat* st, struct lfs_info* info, time_t mtime)
 {
     memset(st, 0, sizeof(struct stat));
 
@@ -497,6 +507,8 @@ static void _dfs_lfs_tostat(struct stat* st, struct lfs_info* info)
         st->st_mode |= S_IFREG;
         break;
     }
+
+    st->st_mtime = mtime;
 }
 
 static int _dfs_lfs_stat(struct dfs_filesystem* dfs, const char* path, struct stat* st)
@@ -516,7 +528,10 @@ static int _dfs_lfs_stat(struct dfs_filesystem* dfs, const char* path, struct st
         return _lfs_result_to_dfs(result);
     }
 
-    _dfs_lfs_tostat(st, &info);
+    time_t mtime = 0;
+    lfs_getattr(&dfs_lfs->lfs, path, ATTR_TIMESTAMP, &mtime, sizeof(time_t));
+
+    _dfs_lfs_tostat(st, &info, mtime);
     return 0;
 }
 
@@ -587,6 +602,11 @@ static int _dfs_lfs_open(struct dfs_file* file)
             if (result != LFS_ERR_OK)
             {
                 goto _error_dir;
+            }
+            else
+            {
+                time_t now = time(RT_NULL);
+                lfs_setattr(dfs_lfs_fd->lfs, file->vnode->path, ATTR_TIMESTAMP, &now, sizeof(time_t));
             }
         }
 
@@ -664,6 +684,7 @@ static int _dfs_lfs_close(struct dfs_file* file)
 {
     int result;
     dfs_lfs_fd_t* dfs_lfs_fd;
+    uint8_t need_time_update;
     RT_ASSERT(file != RT_NULL);
     RT_ASSERT(file->data != RT_NULL);
 
@@ -681,7 +702,13 @@ static int _dfs_lfs_close(struct dfs_file* file)
     }
     else
     {
+        need_time_update = (dfs_lfs_fd->u.file.flags & LFS_F_DIRTY) || (dfs_lfs_fd->u.file.flags & LFS_F_WRITING);
         result = lfs_file_close(dfs_lfs_fd->lfs, &dfs_lfs_fd->u.file);
+        if (result == LFS_ERR_OK && need_time_update)
+        {
+            time_t now = time(RT_NULL);
+            lfs_setattr(dfs_lfs_fd->lfs, file->vnode->path, ATTR_TIMESTAMP, &now, sizeof(time_t));
+        }
     }
 
     rt_free(dfs_lfs_fd);
@@ -694,7 +721,7 @@ static int _dfs_lfs_ioctl(struct dfs_file* file, int cmd, void* args)
     return -ENOSYS;
 }
 
-static ssize_t _dfs_lfs_read(struct dfs_file* file, void* buf, size_t len)
+static DFS_LFS_RETURN_TYPE _dfs_lfs_read(struct dfs_file* file, void* buf, size_t len)
 {
     lfs_ssize_t ssize;
     dfs_lfs_fd_t* dfs_lfs_fd;
@@ -733,7 +760,7 @@ static ssize_t _dfs_lfs_read(struct dfs_file* file, void* buf, size_t len)
 }
 
 #ifndef LFS_READONLY
-static ssize_t _dfs_lfs_write(struct dfs_file* file, const void* buf, size_t len)
+static DFS_LFS_RETURN_TYPE _dfs_lfs_write(struct dfs_file* file, const void* buf, size_t len)
 {
     lfs_ssize_t ssize;
     dfs_lfs_fd_t* dfs_lfs_fd;
@@ -776,17 +803,24 @@ static int _dfs_lfs_flush(struct dfs_file* file)
 {
     int result;
     dfs_lfs_fd_t* dfs_lfs_fd;
+    uint8_t need_time_update;
 
     RT_ASSERT(file != RT_NULL);
     RT_ASSERT(file->data != RT_NULL);
 
     dfs_lfs_fd = (dfs_lfs_fd_t*)file->data;
+    need_time_update = (dfs_lfs_fd->u.file.flags & LFS_F_DIRTY) || (dfs_lfs_fd->u.file.flags & LFS_F_WRITING);
     result = lfs_file_sync(dfs_lfs_fd->lfs, &dfs_lfs_fd->u.file);
+    if (result == LFS_ERR_OK && need_time_update)
+    {
+        time_t now = time(RT_NULL);
+        lfs_setattr(dfs_lfs_fd->lfs, file->vnode->path, ATTR_TIMESTAMP, &now, sizeof(time_t));
+    }
 
     return _lfs_result_to_dfs(result);
 }
 
-static off_t _dfs_lfs_lseek(struct dfs_file* file, rt_off_t offset)
+static DFS_LFS_RETURN_TYPE _dfs_lfs_lseek(struct dfs_file* file, rt_off_t offset)
 {
     dfs_lfs_fd_t* dfs_lfs_fd;
 
