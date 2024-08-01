@@ -55,7 +55,9 @@ typedef struct _dfs_lfs_s
 {
     struct lfs lfs;
     struct lfs_config cfg;
+#ifdef LFS_THREADSAFE
     struct rt_mutex lock;
+#endif /* LFS_THREADSAFE */
 } dfs_lfs_t;
 
 typedef struct _dfs_lfs_fd_s
@@ -322,14 +324,18 @@ static int _dfs_lfs_mount(struct dfs_filesystem* dfs, unsigned long rwflag, cons
         return -ENOMEM;
     }
     rt_memset(dfs_lfs, 0, sizeof(dfs_lfs_t));
+#ifdef LFS_THREADSAFE
     rt_mutex_init(&dfs_lfs->lock, "lfslock", RT_IPC_FLAG_PRIO);
+#endif /* LFS_THREADSAFE */
     _lfs_load_config(&dfs_lfs->cfg, (struct rt_mtd_nor_device*)dfs->dev_id);
 
     /* mount lfs*/
     result = lfs_mount(&dfs_lfs->lfs, &dfs_lfs->cfg);
     if (result != LFS_ERR_OK)
     {
+#ifdef LFS_THREADSAFE
         rt_mutex_detach(&dfs_lfs->lock);
+#endif /* LFS_THREADSAFE */
         /* release memory */
         rt_free(dfs_lfs);
 
@@ -363,7 +369,9 @@ static int _dfs_lfs_unmount(struct dfs_filesystem* dfs)
     dfs->data = RT_NULL;
 
     result = lfs_unmount(&dfs_lfs->lfs);
+#ifdef LFS_THREADSAFE
     rt_mutex_detach(&dfs_lfs->lock);
+#endif /* LFS_THREADSAFE */
     rt_free(dfs_lfs);
 
     return _lfs_result_to_dfs(result);
@@ -399,12 +407,16 @@ static int DFS_LFS_MKFS(rt_device_t dev_id, const char *fs_name)
             return -ENOMEM;
         }
         rt_memset(dfs_lfs, 0, sizeof(dfs_lfs_t));
+#ifdef LFS_THREADSAFE
         rt_mutex_init(&dfs_lfs->lock, "lfslock", RT_IPC_FLAG_PRIO);
+#endif /* LFS_THREADSAFE */
         _lfs_load_config(&dfs_lfs->cfg, (struct rt_mtd_nor_device*)dev_id);
 
         /* format flash device */
         result = lfs_format(&dfs_lfs->lfs, &dfs_lfs->cfg);
+#ifdef LFS_THREADSAFE
         rt_mutex_detach(&dfs_lfs->lock);
+#endif /* LFS_THREADSAFE */
         rt_free(dfs_lfs);
         return _lfs_result_to_dfs(result);
     }
