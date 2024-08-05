@@ -10,6 +10,7 @@
  * 2019-04-28     Zero-Free    improve PM mode and device ops interface
  * 2020-11-23     zhangsz      update pm mode select
  * 2020-11-27     zhangsz      update pm 2.0
+ * 2024-07-04     wdfk-prog    The device is registered and uninstalled by linked list
  */
 
 #ifndef __PM_H__

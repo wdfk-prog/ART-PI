@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006-2023, RT-Thread Development Team
+ * Copyright (c) 2006-2024 RT-Thread Development Team
  *
  * SPDX-License-Identifier: Apache-2.0
  *
@@ -21,9 +21,6 @@
 #include <drivers/mmcsd_core.h>
 #include <drivers/sdio.h>
 
-#define SDIO_BUFF_SIZE       4096
-#define SDIO_ALIGN_LEN       32
-
 #define SDIO1_BASE_ADDRESS  (SDMMC1_BASE)
 #define SDIO2_BASE_ADDRESS  (SDMMC2_BASE)
 
@@ -39,14 +36,14 @@
 #define SDIO_ALIGN_LEN       (32)
 #endif
 
-#ifndef SDIO_MAX_FREQ
-#define SDIO_MAX_FREQ        (25 * 1000 * 1000)
-#endif
-
 /* Frequencies used in the driver for clock divider calculation */
 #define SD_INIT_FREQ                   400000U   /* Initalization phase : 400 kHz max */
 #define SD_NORMAL_SPEED_FREQ           25000000U /* Normal speed phase : 25 MHz max */
 #define SD_HIGH_SPEED_FREQ             50000000U /* High speed phase : 50 MHz max */
+
+#ifndef SDIO_MAX_FREQ
+#define SDIO_MAX_FREQ        (SD_HIGH_SPEED_FREQ)
+#endif
 
 #define SDIO_ERRORS \
     (SDMMC_STA_IDMATE | SDMMC_STA_ACKTIMEOUT | \
