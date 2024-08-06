@@ -13,7 +13,6 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "board.h"
-#include "usbh_core.h"
 /* Private includes ----------------------------------------------------------*/
 #include <time.h>
 #include "main.h"
@@ -210,18 +209,3 @@ void HAL_PWR_PVDCallback(void)
   }
 }
 #endif /*(PVD_ENABLE == 1)*/
-/*********************************USB******************************************/
-
-void OTG_HS_IRQHandler(void)
-{
-    extern void USBH_IRQHandler(uint8_t busid);
-    USBH_IRQHandler(0);
-}
-
-int usbh_init(void)
-{
-    usbh_initialize(0, USB_OTG_HS_PERIPH_BASE);
-    return 0;
-}
-
-INIT_APP_EXPORT(usbh_init);

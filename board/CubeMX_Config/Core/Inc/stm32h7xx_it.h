@@ -54,6 +54,7 @@ void SVC_Handler(void);
 void DebugMon_Handler(void);
 void PVD_AVD_IRQHandler(void);
 void DMA1_Stream3_IRQHandler(void);
+void OTG_FS_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */
