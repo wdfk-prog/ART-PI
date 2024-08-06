@@ -22,6 +22,7 @@
 
 /* kservice optimization */
 
+#define RT_USING_TINY_FFS
 /* end of kservice optimization */
 
 /* klibc optimization */
@@ -44,11 +45,7 @@
 
 /* Memory Management */
 
-#define RT_USING_MEMPOOL
 #define RT_USING_SMALL_MEM
-#define RT_USING_SLAB
-#define RT_USING_MEMHEAP
-#define RT_MEMHEAP_FAST_MODE
 #define RT_USING_SMALL_MEM_AS_HEAP
 #define RT_USING_MEMTRACE
 #define RT_USING_HEAP_ISR
@@ -56,6 +53,7 @@
 /* end of Memory Management */
 #define RT_USING_DEVICE
 #define RT_USING_DEVICE_OPS
+#define RT_USING_THREADSAFE_PRINTF
 #define RT_USING_CONSOLE
 #define RT_CONSOLEBUF_SIZE 256
 #define RT_CONSOLE_DEVICE_NAME "uart4"
@@ -118,8 +116,7 @@
 #define RT_USING_DFS_ROMFS
 /* end of DFS: device virtual file system */
 #define RT_USING_FAL
-#define FAL_DEBUG_CONFIG
-#define FAL_DEBUG 1
+#define FAL_DEBUG 0
 #define FAL_PART_HAS_TABLE_CFG
 #define FAL_USING_SFUD_PORT
 #define FAL_USING_NOR_FLASH_DEV_NAME "norflash0"
@@ -131,16 +128,7 @@
 #define RT_USING_SERIAL
 #define RT_USING_SERIAL_V2
 #define RT_SERIAL_USING_DMA
-#define RT_USING_I2C
 #define RT_USING_MTD_NOR
-#define RT_USING_PM
-#define PM_TICKLESS_THRESHOLD_TIME 2
-#define PM_ENABLE_DEBUG
-#define PM_ENABLE_SUSPEND_SLEEP_MODE
-#define PM_ENABLE_THRESHOLD_SLEEP_MODE
-#define PM_LIGHT_THRESHOLD_TIME 5
-#define PM_DEEP_THRESHOLD_TIME 20
-#define PM_STANDBY_THRESHOLD_TIME 100
 #define RT_USING_RTC
 #define RT_USING_SDIO
 #define RT_SDIO_STACK_SIZE 512
@@ -155,7 +143,6 @@
 #define RT_SFUD_SPI_MAX_HZ 50000000
 #define RT_USING_WDT
 #define RT_USING_PIN
-#define RT_USING_HWTIMER
 
 /* Using USB */
 
@@ -176,10 +163,6 @@
 
 /* Timezone and Daylight Saving Time */
 
-#define RT_LIBC_USING_LIGHT_TZ_DST
-#define RT_LIBC_TZ_DEFAULT_HOUR 8
-#define RT_LIBC_TZ_DEFAULT_MIN 0
-#define RT_LIBC_TZ_DEFAULT_SEC 0
 /* end of Timezone and Daylight Saving Time */
 /* end of ISO-ANSI C layer */
 
@@ -228,7 +211,6 @@
 /* end of log format */
 #define ULOG_BACKEND_USING_CONSOLE
 #define ULOG_BACKEND_USING_FILE
-#define ULOG_USING_FILTER
 /* end of Utilities */
 /* end of RT-Thread Components */
 
@@ -299,8 +281,6 @@
 #define PKG_CMBACKTRACE_PRINT_CHINESE_UTF8
 #define PKG_USING_CMBACKTRACE_LATEST_VERSION
 #define PKG_CMBACKTRACE_VER_NUM 0x99999
-#define PKG_USING_CPU_USAGE
-#define PKG_USING_CPU_USAGE_LATEST_VERSION
 /* end of tools packages */
 
 /* system packages */
@@ -423,8 +403,6 @@
 #define PKG_MFBD_MULTICLICK_STATE_AUTO_RESET
 #define PKG_USING_MFBD_LATEST_VERSION
 #define PKG_MFBD_VER_NUM 0x999999
-#define PKG_USING_GET_IRQ_PRIORITY
-#define PKG_USING_GET_IRQ_PRIORITY_LATEST_VERSION
 /* end of miscellaneous packages */
 
 /* Arduino libraries */
@@ -499,11 +477,6 @@
 
 #define BSP_USING_GPIO
 #define BSP_USING_UART
-#define BSP_USING_UART1
-#define BSP_UART1_RX_USING_DMA
-#define BSP_UART1_TX_USING_DMA
-#define BSP_UART1_RX_BUFSIZE 256
-#define BSP_UART1_TX_BUFSIZE 256
 #define BSP_USING_UART4
 #define BSP_UART4_RX_USING_DMA
 #define BSP_UART4_RX_BUFSIZE 256
@@ -512,17 +485,8 @@
 #define BSP_USING_SPI1
 #define BSP_SPI1_TX_USING_DMA
 #define BSP_SPI1_RX_USING_DMA
-#define BSP_USING_I2C
-#define BSP_HARDWARE_I2C
-#define BSP_USING_HARD_I2C4
-#define BSP_I2C4_TX_USING_POLL
-#define BSP_I2C4_RX_USING_POLL
 #define BSP_USING_SDIO
 #define BSP_USING_SDIO1
-#define BSP_USING_SDRAM
-#define BSP_USING_USBD
-#define BSP_USING_LPTIM
-#define BSP_USING_LPTIM1
 #define BSP_USING_ONCHIP_RTC
 #define BSP_RTC_USING_LSE
 #define BSP_USING_WDT
@@ -537,7 +501,6 @@
 
 /* USER ADC Drivers */
 
-#define USER_USING_ADC
 /* end of USER ADC Drivers */
 
 /* USER ALARM Drivers */

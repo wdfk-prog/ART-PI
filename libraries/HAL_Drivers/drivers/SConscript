@@ -52,7 +52,7 @@ if GetDepend(['RT_USING_DAC']):
 if GetDepend(['RT_USING_CAN']):
     src += ['drv_can.c']
 
-if GetDepend(['RT_USING_PM']):
+if GetDepend('RT_USING_PM') and GetDepend('BSP_USING_PM_TIMER'):
     src += ['drv_pm.c']
 
 if GetDepend(['BSP_USING_LPTIM']):

@@ -303,4 +303,4 @@ int mfbd_init(void)
   }
   return ret;
 }
-INIT_APP_EXPORT(mfbd_init);
+//INIT_APP_EXPORT(mfbd_init);

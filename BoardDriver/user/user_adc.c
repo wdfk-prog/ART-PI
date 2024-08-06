@@ -152,7 +152,7 @@ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
   }
 }
 #endif /* (REAL_TIME_REFRESH == 0) */
-#else
+#elif defined(RT_USING_ADC)
 #define ADC_DEV_NAME "adc3"                                     /* ADC 设备名称 */
 #define ADC_VREF_CHANNEL ADC_CHANNEL_VREFINT - ADC_CHANNEL_0    /* ADC Vref 通道 */
 #define ADC_TEMP_CHANNEL ADC_CHANNEL_TEMPSENSOR - ADC_CHANNEL_0 /* ADC Temp 通道 */

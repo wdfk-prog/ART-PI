@@ -15,7 +15,7 @@
   *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
-  加入__attribute__((optnone))取消优化
+  __attribute__((optnone)) de-optimize
   */
 #ifdef CUBE_ERROR
 /* USER CODE END Header */
@@ -83,7 +83,7 @@ extern int vref_temp_get(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 /**
- * @brief  主函�?
+ * @brief  main
  * @param  None.
  * @retval int 
  * @note   None.
@@ -91,11 +91,13 @@ extern int vref_temp_get(void);
 int main(void)
 {
     //MX_MDMA_Init();
-    finsh_set_prompt("artpi@root");
+    // finsh_set_prompt("artpi@root");
     mount_init();
     Version();
+#if defined(RT_USING_ADC) || defined(BSP_USING_ADC)
     rt_thread_mdelay(500);
     vref_temp_get();
+#endif // RT_USING_ADC
 }
 /* USER CODE END 0 */
 
@@ -303,25 +305,24 @@ void Error_Handler(void)
   /* User can add his own implementation to report the HAL error return state */
 #endif /*CUBE_ERROR*/
 /**
-  * @brief  获取编译版本
+  * @brief  Get the compiled version
   * @param  None
   * @retval None
   */
 static int Version(void)
 {
-  /* 获取编译版本*/
   LOG_I(" \\ | /");
   LOG_W("- HLY -    Version FULL V%s",VERSION);
   LOG_E(" / | \\     build %s %s",__DATE__,__TIME__);
-  LOG_I("System Clock information");
-  LOG_W("SYSCLK_Frequency = %d HCLK_Frequency   = %d", 
-                                 HAL_RCC_GetSysClockFreq(),
-                                 HAL_RCC_GetHCLKFreq());
-  LOG_W("PCLK1_Frequency  = %d PCLK2_Frequency  = %d",
-                                 HAL_RCC_GetPCLK1Freq(),
-                                 HAL_RCC_GetPCLK2Freq());
-  LOG_W("SPI1_Frequency   = %d", HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI123));
-  LOG_W("SDMMC_Frequency  = %d", HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDMMC));
+  // LOG_I("System Clock information");
+  // LOG_W("SYSCLK_Frequency = %d HCLK_Frequency   = %d", 
+  //                                HAL_RCC_GetSysClockFreq(),
+  //                                HAL_RCC_GetHCLKFreq());
+  // LOG_W("PCLK1_Frequency  = %d PCLK2_Frequency  = %d",
+  //                                HAL_RCC_GetPCLK1Freq(),
+  //                                HAL_RCC_GetPCLK2Freq());
+  // LOG_W("SPI1_Frequency   = %d", HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SPI123));
+  // LOG_W("SDMMC_Frequency  = %d", HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_SDMMC));
   LOG_W("HAL version      = V%d.%d.%d", HAL_GetHalVersion() >> 24, HAL_GetHalVersion() >> 16 & 0XFF, HAL_GetHalVersion() >> 8 & 0XFF);
   LOG_W("ARMcompiler version = %d", __ARMCOMPILER_VERSION);
   return RT_EOK;

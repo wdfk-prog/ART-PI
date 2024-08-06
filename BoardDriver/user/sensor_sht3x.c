@@ -13,6 +13,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "sensor_sht3x.h"
 /* Private includes ----------------------------------------------------------*/
+#ifdef BSP_USING_I2C
 #include "i2c.h"
 #include "drv_hard_i2c.h"
 /*ulog include*/
@@ -157,3 +158,4 @@ int sht3x_get(void)
 
 /* 导出到 msh 命令列表中 */
 MSH_CMD_EXPORT(sht3x_get, get sht3x);
+#endif // BSP_USING_I2C

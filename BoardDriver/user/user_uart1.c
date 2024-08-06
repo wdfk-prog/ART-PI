@@ -14,7 +14,7 @@
 #include <rtthread.h>
 #include <rtdevice.h>
 /* Private includes ----------------------------------------------------------*/
-
+#ifdef BSP_USING_UART1
 /* Private typedef -----------------------------------------------------------*/
 /* 串口接收消息结构 */
 struct rx_msg
@@ -128,3 +128,4 @@ static int uart1_init(void)
     return ret;
 }
 INIT_APP_EXPORT(uart1_init);
+#endif // BSP_USING_UART1
