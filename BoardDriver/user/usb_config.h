@@ -57,6 +57,6 @@
 #endif
 
 /* ---------------- DWC2 Configuration ---------------- */
-// #define CONFIG_USB_DWC2_DMA_ENABLE
+#define CONFIG_USB_DWC2_DMA_ENABLE
 
 #endif

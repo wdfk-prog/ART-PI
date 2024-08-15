@@ -9,7 +9,10 @@ LR_IROM1 0x90000000 0x00800000  {    ; load region size_region
    .ANY (+RO)
    .ANY (+XO)
   }
-  RW_IRAM1 0x24000000 0x00080000  {  ; AXI SRAM 512K
+  RW_IRAM1 0x24000000 0x00070000  {  ; AXI SRAM 512K
    .ANY (+RW +ZI)
+  }
+  USB_NOCACHERAM 0x24070000 0x00010000  {  ; RW data
+   *(.noncacheable)
   }
 }
