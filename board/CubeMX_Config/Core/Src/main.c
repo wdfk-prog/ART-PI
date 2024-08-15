@@ -139,16 +139,19 @@ int main(void)
     // finsh_set_prompt("artpi@root");
     mount_init();
     Version();
-#if defined(RT_USING_ADC) || defined(BSP_USING_ADC)
     rt_thread_mdelay(500);
+#if defined(RT_USING_ADC) || defined(BSP_USING_ADC)
     vref_temp_get();
 #endif // RT_USING_ADC
     extern void cdc_acm_init(uint8_t busid, uint32_t reg_base);
     cdc_acm_init(0, USB2_OTG_FS_PERIPH_BASE);
-    while (!usb_device_is_configured(0));
+    while (!usb_device_is_configured(0))
+    {
+        rt_thread_mdelay(1000);
+    }
     while (1)
     {
-      extern void cdc_acm_data_send_with_dtr_test(uint8_t busid);
+        extern void cdc_acm_data_send_with_dtr_test(uint8_t busid);
         cdc_acm_data_send_with_dtr_test(0);
         rt_thread_mdelay(500);
     }

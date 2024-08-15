@@ -435,7 +435,7 @@ struct cdc_ncm_ndp16 {
     0x05,                                                  /* bLength */                       \
     CDC_CS_INTERFACE,                                      /* bDescriptorType */               \
     CDC_FUNC_DESC_HEADER,                                  /* bDescriptorSubtype */            \
-    WBVAL(CDC_V1_10),                                      /* bcdCDC */                        \
+    WBVAL(CDC_V1_2_0),                                      /* bcdCDC */                        \
     0x05,                                                  /* bLength */                       \
     CDC_CS_INTERFACE,                                      /* bDescriptorType */               \
     CDC_FUNC_DESC_CALL_MANAGEMENT,                         /* bDescriptorSubtype */            \
