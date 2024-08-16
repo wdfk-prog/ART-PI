@@ -125,7 +125,7 @@ static void usbd_event_handler(uint8_t busid, uint8_t event)
         case USBD_EVENT_CONFIGURED:
             ep_tx_busy_flag = false;
             /* setup first out ep read transfer */
-            usbd_ep_start_read(busid, CDC_OUT_EP, read_buffer, 2048);
+            usbd_ep_start_read(busid, CDC_OUT_EP, read_buffer, CDC_MAX_MPS);
             break;
         case USBD_EVENT_SET_REMOTE_WAKEUP:
             break;
@@ -139,18 +139,18 @@ static void usbd_event_handler(uint8_t busid, uint8_t event)
 
 void usbd_cdc_acm_bulk_out(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
-    USB_LOG_RAW("actual out len:%d\r\n", nbytes);
-    // for (int i = 0; i < 100; i++) {
+    // USB_LOG_RAW("actual out len:%d\r\n", nbytes);
+    // for (int i = 0; i < nbytes; i++) {
     //     printf("%02x ", read_buffer[i]);
     // }
     // printf("\r\n");
     /* setup next out ep read transfer */
-    usbd_ep_start_read(busid, CDC_OUT_EP, read_buffer, 2048);
+    usbd_ep_start_read(busid, CDC_OUT_EP, read_buffer, nbytes);
 }
 
 void usbd_cdc_acm_bulk_in(uint8_t busid, uint8_t ep, uint32_t nbytes)
 {
-    USB_LOG_RAW("actual in len:%d\r\n", nbytes);
+    // USB_LOG_RAW("actual in len:%d\r\n", nbytes);
 
     if ((nbytes % usbd_get_ep_mps(busid, ep)) == 0 && nbytes) {
         /* send zlp */
@@ -204,8 +204,25 @@ void cdc_acm_data_send_with_dtr_test(uint8_t busid)
 {
     if (dtr_enable) {
         ep_tx_busy_flag = true;
-        usbd_ep_start_write(busid, CDC_IN_EP, write_buffer, 2048);
-        while (ep_tx_busy_flag) {
-        }
+        usbd_ep_start_write(busid, CDC_IN_EP, write_buffer, CDC_MAX_MPS);
+        while (ep_tx_busy_flag);
     }
 }
+//! 以下设置没有卵用,纯属好看
+// struct cdc_line_coding s_line_coding = 
+// {
+//     .dwDTERate = 2000000,
+//     .bDataBits = 8,
+//     .bParityType = 0,
+//     .bCharFormat = 0,
+// };
+
+// void usbd_cdc_acm_set_line_coding(uint8_t busid, uint8_t intf, struct cdc_line_coding *line_coding)
+// {
+//     memcpy(&s_line_coding, line_coding, sizeof(s_line_coding));
+// }
+
+// void usbd_cdc_acm_get_line_coding(uint8_t busid, uint8_t intf, struct cdc_line_coding *line_coding)
+// {
+//     memcpy(line_coding,  &s_line_coding, sizeof(s_line_coding));
+// }

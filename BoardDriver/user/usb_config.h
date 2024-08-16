@@ -13,11 +13,12 @@
 #include "rtthread.h"
 #define CONFIG_USB_PRINTF(...) rt_kprintf(__VA_ARGS__)
 
-#define usb_malloc(size) rt_malloc(size)
-#define usb_free(ptr)    rt_free(ptr)
+#define usb_malloc(size)        rt_malloc(size)
+#define usb_free(ptr)           rt_free(ptr)
+#define memcpy(dst, src, count) rt_memcpy(dst, src, count)
 
 #ifndef CONFIG_USB_DBG_LEVEL
-#define CONFIG_USB_DBG_LEVEL USB_DBG_INFO
+#define CONFIG_USB_DBG_LEVEL USB_DBG_LOG
 #endif
 
 /* Enable print with color */
@@ -25,7 +26,7 @@
 
 /* data align size when use dma */
 #ifndef CONFIG_USB_ALIGN_SIZE
-#define CONFIG_USB_ALIGN_SIZE 4
+#define CONFIG_USB_ALIGN_SIZE 32
 #endif
 
 /* attribute data into no cache ram */
@@ -39,10 +40,10 @@
 #endif
 
 /* Setup packet log for debug */
-// #define CONFIG_USBDEV_SETUP_LOG_PRINT
+#define CONFIG_USBDEV_SETUP_LOG_PRINT
 
-/* Send ep0 in data from user buffer instead of copying into ep0 reqdata
- * Please note that user buffer must be aligned with CONFIG_USB_ALIGN_SIZE
+/* 
+ * No, for H7 devices DTCM could not be accessed when enabling DMA USB.
 */
 // #define CONFIG_USBDEV_EP0_INDATA_NO_COPY
 

@@ -145,15 +145,15 @@ int main(void)
 #endif // RT_USING_ADC
     extern void cdc_acm_init(uint8_t busid, uint32_t reg_base);
     cdc_acm_init(0, USB2_OTG_FS_PERIPH_BASE);
-    while (!usb_device_is_configured(0))
-    {
-        rt_thread_mdelay(1000);
-    }
+    // while (!usb_device_is_configured(0))
+    // {
+    //     rt_thread_mdelay(1000);
+    // }
     while (1)
     {
         extern void cdc_acm_data_send_with_dtr_test(uint8_t busid);
         cdc_acm_data_send_with_dtr_test(0);
-        rt_thread_mdelay(500);
+        // rt_thread_mdelay(500);
     }
 }
 /* USER CODE END 0 */
