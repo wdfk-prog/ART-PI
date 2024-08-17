@@ -33,9 +33,9 @@
 /* RTC设备名称 */
 #define RTC_NAME       "rtc"
 /* 串口中断优先级设置 */
-#define FINSH_IRQ_PRIORITY 3
+// #define FINSH_IRQ_PRIORITY 3
 /* PVD功能配置 */
-#define PVD_ENABLE 1
+#define PVD_ENABLE 0
 /* Private macro -------------------------------------------------------------*/
 
 /* Private variables ---------------------------------------------------------*/
@@ -133,7 +133,7 @@ int rtc_update_init(void)
 
     return RT_EOK;
 }
-INIT_COMPONENT_EXPORT(rtc_update_init);
+// INIT_COMPONENT_EXPORT(rtc_update_init);
 /*********************************掉电检测******************************************/
 #if (PVD_ENABLE == 1)
 /* 完成量控制块 */

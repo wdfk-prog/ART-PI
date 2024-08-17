@@ -4,6 +4,7 @@
 [Search keil project] 2 item(s)
 	G:\code\ART-PI\project.uvprojx
 	G:\code\ART-PI\template.uvprojx
+[param 1] -NOPATH
 
 [User input] 
 [Current folder] G:\code\ART-PI
@@ -39,20 +40,21 @@ Note: source file 'rt-thread\components\drivers\rtc\rtc.c' - object file renamed
 
 [region info]
 [load region] LR_IROM1
-	[execution region] RW_IRAM1, 0x24000000, 0x00080000, 0x00006588 [memory type] 1 [memory ID] 3
-		[ZI block] addr: 0x240008C0, size: 0x00005CC8 (23752)
+	[execution region] RW_IRAM1, 0x24000000, 0x00070000, 0x00003DE0 [memory type] 1 [memory ID] 3
+		[ZI block] addr: 0x24000480, size: 0x00003960 (14688)
 
-	[execution region] ER_IROM1, 0x90000000, 0x00800000, 0x0006741C [memory type] 3 [memory ID] 1
+	[execution region] USB_NOCACHERAM, 0x24070000, 0x00010000, 0x00001480 [memory type] 1 [memory ID] 3
+
+	[execution region] ER_IROM1, 0x90000000, 0x00800000, 0x00029FF8 [memory type] 3 [memory ID] 1
 
 
 [object name max length] 0
 [object path max length] 0
 
 [object in map file]
-[object name] adc.o     [path] (null)
 [object name] block_dev.o           [path] (null)
 [object name] board.o       [path] (null)
-[object name] bsp_key.o         [path] (null)
+[object name] cdc_acm_template.o                  [path] (null)
 [object name] clock.o       [path] (null)
 [object name] cm_backtrace.o              [path] (null)
 [object name] cmb_port.o          [path] (null)
@@ -64,8 +66,6 @@ Note: source file 'rt-thread\components\drivers\rtc\rtc.c' - object file renamed
 [object name] context_rvds.o              [path] (null)
 [object name] cpu_cache.o           [path] (null)
 [object name] cpu_up.o        [path] (null)
-[object name] cpu_usage.o           [path] (null)
-[object name] cpu_usage_cmd.o               [path] (null)
 [object name] cpuport.o         [path] (null)
 [object name] ctime.o       [path] (null)
 [object name] devfs.o       [path] (null)
@@ -74,20 +74,16 @@ Note: source file 'rt-thread\components\drivers\rtc\rtc.c' - object file renamed
 [object name] dfs_elm.o         [path] (null)
 [object name] dfs_file.o          [path] (null)
 [object name] dfs_fs.o        [path] (null)
-[object name] dfs_lfs.o         [path] (null)
 [object name] dfs_posix.o           [path] (null)
 [object name] dfs_romfs.o           [path] (null)
 [object name] drv_common.o            [path] (null)
 [object name] drv_gpio.o          [path] (null)
-[object name] drv_hard_i2c.o              [path] (null)
 [object name] drv_led.o         [path] (null)
 [object name] drv_mpu.o         [path] (null)
 [object name] drv_rtc.o         [path] (null)
 [object name] drv_sdmmc.o           [path] (null)
-[object name] drv_sdram.o           [path] (null)
 [object name] drv_spi.o         [path] (null)
 [object name] drv_usart_v2.o              [path] (null)
-[object name] drv_usbd.o          [path] (null)
 [object name] drv_wdt.o         [path] (null)
 [object name] fal.o     [path] (null)
 [object name] fal_flash.o           [path] (null)
@@ -96,34 +92,22 @@ Note: source file 'rt-thread\components\drivers\rtc\rtc.c' - object file renamed
 [object name] fal_rtt.o         [path] (null)
 [object name] ff.o    [path] (null)
 [object name] ffunicode.o           [path] (null)
-[object name] file_be.o         [path] (null)
 [object name] filesystem.o            [path] (null)
-[object name] fmc.o     [path] (null)
-[object name] get_irq.o         [path] (null)
 [object name] gpio.o      [path] (null)
 [object name] gpt.o     [path] (null)
-[object name] i2c.o     [path] (null)
-[object name] i2c_core.o          [path] (null)
-[object name] i2c_dev.o         [path] (null)
 [object name] idle.o      [path] (null)
 [object name] ipc.o     [path] (null)
 [object name] irq.o     [path] (null)
 [object name] kservice.o          [path] (null)
 [object name] kstdio.o        [path] (null)
 [object name] kstring.o         [path] (null)
-[object name] lfs.o     [path] (null)
-[object name] lfs_crc.o         [path] (null)
 [object name] main.o      [path] (null)
 [object name] mem.o     [path] (null)
-[object name] memheap.o         [path] (null)
-[object name] mfbd.o      [path] (null)
 [object name] mmc.o     [path] (null)
 [object name] mmcsd_core.o            [path] (null)
 [object name] msh.o     [path] (null)
 [object name] msh_file.o          [path] (null)
 [object name] msh_parse.o           [path] (null)
-[object name] mstorage.o          [path] (null)
-[object name] mtd_nor.o         [path] (null)
 [object name] object.o        [path] (null)
 [object name] pin.o     [path] (null)
 [object name] ringblk_buf.o             [path] (null)
@@ -133,18 +117,15 @@ Note: source file 'rt-thread\components\drivers\rtc\rtc.c' - object file renamed
 [object name] rt_vsnprintf.o              [path] (null)
 [object name] rtc.o     [path] (null)
 [object name] rtc_rtc.o         [path] (null)
-[object name] ry_sy.o       [path] (null)
 [object name] scheduler_comm.o                [path] (null)
 [object name] scheduler_up.o              [path] (null)
 [object name] sd.o    [path] (null)
 [object name] sdio.o      [path] (null)
 [object name] sdmmc.o       [path] (null)
-[object name] sensor_sht3x.o              [path] (null)
 [object name] serial_v2.o           [path] (null)
 [object name] sfud.o      [path] (null)
 [object name] sfud_sfdp.o           [path] (null)
 [object name] shell.o       [path] (null)
-[object name] sht3x.o       [path] (null)
 [object name] spi.o     [path] (null)
 [object name] spi_core.o          [path] (null)
 [object name] spi_dev.o         [path] (null)
@@ -152,83 +133,70 @@ Note: source file 'rt-thread\components\drivers\rtc\rtc.c' - object file renamed
 [object name] spi_flash_sfud.o                [path] (null)
 [object name] startup_stm32h750xx.o                     [path] (null)
 [object name] stm32h7xx_hal.o               [path] (null)
-[object name] stm32h7xx_hal_adc.o                   [path] (null)
-[object name] stm32h7xx_hal_adc_ex.o                      [path] (null)
 [object name] stm32h7xx_hal_cortex.o                      [path] (null)
 [object name] stm32h7xx_hal_dma.o                   [path] (null)
 [object name] stm32h7xx_hal_gpio.o                    [path] (null)
-[object name] stm32h7xx_hal_i2c.o                   [path] (null)
-[object name] stm32h7xx_hal_i2c_ex.o                      [path] (null)
 [object name] stm32h7xx_hal_iwdg.o                    [path] (null)
 [object name] stm32h7xx_hal_msp.o                   [path] (null)
-[object name] stm32h7xx_hal_pcd.o                   [path] (null)
-[object name] stm32h7xx_hal_pcd_ex.o                      [path] (null)
 [object name] stm32h7xx_hal_pwr.o                   [path] (null)
 [object name] stm32h7xx_hal_pwr_ex.o                      [path] (null)
 [object name] stm32h7xx_hal_rcc.o                   [path] (null)
 [object name] stm32h7xx_hal_rcc_ex.o                      [path] (null)
 [object name] stm32h7xx_hal_rtc.o                   [path] (null)
 [object name] stm32h7xx_hal_rtc_ex.o                      [path] (null)
-[object name] stm32h7xx_hal_sdram.o                     [path] (null)
 [object name] stm32h7xx_hal_spi.o                   [path] (null)
 [object name] stm32h7xx_hal_uart.o                    [path] (null)
 [object name] stm32h7xx_hal_uart_ex.o                       [path] (null)
 [object name] stm32h7xx_it.o              [path] (null)
-[object name] stm32h7xx_ll_fmc.o                  [path] (null)
 [object name] stm32h7xx_ll_sdmmc.o                    [path] (null)
-[object name] stm32h7xx_ll_usb.o                  [path] (null)
 [object name] system_stm32h7xx.o                  [path] (null)
-[object name] syswatch.o          [path] (null)
 [object name] thread.o        [path] (null)
 [object name] timer.o       [path] (null)
-[object name] timer_tc.o          [path] (null)
 [object name] ulog.o      [path] (null)
-[object name] ulog_file_be.o              [path] (null)
 [object name] usart.o       [path] (null)
-[object name] usb_otg.o         [path] (null)
-[object name] usbdevice.o           [path] (null)
-[object name] usbdevice_core.o                [path] (null)
-[object name] user_adc.o          [path] (null)
+[object name] usb_dc_dwc2.o             [path] (null)
+[object name] usb_glue_st.o             [path] (null)
+[object name] usbd_cdc.o          [path] (null)
+[object name] usbd_core.o           [path] (null)
 [object name] user_led.o          [path] (null)
-[object name] user_uart1.o            [path] (null)
-[object name] utest.o       [path] (null)
 [object name] watchdog.o          [path] (null)
-[object name] ymodem.o        [path] (null)
 
 [file path in keil project]
 
 [record region info]
 [load region] LR_IROM1
-	[execution region] RW_IRAM1, 0x24000000, 0x00080000, 0x00006588 [type] 1 [ID] 3
-	[execution region] ER_IROM1, 0x90000000, 0x00800000, 0x0006741C [type] 3 [ID] 1
--------------------------------------------------------------------
-   FILE(s)  |         RAM (byte)       |       FLASH (byte)       |
--------------------------------------------------------------------
--------------------------------------------------------------------
+	[execution region] RW_IRAM1, 0x24000000, 0x00070000, 0x00003DE0 [type] 1 [ID] 3
+	[execution region] USB_NOCACHERAM, 0x24070000, 0x00010000, 0x00001480 [type] 1 [ID] 3
+	[execution region] ER_IROM1, 0x90000000, 0x00800000, 0x00029B20 [type] 3 [ID] 1
+----------------------------------------------------------------
+ FILE(s) |         RAM (byte)       |       FLASH (byte)       |
+----------------------------------------------------------------
+----------------------------------------------------------------
 [memory print mode]: 0
 LR_IROM1
-        RAM 1             [0x20000000 | 0x00020000 (131072)]
+        RAM 1                   [0x20000000 | 0x00020000 (131072)]
                 NULL
  
-        RAM 2             [0x24000000 | 0x00080000 (524288)]
-                [zi start] 1   [zi end] 2
-                RW_IRAM1  [0x24000000]|¡ö¡õ________________________________________________| (  25.3 KB / 512.0 KB )   5.0%  
+        RAM 2                   [0x24000000 | 0x00080000 (524288)]
+                [zi start] 1   [zi end] 1
+                RW_IRAM1        [0x24000000]|¡ö_________________________________________________| (  15.4 KB / 448.0 KB )   3.5%  
+                USB_NOCACHERAM  [0x24070000]|¡ö¡ö¡ö¡ö______________________________________________| (   5.1 KB /  64.0 KB )   8.0%  
  
-        RAM 3             [0x30000000 | 0x00048000 (294912)]
+        RAM 3                   [0x30000000 | 0x00048000 (294912)]
                 NULL
  
-        RAM 4             [0x38000000 | 0x00010000 (65536)]
+        RAM 4                   [0x38000000 | 0x00010000 (65536)]
                 NULL
  
-        FLASH 1           [0x08000000 | 0x00020000 (131072)]
+        FLASH 1                 [0x08000000 | 0x00020000 (131072)]
                 NULL
  
         UNKNOWN
-                ER_IROM1  [0x90000000]|¡ö¡ö________________________________________________| ( 413.0 KB /   8.0 MB )   5.0%  
+                ER_IROM1        [0x90000000]|¡ö_________________________________________________| ( 167.9 KB /   8.0 MB )   2.1%  [+1240]
  
 [htm file path] G:\code\ART-PI\build\rt-thread.htm
-Maximum Stack Usage =       3504 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)
+Maximum Stack Usage =       2376 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)
  
 =============================================================================================================================
 
-run time: 1.282 s
+run time: 0.627 s

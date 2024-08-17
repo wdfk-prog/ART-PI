@@ -40,8 +40,10 @@ RTE/
 settings/
 *.uvguix*
 !cconfig.h
+keil-build-viewer-record.txt
 
 *.exob
 *.emtp.bak1
 *.emtp.bak2
 *.emtp.bak3
+*.log

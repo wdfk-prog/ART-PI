@@ -464,7 +464,7 @@
 #define BSP_USING_SPI_FLASH
 #define BSP_USING_FS
 #define BSP_USING_SDCARD_FS
-#define BSP_USING_SPI_FLASH_FS
+// #define BSP_USING_SPI_FLASH_FS
 /* end of Onboard Peripheral */
 
 /* On-chip Peripheral */

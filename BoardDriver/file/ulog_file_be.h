@@ -6,7 +6,7 @@
  * @date 2022-11-17
  * @copyright Copyright (c) 2022
  * @attention 
- * @par ÐÞ¸ÄÈÕÖ¾:
+ * @par ï¿½Þ¸ï¿½ï¿½ï¿½Ö¾:
  * Date       Version Author  Description
  * 2022-11-17 1.0     HLY     first version
  */
@@ -24,7 +24,7 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 #define MOTION_TAG  "MOVE"
 /* Exported macro ------------------------------------------------------------*/
-#define OUT_FILE_ENABLE 1 //Ê¹ÄÜÎÄ¼þºó¶ËÊä³ö
+#define OUT_FILE_ENABLE 0 //Ê¹ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 #define LOG_MV(...)  ulog_i(MOTION_TAG, __VA_ARGS__)
 /* Exported variables ---------------------------------------------------------*/

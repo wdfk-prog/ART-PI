@@ -202,7 +202,7 @@ int ulog_console_backend_filter_init(void)
     ulog_backend_set_filter(console,ulog_console_backend_filter);
     return 0;
 }
-INIT_DEVICE_EXPORT(ulog_console_backend_filter_init);
+// INIT_DEVICE_EXPORT(ulog_console_backend_filter_init);
 
 rt_inline void object_split(int len)
 {
@@ -363,5 +363,5 @@ static void cmd_log_file_backend(uint8_t argc, char **argv)
         }
     }
 }
-MSH_CMD_EXPORT_ALIAS(cmd_log_file_backend,ulog_be_cmd,ulog file cmd);
+// MSH_CMD_EXPORT_ALIAS(cmd_log_file_backend,ulog_be_cmd,ulog file cmd);
 #endif /*RT_USING_MSH*/

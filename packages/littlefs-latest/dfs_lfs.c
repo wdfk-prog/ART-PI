@@ -984,4 +984,4 @@ int dfs_lfs_init(void)
     /* register ram file system */
     return dfs_register(&_dfs_lfs_ops);
 }
-INIT_COMPONENT_EXPORT(dfs_lfs_init);
+// INIT_COMPONENT_EXPORT(dfs_lfs_init);
