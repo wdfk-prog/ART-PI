@@ -18,7 +18,7 @@
 #define memcpy(dst, src, count) rt_memcpy(dst, src, count)
 
 #ifndef CONFIG_USB_DBG_LEVEL
-#define CONFIG_USB_DBG_LEVEL USB_DBG_LOG
+#define CONFIG_USB_DBG_LEVEL USB_DBG_INFO
 #endif
 
 /* Enable print with color */
@@ -40,7 +40,7 @@
 #endif
 
 /* Setup packet log for debug */
-#define CONFIG_USBDEV_SETUP_LOG_PRINT
+// #define CONFIG_USBDEV_SETUP_LOG_PRINT
 
 /* 
  * No, for H7 devices DTCM could not be accessed when enabling DMA USB.
