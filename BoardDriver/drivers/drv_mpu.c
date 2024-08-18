@@ -49,7 +49,7 @@
     *
   * @param  Address             MPU保护区域基地址，特别注意配置的Address需要被Size整除
   * @param  Size                MPU保护区域大小,可以取值（MPU_1KB，MPU_4KB ...MPU_512MB）
-    * @param  IsShareable       保护的存储空间是否可以共享，1=允许共享，0=禁止共享。
+  * @param  IsShareable       保护的存储空间是否可以共享，1=允许共享，0=禁止共享。
   * @param  IsCacheable         保护的存储空间是否可以缓存，1=允许缓存，0=禁止缓存。
   * @param  IsBufferable        使能Cache之后，策略是write-through还是write-back(bufferable)
     *                           1=允许缓冲，即回写（write-back），0=禁止缓冲，即直写（write-through）。
@@ -65,7 +65,7 @@ static void BSP_MPU_ConfigRegion(uint8_t    Number,
     MPU_Region_InitTypeDef MPU_InitStruct;
 
     /* 禁用MPU */
-    // HAL_MPU_Disable();
+    HAL_MPU_Disable();
 
     /* 配置MPU属性*/
     MPU_InitStruct.Enable = MPU_REGION_ENABLE;
@@ -82,9 +82,7 @@ static void BSP_MPU_ConfigRegion(uint8_t    Number,
 
     HAL_MPU_ConfigRegion(&MPU_InitStruct);
     /* 启用MPU */
-    // HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT); //表示禁止了背景区，访问任何未使能 MPU 的区域均会造成内存异常 MemFault
-
-
+    HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT); //表示禁止了背景区，访问任何未使能 MPU 的区域均会造成内存异常 MemFault
 }
 
 void cpu_mpu_config(uint8_t Region, uint8_t Mode, uint32_t Address, uint32_t Size)
@@ -119,96 +117,17 @@ void cpu_mpu_config(uint8_t Region, uint8_t Mode, uint32_t Address, uint32_t Siz
 
 int mpu_init(void)
 {
-    MPU_Region_InitTypeDef MPU_InitStruct;
-
-    /* Disable the MPU */
-    HAL_MPU_Disable();
-
-    /* Configure the MPU attributes as WT for AXI SRAM */
-    MPU_InitStruct.Enable            = MPU_REGION_ENABLE;
-    MPU_InitStruct.Number            = MPU_REGION_NUMBER0;
-    MPU_InitStruct.BaseAddress       = 0x24000000;
-    MPU_InitStruct.Size              = MPU_REGION_SIZE_512KB;
-    MPU_InitStruct.SubRegionDisable  = 0X00;
-    MPU_InitStruct.TypeExtField      = MPU_TEX_LEVEL0;
-    MPU_InitStruct.AccessPermission  = MPU_REGION_FULL_ACCESS;
-    MPU_InitStruct.DisableExec       = MPU_INSTRUCTION_ACCESS_ENABLE;
-    MPU_InitStruct.IsShareable       = MPU_ACCESS_NOT_SHAREABLE;
-    MPU_InitStruct.IsCacheable       = MPU_ACCESS_CACHEABLE;
-    MPU_InitStruct.IsBufferable      = MPU_ACCESS_NOT_BUFFERABLE;
-
-    HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
+    cpu_mpu_config(MPU_REGION_NUMBER0, MPU_Normal_WT,       0x24000000, MPU_REGION_SIZE_512KB);
 #ifdef BSP_USING_SDRAM
-    /* Configure the MPU attributes as WT for SDRAM */
-    MPU_InitStruct.Enable            = MPU_REGION_ENABLE;
-    MPU_InitStruct.Number            = MPU_REGION_NUMBER1;
-    MPU_InitStruct.BaseAddress       = 0xC0000000;
-    MPU_InitStruct.Size              = MPU_REGION_SIZE_32MB;
-    MPU_InitStruct.SubRegionDisable  = 0x00;
-    MPU_InitStruct.TypeExtField      = MPU_TEX_LEVEL0;
-    MPU_InitStruct.AccessPermission  = MPU_REGION_FULL_ACCESS;
-    MPU_InitStruct.DisableExec       = MPU_INSTRUCTION_ACCESS_ENABLE;
-    MPU_InitStruct.IsShareable       = MPU_ACCESS_NOT_SHAREABLE;
-    MPU_InitStruct.IsCacheable       = MPU_ACCESS_CACHEABLE;
-    MPU_InitStruct.IsBufferable      = MPU_ACCESS_NOT_BUFFERABLE;
-
-    HAL_MPU_ConfigRegion(&MPU_InitStruct);
+    cpu_mpu_config(MPU_REGION_NUMBER1, MPU_Normal_WT,       0xC0000000, MPU_REGION_SIZE_32MB);
 #endif
 
 #ifdef BSP_USING_ETH
-    /* Configure the MPU attributes as Device not cacheable 
-       for ETH DMA descriptors */
-    MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-    MPU_InitStruct.Number = MPU_REGION_NUMBER2;
-    MPU_InitStruct.BaseAddress = 0x30040000;
-    MPU_InitStruct.Size = MPU_REGION_SIZE_256B;
-    MPU_InitStruct.SubRegionDisable = 0x00;
-    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-    MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-    MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-    MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-    MPU_InitStruct.IsCacheable = MPU_ACCESS_NOT_CACHEABLE;
-    MPU_InitStruct.IsBufferable = MPU_ACCESS_BUFFERABLE;
-
-    HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-    /* Configure the MPU attributes as Cacheable write through 
-       for LwIP RAM heap which contains the Tx buffers */
-    MPU_InitStruct.Enable = MPU_REGION_ENABLE;
-    MPU_InitStruct.Number = MPU_REGION_NUMBER3;
-    MPU_InitStruct.BaseAddress = 0x30044000;
-    MPU_InitStruct.Size = MPU_REGION_SIZE_16KB;
-    MPU_InitStruct.SubRegionDisable = 0x00;
-    MPU_InitStruct.TypeExtField = MPU_TEX_LEVEL0;
-    MPU_InitStruct.AccessPermission = MPU_REGION_FULL_ACCESS;
-    MPU_InitStruct.DisableExec = MPU_INSTRUCTION_ACCESS_ENABLE;
-    MPU_InitStruct.IsShareable = MPU_ACCESS_NOT_SHAREABLE;
-    MPU_InitStruct.IsCacheable = MPU_ACCESS_CACHEABLE;
-    MPU_InitStruct.IsBufferable = MPU_ACCESS_NOT_BUFFERABLE;
-    HAL_MPU_ConfigRegion(&MPU_InitStruct);
+    cpu_mpu_config(MPU_REGION_NUMBER2, MPU_Normal_WT,       0x30040000, MPU_REGION_SIZE_256B);
+    cpu_mpu_config(MPU_REGION_NUMBER3, MPU_Normal_WT,       0x30044000, MPU_REGION_SIZE_16KB);
 #endif
-
-    /* Configure the MPU attributes as WT for QSPI */
-    MPU_InitStruct.Enable            = MPU_REGION_ENABLE;
-    MPU_InitStruct.Number            = MPU_REGION_NUMBER4;
-    MPU_InitStruct.BaseAddress       = 0x90000000;
-    MPU_InitStruct.Size              = MPU_REGION_SIZE_8MB;
-    MPU_InitStruct.SubRegionDisable  = 0X00;
-    MPU_InitStruct.TypeExtField      = MPU_TEX_LEVEL0;
-    MPU_InitStruct.AccessPermission  = MPU_REGION_FULL_ACCESS;
-    MPU_InitStruct.DisableExec       = MPU_INSTRUCTION_ACCESS_ENABLE;
-    MPU_InitStruct.IsShareable       = MPU_ACCESS_NOT_SHAREABLE;
-    MPU_InitStruct.IsCacheable       = MPU_ACCESS_CACHEABLE;
-    MPU_InitStruct.IsBufferable      = MPU_ACCESS_NOT_BUFFERABLE;
-
-    HAL_MPU_ConfigRegion(&MPU_InitStruct);
-
-    cpu_mpu_config(0, MPU_Normal_NonCache, 0x24070000, MPU_REGION_SIZE_64KB);
-
-    /* Enable the MPU */
-    HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
-
+    cpu_mpu_config(MPU_REGION_NUMBER4, MPU_Normal_WT,       0x90000000, MPU_REGION_SIZE_8MB);
+    cpu_mpu_config(MPU_REGION_NUMBER5, MPU_Normal_NonCache, 0x24070000, MPU_REGION_SIZE_64KB);
     return RT_EOK;
 }
 INIT_BOARD_EXPORT(mpu_init);
