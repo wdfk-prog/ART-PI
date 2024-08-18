@@ -182,18 +182,6 @@ struct usbd_interface intf0;
 struct usbd_interface intf1;
 struct usbd_interface intf2;
 
-void cdc_acm_msc_init(uint8_t busid, uint32_t reg_base)
-{
-    usbd_desc_register(busid, cdc_msc_descriptor);
-    usbd_add_interface(busid, usbd_cdc_acm_init_intf(busid, &intf0));
-    usbd_add_interface(busid, usbd_cdc_acm_init_intf(busid, &intf1));
-    usbd_add_endpoint(busid, &cdc_out_ep);
-    usbd_add_endpoint(busid, &cdc_in_ep);
-    usbd_add_interface(busid, usbd_msc_init_intf(busid, &intf2, MSC_OUT_EP, MSC_IN_EP));
-
-    usbd_initialize(busid, reg_base, usbd_event_handler);
-}
-
 volatile uint8_t dtr_enable = 0;
 
 void usbd_cdc_acm_set_dtr(uint8_t busid, uint8_t intf, bool dtr)
@@ -215,31 +203,66 @@ void cdc_acm_data_send_with_dtr_test(uint8_t busid)
     }
 }
 
-#define BLOCK_SIZE  512
-#define BLOCK_COUNT 10
-
-typedef struct
-{
-    uint8_t BlockSpace[BLOCK_SIZE];
-} BLOCK_TYPE;
-
-BLOCK_TYPE mass_block[BLOCK_COUNT];
+/* assume the block device is 32G */
+#define BLOCK_DEV_NAME      "sd0"
+#define BLOCK_SIZE          512U
+#define BLOCK_COUNT         64 * 0x1024U * 0x1024U
+static rt_device_t blk_dev = RT_NULL;
 
 void usbd_msc_get_cap(uint8_t busid, uint8_t lun, uint32_t *block_num, uint32_t *block_size)
 {
-    *block_num = 1000; //Pretend having so many buffer,not has actually.
+    *block_num = BLOCK_COUNT;
     *block_size = BLOCK_SIZE;
 }
+
+static uint32_t w_cnt,r_cnt;
+
 int usbd_msc_sector_read(uint8_t busid, uint8_t lun, uint32_t sector, uint8_t *buffer, uint32_t length)
 {
-    if (sector < 10)
-        memcpy(buffer, mass_block[sector].BlockSpace, length);
+    if(rt_device_read(blk_dev, sector, buffer, length / BLOCK_SIZE) != length / BLOCK_SIZE)
+    {
+        rt_kprintf("read failed,sector %d, length %d\r\n",sector, length);
+        return -1;
+    }
+    if(r_cnt++ % 1000 == 0)
+    {
+        rt_kprintf("read\r\n");
+    }
     return 0;
 }
 
 int usbd_msc_sector_write(uint8_t busid, uint8_t lun, uint32_t sector, uint8_t *buffer, uint32_t length)
 {
-    if (sector < 10)
-        memcpy(mass_block[sector].BlockSpace, buffer, length);
+    if(rt_device_write(blk_dev, sector, buffer, length / BLOCK_SIZE) != length / BLOCK_SIZE)
+    {
+        rt_kprintf("write failed,sector %d, length %d\r\n",sector, length);
+    }
+    if(w_cnt++ % 1000 == 0)
+    {
+        rt_kprintf("write\r\n");
+    }
     return 0;
+}
+
+void cdc_acm_msc_init(uint8_t busid, uint32_t reg_base)
+{
+    blk_dev = rt_device_find(BLOCK_DEV_NAME);
+    if(blk_dev == RT_NULL)
+    {
+        rt_kprintf("%s No Find\r\n", BLOCK_DEV_NAME);
+    }
+
+    if(rt_device_open(blk_dev, RT_DEVICE_OFLAG_RDWR) != RT_EOK)
+    {
+        rt_kprintf("%s open failed\r\n", BLOCK_DEV_NAME);
+    }
+
+    usbd_desc_register(busid, cdc_msc_descriptor);
+    usbd_add_interface(busid, usbd_cdc_acm_init_intf(busid, &intf0));
+    usbd_add_interface(busid, usbd_cdc_acm_init_intf(busid, &intf1));
+    usbd_add_endpoint(busid, &cdc_out_ep);
+    usbd_add_endpoint(busid, &cdc_in_ep);
+    usbd_add_interface(busid, usbd_msc_init_intf(busid, &intf2, MSC_OUT_EP, MSC_IN_EP));
+
+    usbd_initialize(busid, reg_base, usbd_event_handler);
 }
