@@ -143,8 +143,8 @@ int main(void)
 #if defined(RT_USING_ADC) || defined(BSP_USING_ADC)
     vref_temp_get();
 #endif // RT_USING_ADC
-    extern void cdc_acm_init(uint8_t busid, uint32_t reg_base);
-    cdc_acm_init(0, USB2_OTG_FS_PERIPH_BASE);
+    extern void cdc_acm_msc_init(uint8_t busid, uint32_t reg_base);
+    cdc_acm_msc_init(0, USB2_OTG_FS_PERIPH_BASE);
     while (!usb_device_is_configured(0))
     {
         rt_thread_mdelay(1000);

@@ -220,7 +220,6 @@ int mount_init(void)
 
     if (flash_dev)
     {
-        mount filesystem
         if (dfs_mount(flash_dev->parent.name, "/flash", "lfs", 0, 0) != 0)
         {
             // LOG_W("mount to '/flash' failed! try to mkfs %s", flash_dev->parent.name);

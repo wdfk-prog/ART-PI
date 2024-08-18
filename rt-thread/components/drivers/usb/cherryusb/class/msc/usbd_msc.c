@@ -101,7 +101,7 @@ void msc_storage_notify_handler(uint8_t busid, uint8_t event, void *arg)
             if (g_usbd_msc[busid].usbd_msc_mq == NULL) {
                 USB_LOG_ERR("No memory to alloc for g_usbd_msc[busid].usbd_msc_mq\r\n");
             }
-            g_usbd_msc[busid].usbd_msc_thread = usb_osal_thread_create("usbd_msc", CONFIG_USBDEV_MSC_STACKSIZE, CONFIG_USBDEV_MSC_PRIO, usbdev_msc_thread, (void *)busid);
+            g_usbd_msc[busid].usbd_msc_thread = usb_osal_thread_create("usbd_msc", CONFIG_USBDEV_MSC_STACKSIZE, CONFIG_USBDEV_MSC_PRIO, usbdev_msc_thread, (void *)&busid);
             if (g_usbd_msc[busid].usbd_msc_thread == NULL) {
                 USB_LOG_ERR("No memory to alloc for g_usbd_msc[busid].usbd_msc_thread\r\n");
             }
@@ -875,7 +875,7 @@ static void usbdev_msc_thread(void *argument)
 {
     uintptr_t event;
     int ret;
-    uint8_t busid = (uint8_t)argument;
+    uint8_t busid = *(uint8_t*)argument;
 
     while (1) {
         ret = usb_osal_mq_recv(g_usbd_msc[busid].usbd_msc_mq, (uintptr_t *)&event, USB_OSAL_WAITING_FOREVER);

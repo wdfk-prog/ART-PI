@@ -148,7 +148,8 @@
 #define RT_CHERRYUSB_DEVICE_SPEED_AUTO
 #define RT_CHERRYUSB_DEVICE_DWC2_ST
 #define RT_CHERRYUSB_DEVICE_CDC_ACM
-#define RT_CHERRYUSB_DEVICE_TEMPLATE_CDC_ACM
+#define RT_CHERRYUSB_DEVICE_MSC
+#define RT_CHERRYUSB_DEVICE_TEMPLATE_CDC_ACM_MSC
 /* end of Device Drivers */
 
 /* C/C++ and POSIX layer */
@@ -461,10 +462,8 @@
 /* Onboard Peripheral */
 
 #define BSP_USING_USB_TO_USART
-#define BSP_USING_SPI_FLASH
 #define BSP_USING_FS
 #define BSP_USING_SDCARD_FS
-// #define BSP_USING_SPI_FLASH_FS
 /* end of Onboard Peripheral */
 
 /* On-chip Peripheral */
