@@ -43,6 +43,7 @@
 #include "mdma.h"
 #include "shell.h"
 #include "usbd_core.h"
+#include "usbd_msc.h"
 /*ulog include*/
 #define LOG_TAG              "main" 
 #define LOG_LVL              DBG_INFO
@@ -143,8 +144,8 @@ int main(void)
 #if defined(RT_USING_ADC) || defined(BSP_USING_ADC)
     vref_temp_get();
 #endif // RT_USING_ADC
-    extern void cdc_acm_msc_init(uint8_t busid, uint32_t reg_base);
-    cdc_acm_msc_init(0, USB2_OTG_FS_PERIPH_BASE);
+    extern void cdc_acm_msc_init(uint8_t busid, uint32_t reg_basem, bool flag);
+    cdc_acm_msc_init(0, USB2_OTG_FS_PERIPH_BASE, 0);
     while (!usb_device_is_configured(0))
     {
         rt_thread_mdelay(1000);
@@ -154,6 +155,17 @@ int main(void)
         extern void cdc_acm_data_send_with_dtr_test(uint8_t busid);
         cdc_acm_data_send_with_dtr_test(0);
         rt_thread_mdelay(500);
+
+        if(usbd_msc_get_popup(0) == true)
+        {
+            // usbd_deinitialize(0);
+            cdc_acm_msc_init(0, USB2_OTG_FS_PERIPH_BASE, 1);
+            while (!usb_device_is_configured(0))
+            {
+                rt_thread_mdelay(1000);
+            }
+            usbd_msc_set_popup(0, false);
+        }
     }
 }
 /* USER CODE END 0 */

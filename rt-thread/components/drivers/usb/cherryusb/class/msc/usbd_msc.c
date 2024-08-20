@@ -371,6 +371,7 @@ static bool SCSI_preventAllowMediaRemoval(uint8_t busid, uint8_t **data, uint32_
     }
     if (g_usbd_msc[busid].cbw.CB[4] == 0U) {
         //SCSI_MEDIUM_UNLOCKED;
+        msc_storage_notify_handler(busid, USBD_EVENT_DEINIT, NULL);
     } else {
         //SCSI_MEDIUM_LOCKED;
     }
@@ -932,7 +933,12 @@ void usbd_msc_set_readonly(uint8_t busid, bool readonly)
     g_usbd_msc[busid].readonly = readonly;
 }
 
-bool usbd_msc_set_popup(uint8_t busid)
+bool usbd_msc_get_popup(uint8_t busid)
 {
     return g_usbd_msc[busid].popup;
+}
+
+void usbd_msc_set_popup(uint8_t busid, bool popup)
+{
+    g_usbd_msc[busid].popup = popup;
 }

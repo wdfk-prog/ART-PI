@@ -115,6 +115,85 @@ static const uint8_t cdc_msc_descriptor[] = {
     0x00
 };
 
+/*!< global descriptor */
+static const uint8_t cdc_descriptor[] = {
+    USB_DEVICE_DESCRIPTOR_INIT(USB_2_0, 0xEF, 0x02, 0x01, USBD_VID, USBD_PID, 0x0100, 0x01),
+    USB_CONFIG_DESCRIPTOR_INIT((9 + CDC_ACM_DESCRIPTOR_LEN), 0x02, 0x01, USB_CONFIG_BUS_POWERED, USBD_MAX_POWER),
+    CDC_ACM_DESCRIPTOR_INIT(0x00, CDC_INT_EP, CDC_OUT_EP, CDC_IN_EP, CDC_MAX_MPS, 0x02),
+    ///////////////////////////////////////
+    /// string0 descriptor
+    ///////////////////////////////////////
+    USB_LANGID_INIT(USBD_LANGID_STRING),
+    ///////////////////////////////////////
+    /// string1 descriptor
+    ///////////////////////////////////////
+    0x14,                       /* bLength */
+    USB_DESCRIPTOR_TYPE_STRING, /* bDescriptorType */
+    'C', 0x00,                  /* wcChar0 */
+    'h', 0x00,                  /* wcChar1 */
+    'e', 0x00,                  /* wcChar2 */
+    'r', 0x00,                  /* wcChar3 */
+    'r', 0x00,                  /* wcChar4 */
+    'y', 0x00,                  /* wcChar5 */
+    'U', 0x00,                  /* wcChar6 */
+    'S', 0x00,                  /* wcChar7 */
+    'B', 0x00,                  /* wcChar8 */
+    ///////////////////////////////////////
+    /// string2 descriptor
+    ///////////////////////////////////////
+    0x26,                       /* bLength */
+    USB_DESCRIPTOR_TYPE_STRING, /* bDescriptorType */
+    'C', 0x00,                  /* wcChar0 */
+    'h', 0x00,                  /* wcChar1 */
+    'e', 0x00,                  /* wcChar2 */
+    'r', 0x00,                  /* wcChar3 */
+    'r', 0x00,                  /* wcChar4 */
+    'y', 0x00,                  /* wcChar5 */
+    'U', 0x00,                  /* wcChar6 */
+    'S', 0x00,                  /* wcChar7 */
+    'B', 0x00,                  /* wcChar8 */
+    ' ', 0x00,                  /* wcChar9 */
+    'C', 0x00,                  /* wcChar10 */
+    'D', 0x00,                  /* wcChar11 */
+    'C', 0x00,                  /* wcChar12 */
+    ' ', 0x00,                  /* wcChar13 */
+    'D', 0x00,                  /* wcChar14 */
+    'E', 0x00,                  /* wcChar15 */
+    'M', 0x00,                  /* wcChar16 */
+    'O', 0x00,                  /* wcChar17 */
+    ///////////////////////////////////////
+    /// string3 descriptor
+    ///////////////////////////////////////
+    0x16,                       /* bLength */
+    USB_DESCRIPTOR_TYPE_STRING, /* bDescriptorType */
+    '2', 0x00,                  /* wcChar0 */
+    '0', 0x00,                  /* wcChar1 */
+    '2', 0x00,                  /* wcChar2 */
+    '2', 0x00,                  /* wcChar3 */
+    '1', 0x00,                  /* wcChar4 */
+    '2', 0x00,                  /* wcChar5 */
+    '3', 0x00,                  /* wcChar6 */
+    '4', 0x00,                  /* wcChar7 */
+    '5', 0x00,                  /* wcChar8 */
+    '6', 0x00,                  /* wcChar9 */
+#ifdef CONFIG_USB_HS
+    ///////////////////////////////////////
+    /// device qualifier descriptor
+    ///////////////////////////////////////
+    0x0a,
+    USB_DESCRIPTOR_TYPE_DEVICE_QUALIFIER,
+    0x00,
+    0x02,
+    0x02,
+    0x02,
+    0x01,
+    0x40,
+    0x01,
+    0x00,
+#endif
+    0x00
+};
+
 USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t read_buffer[CDC_MAX_MPS]; /* 2048 is only for test speed , please use CDC_MAX_MPS for common*/
 USB_NOCACHE_RAM_SECTION USB_MEM_ALIGNX uint8_t write_buffer[CDC_MAX_MPS];
 
@@ -244,7 +323,21 @@ int usbd_msc_sector_write(uint8_t busid, uint8_t lun, uint32_t sector, uint8_t *
     return 0;
 }
 
-void cdc_acm_msc_init(uint8_t busid, uint32_t reg_base)
+void cdc_acm_init(uint8_t busid, uint32_t reg_base)
+{
+    const uint8_t data[10] = { 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x30 };
+
+    memcpy(&write_buffer[0], data, 10);
+
+    usbd_desc_register(busid, cdc_descriptor);
+    usbd_add_interface(busid, usbd_cdc_acm_init_intf(busid, &intf0));
+    usbd_add_interface(busid, usbd_cdc_acm_init_intf(busid, &intf1));
+    usbd_add_endpoint(busid, &cdc_out_ep);
+    usbd_add_endpoint(busid, &cdc_in_ep);
+    usbd_initialize(busid, reg_base, usbd_event_handler);
+}
+
+void cdc_acm_msc_init(uint8_t busid, uint32_t reg_base, bool flag)
 {
     blk_dev = rt_device_find(BLOCK_DEV_NAME);
     if(blk_dev == RT_NULL)
@@ -262,7 +355,10 @@ void cdc_acm_msc_init(uint8_t busid, uint32_t reg_base)
     usbd_add_interface(busid, usbd_cdc_acm_init_intf(busid, &intf1));
     usbd_add_endpoint(busid, &cdc_out_ep);
     usbd_add_endpoint(busid, &cdc_in_ep);
-    usbd_add_interface(busid, usbd_msc_init_intf(busid, &intf2, MSC_OUT_EP, MSC_IN_EP));
+    if(!flag)
+        usbd_add_interface(busid, usbd_msc_init_intf(busid, &intf2, MSC_OUT_EP, MSC_IN_EP));
+    else
+        usbd_add_interface(busid, usbd_msc_init_intf(busid, &intf2, MSC_OUT_EP, MSC_IN_EP));
 
     usbd_initialize(busid, reg_base, usbd_event_handler);
 }
