@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2006-2023, RT-Thread Development Team
- *
- * SPDX-License-Identifier: Apache-2.0
- *
- * Change Logs:
- * Date           Author       Notes
- * 2019-01-08     zylx         first version
- */
+* Copyright (c) 2006-2023, RT-Thread Development Team
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Change Logs:
+* Date           Author       Notes
+* 2019-01-08     zylx         first version
+*/
 
 #include <board.h>
 
@@ -201,9 +201,9 @@ rt_err_t stm32_lcd_init(struct drv_lcd_device *lcd)
 
     /* Configure blending factors */
     /* Constant Alpha value:  pLayerCfg.Alpha / 255
-       C: Current Layer Color
-       Cs: Background color
-       BC = Constant Alpha x C + (1 - Constant Alpha ) x Cs */
+    C: Current Layer Color
+    Cs: Background color
+    BC = Constant Alpha x C + (1 - Constant Alpha ) x Cs */
     /* BlendingFactor1: Pixel Alpha x Constant Alpha */
     pLayerCfg.BlendingFactor1 = LTDC_BLENDING_FACTOR1_CA;
     /* BlendingFactor2: 1 - (Pixel Alpha x Constant Alpha) */
