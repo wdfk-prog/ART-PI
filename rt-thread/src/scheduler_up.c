@@ -47,7 +47,7 @@ rt_uint8_t rt_thread_ready_table[32];
 #endif /* RT_THREAD_PRIORITY_MAX > 32 */
 
 extern volatile rt_uint8_t rt_interrupt_nest;
-static rt_int16_t rt_scheduler_lock_nest;
+rt_int16_t rt_scheduler_lock_nest;
 rt_uint8_t rt_current_priority;
 
 #if defined(RT_USING_HOOK) && defined(RT_HOOK_USING_FUNC_PTR)

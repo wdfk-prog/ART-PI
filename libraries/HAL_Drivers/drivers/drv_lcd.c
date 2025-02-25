@@ -1,12 +1,12 @@
 /*
- * Copyright (c) 2006-2023, RT-Thread Development Team
- *
- * SPDX-License-Identifier: Apache-2.0
- *
- * Change Logs:
- * Date           Author       Notes
- * 2019-01-08     zylx         first version
- */
+* Copyright (c) 2006-2023, RT-Thread Development Team
+*
+* SPDX-License-Identifier: Apache-2.0
+*
+* Change Logs:
+* Date           Author       Notes
+* 2019-01-08     zylx         first version
+*/
 
 #include <board.h>
 
@@ -201,9 +201,9 @@ rt_err_t stm32_lcd_init(struct drv_lcd_device *lcd)
 
     /* Configure blending factors */
     /* Constant Alpha value:  pLayerCfg.Alpha / 255
-       C: Current Layer Color
-       Cs: Background color
-       BC = Constant Alpha x C + (1 - Constant Alpha ) x Cs */
+    C: Current Layer Color
+    Cs: Background color
+    BC = Constant Alpha x C + (1 - Constant Alpha ) x Cs */
     /* BlendingFactor1: Pixel Alpha x Constant Alpha */
     pLayerCfg.BlendingFactor1 = LTDC_BLENDING_FACTOR1_CA;
     /* BlendingFactor2: 1 - (Pixel Alpha x Constant Alpha) */
@@ -363,11 +363,9 @@ INIT_DEVICE_EXPORT(drv_lcd_hw_init);
 #ifndef ART_PI_TouchGFX_LIB
 #ifdef DRV_DEBUG
 #ifdef FINSH_USING_MSH
-int lcd_test()
+static void lcd_thread(void *arg)
 {
-    struct drv_lcd_device *lcd;
-    lcd = (struct drv_lcd_device *)rt_device_find("lcd");
-
+    struct drv_lcd_device *lcd = (struct drv_lcd_device *)arg;
     while (1)
     {
         if (lcd->lcd_info.pixel_format == RTGRAPHIC_PIXEL_FORMAT_RGB565)
@@ -378,7 +376,7 @@ int lcd_test()
                 lcd->lcd_info.framebuffer[2 * i] = 0x00;
                 lcd->lcd_info.framebuffer[2 * i + 1] = 0xF8;
             }
-            lcd->parent.control(&lcd->parent, RTGRAPHIC_CTRL_RECT_UPDATE, RT_NULL);
+            rt_device_control(&lcd->parent, RTGRAPHIC_CTRL_RECT_UPDATE, RT_NULL);
             rt_thread_mdelay(1000);
             /* green */
             for (int i = 0; i < LCD_BUF_SIZE / 2; i++)
@@ -386,7 +384,7 @@ int lcd_test()
                 lcd->lcd_info.framebuffer[2 * i] = 0xE0;
                 lcd->lcd_info.framebuffer[2 * i + 1] = 0x07;
             }
-            lcd->parent.control(&lcd->parent, RTGRAPHIC_CTRL_RECT_UPDATE, RT_NULL);
+            rt_device_control(&lcd->parent, RTGRAPHIC_CTRL_RECT_UPDATE, RT_NULL);
             rt_thread_mdelay(1000);
             /* blue */
             for (int i = 0; i < LCD_BUF_SIZE / 2; i++)
@@ -404,7 +402,7 @@ int lcd_test()
                 lcd->lcd_info.framebuffer[3 * i + 1] = 0x00;
                 lcd->lcd_info.framebuffer[3 * i + 2] = 0xff;
             }
-            lcd->parent.control(&lcd->parent, RTGRAPHIC_CTRL_RECT_UPDATE, RT_NULL);
+            rt_device_control(&lcd->parent, RTGRAPHIC_CTRL_RECT_UPDATE, RT_NULL);
             rt_thread_mdelay(1000);
             /* green */
             for (int i = 0; i < LCD_BUF_SIZE / 3; i++)
@@ -413,7 +411,7 @@ int lcd_test()
                 lcd->lcd_info.framebuffer[3 * i + 1] = 0xff;
                 lcd->lcd_info.framebuffer[3 * i + 2] = 0x00;
             }
-            lcd->parent.control(&lcd->parent, RTGRAPHIC_CTRL_RECT_UPDATE, RT_NULL);
+            rt_device_control(&lcd->parent, RTGRAPHIC_CTRL_RECT_UPDATE, RT_NULL);
             rt_thread_mdelay(1000);
             /* blue */
             for (int i = 0; i < LCD_BUF_SIZE / 3; i++)
@@ -424,11 +422,34 @@ int lcd_test()
             }
         }
 
-        lcd->parent.control(&lcd->parent, RTGRAPHIC_CTRL_RECT_UPDATE, RT_NULL);
+        rt_device_control(&lcd->parent, RTGRAPHIC_CTRL_RECT_UPDATE, RT_NULL);
         rt_thread_mdelay(1000);
     }
 }
-MSH_CMD_EXPORT(lcd_test, lcd_test);
+int lcd_test(void)
+{
+    struct drv_lcd_device *lcd;
+    lcd = (struct drv_lcd_device *)rt_device_find("lcd");
+    if(lcd == RT_NULL)
+    {
+        LOG_E("Failed to find LCD device!\n");
+        return -RT_ERROR;
+    }
+
+    const char *thread_name = "lcd_test";
+    rt_thread_t thread = rt_thread_create(thread_name, lcd_thread, lcd, 256, RT_THREAD_PRIORITY_MAX - 1, 10);
+    if (thread != RT_NULL)
+    {
+        rt_thread_startup(thread);
+    }
+    else
+    {
+        LOG_E("%s created failed.", thread_name);
+        return -RT_ERROR;
+    }
+    return RT_EOK;
+}
+MSH_CMD_EXPORT(lcd_test, Create thread test lcd);
 #endif /* FINSH_USING_MSH */
 #endif /* DRV_DEBUG */
 #endif /* BSP_USING_LCD */

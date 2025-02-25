@@ -23,10 +23,13 @@
 #include "main.h"
 #include "adc.h"
 #include "dma.h"
+#include "dma2d.h"
 #include "i2c.h"
 #include "iwdg.h"
 #include "lptim.h"
+#include "ltdc.h"
 #include "mdma.h"
+#include "memorymap.h"
 #include "quadspi.h"
 #include "rtc.h"
 #include "sdmmc.h"
@@ -83,50 +86,6 @@ extern int vref_temp_get(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
-/*********************************USB******************************************/
-void usb_dc_low_level_init(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
-  /* USER CODE BEGIN USB_OTG_FS_MspInit 0 */
-
-  /* USER CODE END USB_OTG_FS_MspInit 0 */
-
-  /** Initializes the peripherals clock
-  */
-    PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_USB;
-    PeriphClkInitStruct.UsbClockSelection = RCC_USBCLKSOURCE_HSI48;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
-    {
-      Error_Handler();
-    }
-
-  /** Enable USB Voltage detector
-  */
-    HAL_PWREx_EnableUSBVoltageDetector();
-
-    __HAL_RCC_GPIOA_CLK_ENABLE();
-    /**USB_OTG_FS GPIO Configuration
-    PA12     ------> USB_OTG_FS_DP
-    PA11     ------> USB_OTG_FS_DM
-    */
-    GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_11;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF10_OTG1_FS;
-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-    /* USB_OTG_FS clock enable */
-    __HAL_RCC_USB_OTG_FS_CLK_ENABLE();
-
-    /* USB_OTG_FS interrupt Init */
-    HAL_NVIC_SetPriority(OTG_FS_IRQn, 0, 0);
-    HAL_NVIC_EnableIRQ(OTG_FS_IRQn);
-  /* USER CODE BEGIN USB_OTG_FS_MspInit 1 */
-
-  /* USER CODE END USB_OTG_FS_MspInit 1 */
-}
 /* USER CODE BEGIN 0 */
 /**
  * @brief  main
@@ -144,29 +103,30 @@ int main(void)
 #if defined(RT_USING_ADC) || defined(BSP_USING_ADC)
     vref_temp_get();
 #endif // RT_USING_ADC
-    extern void cdc_acm_msc_init(uint8_t busid, uint32_t reg_basem, bool flag);
-    cdc_acm_msc_init(0, USB2_OTG_FS_PERIPH_BASE, 0);
-    while (!usb_device_is_configured(0))
-    {
-        rt_thread_mdelay(1000);
-    }
-    while (1)
-    {
-        extern void cdc_acm_data_send_with_dtr_test(uint8_t busid);
-        cdc_acm_data_send_with_dtr_test(0);
-        rt_thread_mdelay(500);
+    //TODO 暂时屏蔽,USB出现问题
+    // extern void cdc_acm_msc_init(uint8_t busid, uint32_t reg_basem, bool flag);
+    // cdc_acm_msc_init(0, USB2_OTG_FS_PERIPH_BASE, 0);
+    // while (!usb_device_is_configured(0))
+    // {
+    //     rt_thread_mdelay(1000);
+    // }
+    // while (1)
+    // {
+    //     extern void cdc_acm_data_send_with_dtr_test(uint8_t busid);
+    //     cdc_acm_data_send_with_dtr_test(0);
+    //     rt_thread_mdelay(500);
 
-        if(usbd_msc_get_popup(0) == true)
-        {
-            // usbd_deinitialize(0);
-            cdc_acm_msc_init(0, USB2_OTG_FS_PERIPH_BASE, 1);
-            while (!usb_device_is_configured(0))
-            {
-                rt_thread_mdelay(1000);
-            }
-            usbd_msc_set_popup(0, false);
-        }
-    }
+    //     if(usbd_msc_get_popup(0) == true)
+    //     {
+    //         // usbd_deinitialize(0);
+    //         cdc_acm_msc_init(0, USB2_OTG_FS_PERIPH_BASE, 1);
+    //         while (!usb_device_is_configured(0))
+    //         {
+    //             rt_thread_mdelay(1000);
+    //         }
+    //         usbd_msc_set_popup(0, false);
+    //     }
+    // }
 }
 /* USER CODE END 0 */
 
