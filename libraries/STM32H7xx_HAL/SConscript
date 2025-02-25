@@ -34,7 +34,7 @@ elif rtconfig.CROSS_TOOL == 'keil':
 elif rtconfig.CROSS_TOOL == 'iar':
     src += [cwd + '/../../libraries/STM32H7xx_HAL/CMSIS/Device/ST/STM32H7xx/Source/Templates/iar/startup_stm32h750xx.s']
 
-if GetDepend(['RT_USING_SERIAL']):
+if GetDepend(['RT_USING_SERIAL']) or GetDepend(['RT_USING_NANO', 'RT_USING_CONSOLE']):
     src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart.c']
     src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_usart.c']
     src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_uart_ex.c']
@@ -70,6 +70,10 @@ if GetDepend(['RT_USING_ADC']) or GetDepend(['USER_USING_ADC']):
     src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc.c']
     src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_adc_ex.c']
 
+if GetDepend(['RT_USING_DAC']):
+    src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dac.c']
+    src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_dac_ex.c']
+
 if GetDepend(['RT_USING_RTC']):
     src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc.c']
     src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_rtc_ex.c']
@@ -80,6 +84,7 @@ if GetDepend(['RT_USING_WDT']):
 
 if GetDepend(['RT_USING_SDIO']):
     src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_sdmmc.c']
+    src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_delayblock.c']
     src += ['STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_sd.c']
 
 if GetDepend(['RT_USING_AUDIO']):

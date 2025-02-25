@@ -46,9 +46,11 @@
 /* Memory Management */
 
 #define RT_USING_SMALL_MEM
-#define RT_USING_SMALL_MEM_AS_HEAP
+#define RT_USING_MEMHEAP
+#define RT_MEMHEAP_FAST_MODE
+#define RT_USING_MEMHEAP_AS_HEAP
+#define RT_USING_MEMHEAP_AUTO_BINDING
 #define RT_USING_MEMTRACE
-#define RT_USING_HEAP_ISR
 #define RT_USING_HEAP
 /* end of Memory Management */
 #define RT_USING_DEVICE
@@ -480,6 +482,8 @@
 #define BSP_SPI1_RX_USING_DMA
 #define BSP_USING_SDIO
 #define BSP_USING_SDIO1
+#define BSP_USING_SDRAM
+#define BSP_USING_LCD
 #define BSP_USING_ONCHIP_RTC
 #define BSP_RTC_USING_LSE
 #define BSP_USING_WDT
