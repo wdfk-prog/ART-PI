@@ -1,0 +1,43 @@
+from building import *
+import os
+
+Import('ACTIVE_TARGET')
+
+cwd = GetCurrentDir()
+group = []
+
+
+def add_native_dependency(name):
+    script = os.path.join(cwd, name, 'SConscript')
+    if os.path.isfile(script):
+        return SConscript(script)
+    print('[ThirdParty:%s] dependency not populated: Libraries/ThirdParty/%s' % (ACTIVE_TARGET, name))
+    return []
+
+# Upstream littlefs package scripts may mutate package contents. Keep the submodule immutable.
+littlefs_root = os.path.join(cwd, 'littlefs')
+if os.path.isfile(os.path.join(littlefs_root, 'lfs.c')):
+    littlefs_src = sorted(
+        Glob(os.path.join(littlefs_root, '*.c')) + Glob(os.path.join(littlefs_root, '*.cpp')),
+        key=str,
+    )
+    group += DefineGroup(
+        'littlefs',
+        littlefs_src,
+        depend=['PKG_USING_LITTLEFS', 'RT_USING_DFS'],
+        CPPPATH=[littlefs_root],
+        CPPDEFINES=['LFS_CONFIG=lfs_config.h'],
+    )
+else:
+    print('[ThirdParty:%s] dependency not populated: Libraries/ThirdParty/littlefs' % ACTIVE_TARGET)
+
+for child in (
+    'cmsis_core',
+    'rt_memcpy_cm',
+    'CmBacktrace',
+    'rt-thread-syswatch',
+    'MFBD',
+):
+    group += add_native_dependency(child)
+
+Return('group')

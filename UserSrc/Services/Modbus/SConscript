@@ -1,0 +1,10 @@
+from building import *
+import os
+
+cwd = GetCurrentDir()
+group = []
+script = os.path.join(cwd, 'Slave', 'SConscript')
+if os.path.isfile(script):
+    group += SConscript(script)
+
+Return('group')

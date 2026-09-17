@@ -1,0 +1,14 @@
+# Third-party configuration is owned by the RT-Thread package index shipped
+# with Env. Source the selected packages directly instead of duplicating their
+# menuconfig/config definitions in this repository. Package source code itself
+# is still consumed from the pinned Git submodules under Libraries/ThirdParty.
+#
+# RT-Thread Env's env-init.bat exports PKGS_ROOT. Using that environment
+# variable directly avoids the deprecated Kconfig "option env" bounce symbol.
+
+source "$PKGS_ROOT/packages/system/CMSIS/CMSIS-Core/Kconfig"
+source "$PKGS_ROOT/packages/tools/CmBacktrace/Kconfig"
+source "$PKGS_ROOT/packages/system/enhanced-kservice/rt_memcpy_cm/Kconfig"
+source "$PKGS_ROOT/packages/system/littlefs/Kconfig"
+source "$PKGS_ROOT/packages/system/syswatch/Kconfig"
+source "$PKGS_ROOT/packages/misc/MFBD/Kconfig"

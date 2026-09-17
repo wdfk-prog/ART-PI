@@ -1,0 +1,37 @@
+{
+    "files.exclude": {
+        "**/build": true,
+        "**/Debug": true,
+        "**/__pycache__": true,
+        "**/*.pyc": true,
+        "project/.settings": true,
+        "project/output": true
+    },
+    "search.exclude": {
+        "**/build": true,
+        "**/Debug": true,
+        "**/__pycache__": true,
+        "**/*.pyc": true,
+        "project/.settings": true,
+        "project/output": true,
+        "Libraries/rt-thread/documentation": true
+    },
+    "terminal.integrated.cwd": "${workspaceFolder}/project",
+    "terminal.integrated.profiles.windows": {
+        "RTT Env (CMD)": {
+            "path": "C:\\Windows\\System32\\cmd.exe",
+            "args": [
+                "/k",
+                "call",
+                "${workspaceFolder}\\tools\\env\\rtt_env.cmd"
+            ]
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "RTT Env (CMD)",
+    "C_Cpp.formatting": "clangFormat",
+    "C_Cpp.clang_format_fallbackStyle": "Google",
+    "files.associations": {
+        "rtconfig.h": "c",
+        "*.S": "asm"
+    }
+}

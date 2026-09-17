@@ -4,7 +4,7 @@ import os
 cwd = GetCurrentDir()
 group = []
 
-for child in ('Vendor', 'ThirdParty'):
+for child in ('Applications', 'Drivers', 'Services', 'port'):
     script = os.path.join(cwd, child, 'SConscript')
     if os.path.isfile(script):
         group += SConscript(script)

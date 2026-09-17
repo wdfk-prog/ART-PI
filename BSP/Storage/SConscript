@@ -1,0 +1,24 @@
+from building import *
+import os
+
+cwd = GetCurrentDir()
+Import('PROJECT_ROOT')
+
+cpppath = [
+    cwd,
+    os.path.join(PROJECT_ROOT, 'BSP', 'Board'),
+    os.path.join(PROJECT_ROOT, 'BSP', 'Board', 'CubeMX_Config', 'Core', 'Inc'),
+]
+
+# Storage sources contain their own feature guards. Keeping the group present
+# mirrors the UMIC layout and prevents an RT_USING_DFS gate from accidentally
+# dropping SPI/FAL initialization used outside a mounted filesystem.
+group = DefineGroup(
+    'BSP Storage',
+    Glob('*.c'),
+    depend=[''],
+    CPPPATH=cpppath,
+    CPPDEFINES=['STM32H750xx', 'USE_HAL_DRIVER', '__RTTHREAD__'],
+)
+
+Return('group')

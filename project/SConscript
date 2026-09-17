@@ -1,0 +1,9 @@
+from building import *
+
+# PrepareBuilding() always loads the BSP-root SConscript before the RT-Thread
+# kernel/components graph. ART-PI keeps its product sources in ../BSP,
+# ../Libraries and ../UserSrc, which SConstruct adds explicitly afterwards, so
+# this project-local script intentionally contributes no additional objects.
+objs = []
+
+Return('objs')

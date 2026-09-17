@@ -1,0 +1,10 @@
+# path|url|branch|commit
+Libraries/rt-thread|https://github.com/wdfk-prog/rt-thread.git|integration|4e32fdfe08667a84963cd84803cbb4b1fa8dc81a
+Libraries/Vendor/STM32/stm32h7xx_hal_driver|https://github.com/RT-Thread-packages/stm32h7xx-hal-driver.git|master|48c6689e508f1e0bd653cd2ccbe9681a4f5394d9
+Libraries/Vendor/STM32/cmsis_device_h7|https://github.com/RT-Thread-packages/cmsis-device-h7.git|master|ee8393707a0527dd134aa0b4c5bc49e57285cff4
+Libraries/ThirdParty/cmsis_core|https://github.com/RT-Thread-packages/CMSIS-Core.git|master|39d8e01f0be84b83a8f11d33756e82ce1ef07a84
+Libraries/ThirdParty/CmBacktrace|https://github.com/wdfk-prog/CmBacktrace.git|my_feature|73eda0bb73a6e409a1249d08fd446c83c3c21143
+Libraries/ThirdParty/littlefs|https://github.com/RT-Thread-packages/littlefs.git|master|bf5beaed9cfe338cfe29d03a518a8c797d672e68
+Libraries/ThirdParty/rt_memcpy_cm|https://github.com/mysterywolf/rt_memcpy_cm.git|master|a1fa21c2474e126f9b1c63244e29a7182785cb6b
+Libraries/ThirdParty/rt-thread-syswatch|https://github.com/wdfk-prog/rt-thread-syswatch.git|master|e0fc59e0bad9f27ec1ef84408474f2f784d04d3f
+Libraries/ThirdParty/MFBD|https://github.com/smartmx/MFBD.git|main|37e03fa8a985ed32345ba92a8045dd5c6c19f0dd

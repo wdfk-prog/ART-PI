@@ -1,0 +1,13 @@
+# RT-Thread sparse-checkout paths for ART-PI.
+#
+# Paths are relative to Libraries/rt-thread. Cone mode keeps files in ancestor
+# directories automatically, so Kconfig/SConscript files above these paths are
+# retained while sibling architecture/BSP/config directories are removed.
+
+src
+include
+components
+tools
+libcpu/arm/common
+libcpu/arm/cortex-m7
+bsp/stm32/libraries/HAL_Drivers/drivers/config/h7

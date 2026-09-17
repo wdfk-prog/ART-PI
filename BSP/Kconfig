@@ -1,0 +1,241 @@
+menu "ART-Pi BSP Configuration"
+
+config BOARD_STM32H750_ARTPI
+    bool
+    default y
+
+config SOC_STM32H750_ARTPI
+    bool
+    default y
+
+config BSP_SCB_ENABLE_I_CACHE
+    bool "Enable I-Cache"
+    default y
+
+config BSP_SCB_ENABLE_D_CACHE
+    bool "Enable D-Cache"
+    default y
+
+menu "Onboard peripherals"
+
+config BSP_USING_USB_TO_USART
+    bool "Enable debugger USART (UART4)"
+    select BSP_USING_UART
+    select BSP_USING_UART4
+    default y
+
+config BSP_USING_SPI_FLASH
+    bool "Enable external SPI NOR flash (SPI1, PA4 CS)"
+    select BSP_USING_SPI
+    select BSP_USING_SPI1
+    select RT_USING_FAL
+    select FAL_USING_SFUD_PORT
+    select RT_USING_SFUD
+    default y
+
+config BSP_SPI_FLASH_SIZE_KB
+    int "External SPI NOR size (KiB)"
+    depends on BSP_USING_SPI_FLASH
+    range 4104 131072
+    default 16384
+
+menuconfig BSP_USING_FS
+    bool "Enable filesystem"
+    select RT_USING_DFS
+    select RT_USING_DFS_ROMFS
+    default y
+
+if BSP_USING_FS
+config BSP_USING_SDCARD_FS
+    bool "Enable SD card filesystem"
+    select BSP_USING_SDIO
+    select BSP_USING_SDIO1
+    select RT_USING_DFS_ELMFAT
+    default y
+
+config BSP_USING_SPI_FLASH_FS
+    bool "Enable SPI NOR filesystem"
+    select BSP_USING_SPI_FLASH
+    select RT_USING_MTD_NOR
+    select PKG_USING_LITTLEFS
+    default n
+
+config BSP_USING_STORAGE_AUTO_MKFS
+    bool "Format storage automatically when the first mount fails"
+    depends on BSP_USING_SDCARD_FS || BSP_USING_SPI_FLASH_FS
+    default y
+    help
+        Keep the UMIC-style mount-then-format fallback enabled by default.
+        Disable this option when a failed mount must never erase storage
+        automatically; the mount error will then be reported without mkfs.
+
+config BSP_USING_STORAGE_ULOG_FILE
+    bool "Enable BSP storage ULOG file backends"
+    depends on RT_USING_ULOG && ULOG_BACKEND_USING_FILE
+    depends on BSP_USING_SDCARD_FS || BSP_USING_SPI_FLASH_FS
+    default n
+    help
+        Keep this disabled to preserve the original ART-PI behavior. Enable it
+        to register the SD-card and optional SPI-NOR file log backends.
+endif
+
+# CmBacktrace owns CMB_USING_* and CMB_LOG_FILE_PATH in its package Kconfig.
+# This hidden target integration only supplies the ART-Pi storage dependency
+# required by the selected /flash/log/cmb.log backup path.
+config ART_PI_CMB_FILE_BACKUP_STORAGE
+    bool
+    default y if CMB_USING_FAL_BACKUP_LOG_TO_FILE
+    select BSP_USING_FS
+    select BSP_USING_SPI_FLASH_FS
+
+# W25Qxx page-program writes are byte-granular. CmBacktrace does not expose
+# this integration constant in the upstream package Kconfig, so keep the
+# target-specific value here rather than duplicating package configuration.
+config CMB_FLASH_LOG_PART_WG
+    int
+    default 1 if CMB_USING_FAL_FLASH_LOG
+
+endmenu
+
+menu "On-chip peripherals"
+
+config BSP_USING_GPIO
+    bool "Enable GPIO"
+    select RT_USING_PIN
+    default y
+
+menuconfig BSP_USING_UART
+    bool "Enable UART"
+    select RT_USING_SERIAL
+    select RT_SERIAL_USING_DMA
+    default y
+
+if BSP_USING_UART
+config BSP_USING_UART1
+    bool "Enable UART1"
+    default n
+
+if BSP_USING_UART1
+config BSP_UART1_RX_BUFSIZE
+    int "UART1 RX buffer size"
+    range 64 65535
+    default 256
+
+config BSP_UART1_TX_BUFSIZE
+    int "UART1 TX buffer size"
+    range 0 65535
+    default 0
+endif
+
+config BSP_USING_UART4
+    bool "Enable UART4"
+    default y
+
+if BSP_USING_UART4
+config BSP_UART4_RX_USING_DMA
+    bool "Enable UART4 RX DMA"
+    depends on RT_SERIAL_USING_DMA
+    default y
+
+config BSP_UART4_TX_USING_DMA
+    bool "Enable UART4 TX DMA"
+    depends on RT_SERIAL_USING_DMA
+    default n
+
+config BSP_UART4_RX_BUFSIZE
+    int "UART4 RX buffer size"
+    range 64 65535
+    default 256
+
+config BSP_UART4_TX_BUFSIZE
+    int "UART4 TX buffer size"
+    range 0 65535
+    default 0
+
+config BSP_UART4_DMA_PING_BUFSIZE
+    int "UART4 RX DMA ping-pong buffer size"
+    range 32 65535
+    depends on RT_USING_SERIAL_V2 && BSP_UART4_RX_USING_DMA
+    default 64
+endif
+endif
+
+menuconfig BSP_USING_SPI
+    bool "Enable SPI"
+    select RT_USING_SPI
+    default y
+
+if BSP_USING_SPI
+config BSP_USING_SPI1
+    bool "Enable SPI1"
+    default y
+
+if BSP_USING_SPI1
+config BSP_SPI1_TX_USING_DMA
+    bool "Enable SPI1 TX DMA"
+    default y
+
+config BSP_SPI1_RX_USING_DMA
+    bool "Enable SPI1 RX DMA"
+    default y
+endif
+endif
+
+menuconfig BSP_USING_SDIO
+    bool "Enable SDIO"
+    select RT_USING_SDIO
+    default y
+
+if BSP_USING_SDIO
+config BSP_USING_SDIO1
+    bool "Enable SDIO1"
+    default y
+endif
+
+config BSP_USING_SDRAM
+    bool "Enable SDRAM"
+    select RT_USING_MEMHEAP
+    default y
+
+config BSP_USING_LCD
+    bool "Enable LCD"
+    select BSP_USING_LTDC
+    select BSP_USING_GPIO
+    select BSP_USING_SDRAM
+    default y
+
+config BSP_USING_LTDC
+    bool
+    default n
+
+config BSP_USING_ONCHIP_RTC
+    bool "Enable on-chip RTC"
+    select RT_USING_RTC
+    default y
+
+if BSP_USING_ONCHIP_RTC
+choice
+    prompt "RTC clock source"
+    default BSP_RTC_USING_LSE
+
+config BSP_RTC_USING_LSE
+    bool "LSE"
+
+config BSP_RTC_USING_LSI
+    bool "LSI"
+endchoice
+endif
+
+config BSP_USING_WDT
+    bool "Enable watchdog"
+    select RT_USING_WDT
+    default y
+
+# RT-Thread STM32 HAL driver feature switches belong to the board hardware menu.
+# This follows the upstream STM32 BSP Kconfig ownership instead of wiring the
+# driver Kconfig again from project/Kconfig.
+source "$(RTT_DIR)/bsp/stm32/libraries/HAL_Drivers/drivers/Kconfig"
+
+endmenu
+
+endmenu

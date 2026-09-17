@@ -1,0 +1,109 @@
+import os
+import sys
+import rtconfig
+
+BSP_ROOT = os.path.abspath(Dir('#').abspath)
+PROJECT_ROOT = os.path.abspath(os.path.join(BSP_ROOT, '..'))
+
+if os.getenv('RTT_ROOT'):
+    RTT_ROOT = os.path.abspath(os.getenv('RTT_ROOT'))
+else:
+    RTT_ROOT = os.path.join(PROJECT_ROOT, 'Libraries', 'rt-thread')
+
+required = [
+    (RTT_ROOT, 'RT-Thread kernel'),
+    (os.path.join(PROJECT_ROOT, 'Libraries', 'Vendor', 'STM32', 'stm32h7xx_hal_driver'), 'STM32H7 HAL'),
+    (os.path.join(PROJECT_ROOT, 'Libraries', 'Vendor', 'STM32', 'cmsis_device_h7'), 'STM32H7 CMSIS device'),
+    (os.path.join(PROJECT_ROOT, 'Libraries', 'ThirdParty', 'cmsis_core'), 'CMSIS-Core'),
+    (os.path.join(PROJECT_ROOT, 'Libraries', 'ThirdParty', 'CmBacktrace'), 'CmBacktrace'),
+    (os.path.join(PROJECT_ROOT, 'Libraries', 'ThirdParty', 'littlefs'), 'littlefs'),
+    (os.path.join(PROJECT_ROOT, 'Libraries', 'ThirdParty', 'rt_memcpy_cm'), 'rt_memcpy_cm'),
+    (os.path.join(PROJECT_ROOT, 'Libraries', 'ThirdParty', 'rt-thread-syswatch'), 'rt-thread-syswatch'),
+    (os.path.join(PROJECT_ROOT, 'Libraries', 'ThirdParty', 'MFBD'), 'MFBD'),
+]
+missing = [label for path, label in required if not os.path.isdir(path)]
+if missing:
+    print('Required submodules are not populated: %s' % ', '.join(missing))
+    print('See ../docs/SUBMODULES.md for the pinned URL/branch/commit list.')
+    Exit(2)
+
+sys.path = sys.path + [os.path.join(RTT_ROOT, 'tools')]
+try:
+    import building as rt_building
+    from building import *
+except Exception as exc:
+    print('Cannot import RT-Thread build tools: %s' % exc)
+    print('RTT_ROOT=%s' % RTT_ROOT)
+    Exit(2)
+
+TARGET = 'rtthread.' + rtconfig.TARGET_EXT
+
+DefaultEnvironment(tools=[])
+env = Environment(
+    tools=['mingw'],
+    AS=rtconfig.AS,
+    ASFLAGS=rtconfig.AFLAGS,
+    CC=rtconfig.CC,
+    CFLAGS=rtconfig.CFLAGS,
+    AR=rtconfig.AR,
+    ARFLAGS='-rc',
+    CXX=rtconfig.CXX,
+    CXXFLAGS=rtconfig.CXXFLAGS,
+    LINK=rtconfig.LINK,
+    LINKFLAGS=rtconfig.LFLAGS,
+)
+if rtconfig.EXEC_PATH:
+    env.PrependENVPath('PATH', rtconfig.EXEC_PATH)
+
+env.AppendUnique(
+    CPPDEFINES=['STM32H750xx', 'USE_HAL_DRIVER', '__RTTHREAD__'],
+    CPPPATH=[
+        os.path.join(PROJECT_ROOT, 'BSP', 'Board'),
+        os.path.join(PROJECT_ROOT, 'BSP', 'Board', 'CubeMX_Config', 'Core', 'Inc'),
+        os.path.join(PROJECT_ROOT, 'Libraries', 'Vendor', 'STM32', 'stm32h7xx_hal_driver', 'Inc'),
+        os.path.join(PROJECT_ROOT, 'Libraries', 'Vendor', 'STM32', 'stm32h7xx_hal_driver', 'Inc', 'Legacy'),
+        os.path.join(PROJECT_ROOT, 'Libraries', 'Vendor', 'STM32', 'cmsis_device_h7', 'Include'),
+        os.path.join(PROJECT_ROOT, 'Libraries', 'ThirdParty', 'cmsis_core', 'Include'),
+        os.path.join(RTT_ROOT, 'bsp', 'stm32', 'libraries', 'HAL_Drivers'),
+        os.path.join(RTT_ROOT, 'bsp', 'stm32', 'libraries', 'HAL_Drivers', 'drivers'),
+        os.path.join(RTT_ROOT, 'bsp', 'stm32', 'libraries', 'HAL_Drivers', 'drivers', 'config'),
+    ],
+)
+
+
+Export('env')
+Export('RTT_ROOT')
+Export('rtconfig')
+Export('PROJECT_ROOT')
+Export('BSP_ROOT')
+ACTIVE_TARGET = 'art_pi'
+Export('ACTIVE_TARGET')
+
+objs = PrepareBuilding(env, RTT_ROOT, has_libcpu=False)
+rtconfig.BSP_LIBRARY_TYPE = None
+
+for script, variant in (
+    (os.path.join(PROJECT_ROOT, 'BSP', 'SConscript'), os.path.join('build', 'BSP')),
+    (os.path.join(PROJECT_ROOT, 'Libraries', 'SConscript'), os.path.join('build', 'Libraries')),
+    (os.path.join(PROJECT_ROOT, 'UserSrc', 'SConscript'), os.path.join('build', 'UserSrc')),
+):
+    if os.path.isfile(script):
+        objs.extend(SConscript(script, variant_dir=variant, duplicate=0))
+
+# The integration branch names Eclipse projects from the SCons directory
+# basename ("project"). Keep RT-Thread's normal DoBuilding/EndBuilding flow so
+# env['project'] and env['target'] are populated before ProjectInfo() runs, but
+# replace only the Eclipse generator dispatch with the product name.
+if GetOption('target') == 'eclipse':
+    def _generate_art_pi_eclipse_project(program=None):
+        from targets.eclipse import TargetEclipse
+
+        TargetEclipse(
+            env,
+            GetOption('reset-project-config'),
+            getattr(rtconfig, 'RTT_STUDIO_PROJECT_NAME', 'ART-PI'),
+        )
+
+    rt_building.GenTargetProject = _generate_art_pi_eclipse_project
+
+DoBuilding(TARGET, objs)

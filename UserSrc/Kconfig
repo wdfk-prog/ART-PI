@@ -1,0 +1,35 @@
+menu "User Application Config"
+
+menu "User Drivers"
+
+config USER_USING_ALARM
+    bool "Enable user alarm"
+    depends on RT_USING_ALARM
+    default n
+    help
+        Enable the ART-PI RTC alarm sample.
+
+config USER_USING_PM
+    bool "Enable user power management"
+    depends on RT_USING_PM && RT_USING_TIMER_SOFT
+    default n
+    help
+        Enable the ART-PI user power-management application.
+
+config USER_USING_UART1
+    bool "Enable user UART1"
+    depends on BSP_USING_UART1
+    default n
+    help
+        Enable the ART-PI UART1 user application.
+
+config USER_USING_SHT3X
+    bool "Enable SHT3X sensor"
+    depends on BSP_USING_I2C
+    default n
+    help
+        Enable the SHT3X temperature and humidity sensor driver.
+
+endmenu
+
+endmenu

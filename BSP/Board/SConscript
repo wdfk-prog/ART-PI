@@ -1,0 +1,15 @@
+from building import *
+import os
+
+cwd = GetCurrentDir()
+src = [os.path.join(cwd, 'board.c')]
+src += Glob(os.path.join(cwd, 'CubeMX_Config', 'Core', 'Src', '*.c'))
+
+path = [
+    cwd,
+    os.path.join(cwd, 'CubeMX_Config', 'Core', 'Inc'),
+]
+
+group = DefineGroup('Board', src, depend=[''], CPPPATH=path)
+
+Return('group')

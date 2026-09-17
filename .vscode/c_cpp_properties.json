@@ -1,0 +1,33 @@
+{
+    "configurations": [
+        {
+            "name": "ART-PI",
+            "includePath": [
+                "${workspaceFolder}/project",
+                "${workspaceFolder}/BSP/**",
+                "${workspaceFolder}/UserSrc/**",
+                "${workspaceFolder}/Libraries/rt-thread/include",
+                "${workspaceFolder}/Libraries/rt-thread/components/**",
+                "${workspaceFolder}/Libraries/rt-thread/bsp/stm32/libraries/HAL_Drivers/**",
+                "${workspaceFolder}/Libraries/Vendor/**",
+                "${workspaceFolder}/Libraries/ThirdParty/**"
+            ],
+            "forcedInclude": [
+                "${workspaceFolder}/project/rtconfig.h"
+            ],
+            "defines": [
+                "STM32H750xx",
+                "USE_HAL_DRIVER",
+                "__RTTHREAD__",
+                "__RT_KERNEL_SOURCE__",
+                "LFS_CONFIG=lfs_config.h",
+                "__CLK_TCK=RT_TICK_PER_SECOND"
+            ],
+            "compilerPath": "${env:RTT_EXEC_PATH}/arm-none-eabi-gcc.exe",
+            "intelliSenseMode": "gcc-arm",
+            "cStandard": "c11",
+            "cppStandard": "c++17"
+        }
+    ],
+    "version": 4
+}

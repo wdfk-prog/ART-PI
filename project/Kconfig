@@ -1,0 +1,33 @@
+mainmenu "RT-Thread Configuration - ART-PI"
+
+BSP_DIR := .
+PROJECT_ROOT := ..
+RTT_DIR := $(PROJECT_ROOT)/Libraries/rt-thread
+
+config SOC_STM32H750XB
+    bool
+    select SOC_SERIES_STM32H7
+    select RT_USING_COMPONENTS_INIT
+    select RT_USING_USER_MAIN
+    default y
+
+config PLATFORM_DIR
+    string
+    option env="PLATFORM_DIR"
+    default  "D:/Work/Code/ART-PI/project/platform"
+
+config RTT_DIR
+    string
+    option env="RTT_DIR"
+    default  "D:/Work/Code/ART-PI/Libraries/rt-thread"
+
+config PKGS_DIR
+    string
+    option env="PKGS_DIR"
+    default "D:/Work/RT-ThreadStudio/platform/env_released/env/packages"
+
+source "$(RTT_DIR)/Kconfig"
+source "$(RTT_DIR)/bsp/stm32/libraries/Kconfig"
+source "$(PROJECT_ROOT)/BSP/Kconfig"
+source "$(PROJECT_ROOT)/Libraries/Kconfig"
+source "$(PROJECT_ROOT)/UserSrc/Kconfig"

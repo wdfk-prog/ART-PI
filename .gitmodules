@@ -1,0 +1,36 @@
+[submodule "Libraries/rt-thread"]
+	path = Libraries/rt-thread
+	url = https://github.com/wdfk-prog/rt-thread.git
+	branch = integration
+[submodule "Libraries/Vendor/STM32/stm32h7xx_hal_driver"]
+	path = Libraries/Vendor/STM32/stm32h7xx_hal_driver
+	url = https://github.com/RT-Thread-packages/stm32h7xx-hal-driver.git
+	branch = master
+[submodule "Libraries/Vendor/STM32/cmsis_device_h7"]
+	path = Libraries/Vendor/STM32/cmsis_device_h7
+	url = https://github.com/RT-Thread-packages/cmsis-device-h7.git
+	branch = master
+[submodule "Libraries/ThirdParty/cmsis_core"]
+	path = Libraries/ThirdParty/cmsis_core
+	url = https://github.com/RT-Thread-packages/CMSIS-Core.git
+	branch = master
+[submodule "Libraries/ThirdParty/CmBacktrace"]
+	path = Libraries/ThirdParty/CmBacktrace
+	url = https://github.com/wdfk-prog/CmBacktrace.git
+	branch = my_feature
+[submodule "Libraries/ThirdParty/littlefs"]
+	path = Libraries/ThirdParty/littlefs
+	url = https://github.com/RT-Thread-packages/littlefs.git
+	branch = master
+[submodule "Libraries/ThirdParty/rt_memcpy_cm"]
+	path = Libraries/ThirdParty/rt_memcpy_cm
+	url = https://github.com/mysterywolf/rt_memcpy_cm.git
+	branch = master
+[submodule "Libraries/ThirdParty/rt-thread-syswatch"]
+	path = Libraries/ThirdParty/rt-thread-syswatch
+	url = https://github.com/wdfk-prog/rt-thread-syswatch.git
+	branch = master
+[submodule "Libraries/ThirdParty/MFBD"]
+	path = Libraries/ThirdParty/MFBD
+	url = https://github.com/smartmx/MFBD.git
+	branch = main

@@ -1,0 +1,20 @@
+# Non-cone sparse-checkout patterns for cmsis_device_h7.
+# ART-PI uses STM32H750 only. CubeMX owns system_stm32h7xx.c, so this submodule
+# contributes just the H750 device headers and GCC/Arm startup assembly.
+/*
+!/*/
+/Include/
+!/Include/*
+/Include/stm32h7xx.h
+/Include/stm32h750xx.h
+/Include/system_stm32h7xx.h
+/Source/
+!/Source/*
+/Source/Templates/
+!/Source/Templates/*
+/Source/Templates/gcc/
+!/Source/Templates/gcc/*
+/Source/Templates/gcc/startup_stm32h750xx.s
+/Source/Templates/arm/
+!/Source/Templates/arm/*
+/Source/Templates/arm/startup_stm32h750xx.s

@@ -1,0 +1,56 @@
+from building import *
+
+cwd = GetCurrentDir()
+
+group = []
+
+#
+# User RTC alarm
+#
+group += DefineGroup(
+    'User Alarm',
+    [
+        'user_alarm.c',
+    ],
+    depend=['USER_USING_ALARM'],
+    CPPPATH=[cwd],
+)
+
+#
+# User power management
+#
+group += DefineGroup(
+    'User PM',
+    [
+        'user_pm.c',
+    ],
+    depend=['USER_USING_PM'],
+    CPPPATH=[cwd],
+)
+
+#
+# User UART1 application
+#
+group += DefineGroup(
+    'User UART1',
+    [
+        'user_uart1.c',
+    ],
+    depend=['USER_USING_UART1'],
+    CPPPATH=[cwd],
+)
+
+#
+# SHT3X sensor
+#
+group += DefineGroup(
+    'SHT3X',
+    [
+        'sht3x.c',
+        'sensor_sht3x.c',
+    ],
+    depend=['USER_USING_SHT3X'],
+    CPPPATH=[cwd],
+)
+
+Return('group')

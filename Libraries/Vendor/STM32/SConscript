@@ -1,0 +1,109 @@
+from building import *
+import os
+
+Import('RTT_ROOT')
+Import('rtconfig')
+
+group = []
+cwd = GetCurrentDir()
+
+# RT-Thread owns the STM32 adaptation layer. The sparse-checkout profile keeps
+# only the generic driver files plus config/h7 from this subtree.
+hal_adapter = os.path.join(RTT_ROOT, 'bsp', 'stm32', 'libraries', 'HAL_Drivers', 'SConscript')
+if os.path.isfile(hal_adapter):
+    group += SConscript(hal_adapter)
+else:
+    print('[STM32 HAL Drivers] dependency not populated: %s' % hal_adapter)
+
+# Keep vendor source selection product-owned, matching the UMIC repository
+# pattern. This makes the external HAL submodule safe to sparsify without
+# depending on its broad package SConscript source list.
+hal_root = os.path.join(cwd, 'stm32h7xx_hal_driver')
+hal_src_dir = os.path.join(hal_root, 'Src')
+hal_inc_dir = os.path.join(hal_root, 'Inc')
+
+hal_files = [
+    # HAL core plus the modules present in the ART-PI CubeMX project. Product-
+    # owned stm32h7xx_hal_msp.c remains under BSP/Board/CubeMX_Config/Core/Src.
+    'stm32h7xx_hal.c',
+    'stm32h7xx_hal_adc.c',
+    'stm32h7xx_hal_adc_ex.c',
+    'stm32h7xx_hal_cortex.c',
+    'stm32h7xx_hal_dma.c',
+    'stm32h7xx_hal_dma2d.c',
+    'stm32h7xx_hal_dma_ex.c',
+    'stm32h7xx_hal_dsi.c',
+    'stm32h7xx_hal_exti.c',
+    'stm32h7xx_hal_flash.c',
+    'stm32h7xx_hal_flash_ex.c',
+    'stm32h7xx_hal_gpio.c',
+    'stm32h7xx_hal_hsem.c',
+    'stm32h7xx_hal_i2c.c',
+    'stm32h7xx_hal_i2c_ex.c',
+    'stm32h7xx_hal_iwdg.c',
+    'stm32h7xx_hal_lptim.c',
+    'stm32h7xx_hal_ltdc.c',
+    'stm32h7xx_hal_ltdc_ex.c',
+    'stm32h7xx_hal_mdma.c',
+    'stm32h7xx_hal_pcd.c',
+    'stm32h7xx_hal_pcd_ex.c',
+    'stm32h7xx_hal_pwr.c',
+    'stm32h7xx_hal_pwr_ex.c',
+    'stm32h7xx_hal_qspi.c',
+    'stm32h7xx_hal_rcc.c',
+    'stm32h7xx_hal_rcc_ex.c',
+    'stm32h7xx_hal_rtc.c',
+    'stm32h7xx_hal_rtc_ex.c',
+    'stm32h7xx_hal_sd.c',
+    'stm32h7xx_hal_sd_ex.c',
+    'stm32h7xx_hal_sdram.c',
+    'stm32h7xx_hal_spi.c',
+    'stm32h7xx_hal_spi_ex.c',
+    'stm32h7xx_hal_tim.c',
+    'stm32h7xx_hal_tim_ex.c',
+    'stm32h7xx_hal_uart.c',
+    'stm32h7xx_hal_uart_ex.c',
+    'stm32h7xx_ll_delayblock.c',
+    'stm32h7xx_ll_fmc.c',
+    'stm32h7xx_ll_sdmmc.c',
+    'stm32h7xx_ll_usb.c',
+]
+
+hal_src = [os.path.join(hal_src_dir, name) for name in hal_files]
+missing_hal = [path for path in hal_src if not os.path.isfile(path)]
+
+if not missing_hal and os.path.isdir(hal_inc_dir):
+    group += DefineGroup(
+        'STM32H7-HAL',
+        hal_src,
+        depend=['PKG_USING_STM32H7_HAL_DRIVER'],
+        CPPPATH=[hal_inc_dir, os.path.join(hal_inc_dir, 'Legacy')],
+        CPPDEFINES=['USE_HAL_DRIVER'],
+    )
+else:
+    print('[STM32H7 HAL] dependency is incomplete: %s' % hal_root)
+    for path in missing_hal:
+        print('  missing: %s' % path)
+
+# ART-Pi keeps CubeMX system_stm32h7xx.c. The CMSIS device submodule therefore
+# contributes only the STM32H750 device headers and one toolchain startup file.
+cmsis_root = os.path.join(cwd, 'cmsis_device_h7')
+cmsis_inc = os.path.join(cmsis_root, 'Include')
+startup = None
+if rtconfig.PLATFORM in ('gcc', 'llvm-arm'):
+    startup = os.path.join(cmsis_root, 'Source', 'Templates', 'gcc', 'startup_stm32h750xx.s')
+elif rtconfig.PLATFORM in ('armcc', 'armclang'):
+    startup = os.path.join(cmsis_root, 'Source', 'Templates', 'arm', 'startup_stm32h750xx.s')
+
+if startup and os.path.isfile(startup) and os.path.isdir(cmsis_inc):
+    group += DefineGroup(
+        'STM32H7-CMSIS-Device',
+        [startup],
+        depend=['SOC_SERIES_STM32H7'],
+        CPPPATH=[cmsis_inc],
+        CPPDEFINES=['STM32H750xx'],
+    )
+else:
+    print('[STM32H7 CMSIS] dependency/startup not populated yet: %s' % cmsis_root)
+
+Return('group')

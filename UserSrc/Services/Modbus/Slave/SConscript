@@ -1,0 +1,13 @@
+from building import *
+
+cwd = GetCurrentDir()
+src = Glob('*.c')
+
+group = DefineGroup(
+    'Modbus Slave',
+    src,
+    depend=['PKG_USING_AGILE_MODBUS'],
+    CPPPATH=[cwd],
+)
+
+Return('group')

@@ -1,0 +1,15 @@
+from building import *
+
+cwd = GetCurrentDir()
+
+# Board-specific headers such as lcd_port.h and sdram_port.h are consumed by
+# the generic STM32 HAL drivers. Keep this group header-only so legacy port
+# source files (drv_qspi_flash.c, drv_eth.c, drv_wlan.c, ...) are not built.
+group = DefineGroup(
+    'ART-PI Port Headers',
+    [],
+    depend=[],
+    CPPPATH=[cwd],
+)
+
+Return('group')
