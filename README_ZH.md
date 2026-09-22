@@ -10,7 +10,7 @@ ART-PI/
 ├── BSP/                     # 板级、CubeMX、板级驱动和存储适配
 ├── UserSrc/                 # applications、用户驱动、业务服务
 ├── Libraries/               # RT-Thread / Vendor / ThirdParty
-├── tools/                   # 依赖锁定清单
+├── tools/                   # 环境、依赖与固件辅助工具
 └── docs/                    # 工程说明
 ```
 
@@ -23,6 +23,8 @@ ART-PI/
 本交付包没有伪造 gitlink。先按 [docs/SUBMODULES.md](docs/SUBMODULES.md) 在你的 Git 仓库中添加并 checkout 到固定 commit。
 
 机器可读版本清单：[`tools/submodules.lock`](tools/submodules.lock)。
+
+`tools/` 下的环境初始化、依赖 sparse-checkout、固件命名与 HEX 合并工具用法见：[`docs/TOOLS_ZH.md`](docs/TOOLS_ZH.md)。
 
 迁移与裁剪记录：[`docs/MIGRATION_REPORT.md`](docs/MIGRATION_REPORT.md)。
 

@@ -16,6 +16,8 @@ Use `project/` as the RT-Thread Studio, SCons/Kconfig, and Keil MDK5 project roo
 
 Before building, add the pinned submodules listed in [docs/SUBMODULES.md](docs/SUBMODULES.md). The machine-readable lock list is [tools/submodules.lock](tools/submodules.lock).
 
+Usage for the environment setup, dependency sparse-checkout, firmware naming, and Intel HEX helpers under `tools/` is documented in [docs/TOOLS.md](docs/TOOLS.md).
+
 Typical local flow:
 
 ```sh

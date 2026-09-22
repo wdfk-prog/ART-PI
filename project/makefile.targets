@@ -4,4 +4,4 @@ clean2:
 	-@echo ' '
 
 
-*.elf: $(wildcard ..D:/Work/Code/ART-PI/BSP/Board/linker_scripts/STM32H750XBHx/link.lds)
+*.elf: $(wildcard ..D:/code/ART-PI/BSP/Board/linker_scripts/STM32H750XBHx/link.lds)
