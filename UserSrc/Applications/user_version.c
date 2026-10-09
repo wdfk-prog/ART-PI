@@ -13,19 +13,22 @@
 
 #include <rtthread.h>
 #include "main.h"
+#include "reset_reason.h"
 
 #define LOG_TAG "version"
 #define LOG_LVL DBG_INFO
 #include <ulog.h>
 
 /**
- * @brief Print firmware, HAL, and compiler version information at startup.
+ * @brief Print reset cause, firmware, HAL, and compiler information at startup.
  *
  * @return RT_EOK.
  */
 static int user_version_init(void)
 {
     uint32_t hal_version = HAL_GetHalVersion();
+
+    reset_reason_log();
 
     LOG_I(" \\ | /");
     LOG_W("- HLY -    Version FULL V%s", VERSION);

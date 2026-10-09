@@ -1,8 +1,11 @@
 from building import *
+import os
 
 cwd = GetCurrentDir()
+Import('PROJECT_ROOT')
 src = Glob('*.c')
 
-group = DefineGroup('Applications', src, depend=[''], CPPPATH=[cwd])
+cpppath = [cwd, os.path.join(PROJECT_ROOT, 'BSP', 'Board')]
+group = DefineGroup('Applications', src, depend=[''], CPPPATH=cpppath)
 
 Return('group')

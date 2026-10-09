@@ -2,7 +2,7 @@ from building import *
 import os
 
 cwd = GetCurrentDir()
-src = [os.path.join(cwd, 'board.c')]
+src = [os.path.join(cwd, 'board.c'), os.path.join(cwd, 'reset_reason.c')]
 src += Glob(os.path.join(cwd, 'CubeMX_Config', 'Core', 'Src', '*.c'))
 
 path = [

@@ -6,6 +6,7 @@
  */
 #include "board.h"
 #include "main.h"
+#include "reset_reason.h"
 
 #include <time.h>
 
@@ -54,6 +55,15 @@ static int vtor_config(void)
     return RT_EOK;
 }
 INIT_BOARD_EXPORT(vtor_config);
+
+/* APP captures and clears RCC flags once; a preceding bootloader must not clear them. */
+static int board_reset_init(void)
+{
+    reset_reason_capture();
+    reset_reason_clear_flags();
+    return RT_EOK;
+}
+INIT_BOARD_EXPORT(board_reset_init);
 
 #ifdef RT_USING_RTC
 static time_t rtc_get_build(void)
