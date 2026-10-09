@@ -1,0 +1,157 @@
+name: CI - ART-PI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  source-checks:
+    name: Source checks and cppcheck report
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+
+      - name: Verify project entrypoints
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f project/SConstruct
+          test -f project/rtconfig.py
+          test -f project/.config
+          test -f BSP/SConscript
+          test -f UserSrc/SConscript
+          test -f tools/submodules.lock
+          test -f libraries/SConscript
+          test -f libraries/Kconfig
+          if git rev-parse HEAD^ >/dev/null 2>&1; then
+            git diff --check HEAD^ HEAD
+          fi
+
+      - name: Check Python syntax
+        run: python3 -m compileall -q project tools/dependency
+
+      - name: Check POSIX shell syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          for script in tools/firmware/*.sh; do
+            sh -n "$script"
+          done
+
+      - name: Install cppcheck
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends cppcheck
+
+      - name: Generate cppcheck report (informational baseline)
+        shell: bash
+        run: |
+          set -euo pipefail
+          cppcheck --enable=warning,performance,portability \
+            --std=c99 --language=c --quiet \
+            --suppress=missingInclude --suppress=missingIncludeSystem \
+            -iBSP/Board/CubeMX_Config \
+            BSP/Board BSP/Drivers BSP/Storage UserSrc 2> cppcheck.txt
+          if test -s cppcheck.txt; then
+            echo 'cppcheck diagnostics (see artifact for the complete report):'
+            head -n 80 cppcheck.txt
+          else
+            echo 'cppcheck: no diagnostics reported'
+          fi
+
+      - name: Upload cppcheck report
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: art-pi-cppcheck
+          path: cppcheck.txt
+          if-no-files-found: warn
+
+  firmware:
+    name: Build STM32H750 firmware (GCC/SCons)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      RTT_CC: gcc
+      RTT_EXEC_PATH: /usr/bin
+    steps:
+      - name: Check out source and pinned Git submodules
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          submodules: true
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: '3.10'
+
+      - name: Install RT-Thread build tools
+        run: |
+          python -m pip install --disable-pip-version-check scons==4.0.1
+          python -c 'import SCons; print("SCons", SCons.__version__)'
+
+      - name: Install GNU Arm Embedded toolchain
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends \
+            gcc-arm-none-eabi binutils-arm-none-eabi \
+            libnewlib-dev libnewlib-arm-none-eabi
+          arm-none-eabi-gcc --version
+
+      - name: Verify checked-out submodules
+        shell: bash
+        run: |
+          set -euo pipefail
+          git submodule status
+          test -f Libraries/rt-thread/tools/building.py
+          test -f Libraries/Vendor/STM32/stm32h7xx_hal_driver/Inc/stm32h7xx_hal.h
+          test -f Libraries/Vendor/STM32/cmsis_device_h7/Include/stm32h750xx.h
+          test -f Libraries/ThirdParty/cmsis_core/Include/core_cm7.h
+
+      - name: Build ART-PI firmware
+        shell: bash
+        run: |
+          set -euo pipefail
+          scons -C project -j 2 2>&1 | tee project/build.log
+          test -f project/rtthread.elf
+          test -f project/rtthread.hex
+          test -f project/rtthread.bin
+          arm-none-eabi-size project/rtthread.elf
+
+      - name: Upload firmware build log
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: art-pi-build-log
+          path: project/build.log
+          if-no-files-found: warn
+
+      - name: Upload firmware artifacts
+        if: success()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: art-pi-firmware
+          path: |
+            project/rtthread.elf
+            project/rtthread.hex
+            project/rtthread.bin
+            project/rtthread.map
+            project/ART-PI_app_*.hex
+            project/ART-PI_app_*.bin
+          if-no-files-found: error
+          retention-days: 14

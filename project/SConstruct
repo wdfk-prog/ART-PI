@@ -84,7 +84,7 @@ rtconfig.BSP_LIBRARY_TYPE = None
 
 for script, variant in (
     (os.path.join(PROJECT_ROOT, 'BSP', 'SConscript'), os.path.join('build', 'BSP')),
-    (os.path.join(PROJECT_ROOT, 'Libraries', 'SConscript'), os.path.join('build', 'Libraries')),
+    (os.path.join(PROJECT_ROOT, 'libraries', 'SConscript'), os.path.join('build', 'Libraries')),
     (os.path.join(PROJECT_ROOT, 'UserSrc', 'SConscript'), os.path.join('build', 'UserSrc')),
 ):
     if os.path.isfile(script):

@@ -1,7 +1,8 @@
 from building import *
 import os
 
-cwd = GetCurrentDir()
+Import('PROJECT_ROOT')
+cwd = os.path.join(PROJECT_ROOT, 'Libraries')
 group = []
 
 for child in ('Vendor', 'ThirdParty'):

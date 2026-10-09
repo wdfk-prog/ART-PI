@@ -1,0 +1,23 @@
+site_name: ART-PI Documentation
+site_description: STM32H750 ART-Pi project documentation and source API reference
+site_url: https://wdfk-prog.github.io/ART-PI/
+repo_url: https://github.com/wdfk-prog/ART-PI
+repo_name: wdfk-prog/ART-PI
+
+theme:
+  name: material
+  language: en
+
+nav:
+  - Home: index.md
+  - Build, CI and Pages: CI.md
+  - Tools (Chinese): TOOLS_ZH.md
+  - Tools (English): TOOLS.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+
+strict: true

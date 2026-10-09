@@ -29,5 +29,5 @@ config PKGS_DIR
 source "$(RTT_DIR)/Kconfig"
 source "$(RTT_DIR)/bsp/stm32/libraries/Kconfig"
 source "$(PROJECT_ROOT)/BSP/Kconfig"
-source "$(PROJECT_ROOT)/Libraries/Kconfig"
+source "$(PROJECT_ROOT)/libraries/Kconfig"
 source "$(PROJECT_ROOT)/UserSrc/Kconfig"
